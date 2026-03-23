@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import type { TokenManagerOptions } from '../auth/token-manager.js';
+import type { TokenManagerOptions } from '../auth/token-manager.js'
 
 /**
  * Options for BotApplication. Credentials are resolved in this priority order:

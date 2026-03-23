@@ -1,14 +1,14 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import type { IncomingMessage, ServerResponse } from 'node:http';
-import type { CoreActivity, ResourceResponse } from '../schema/core-activity.js';
-import type { ITurnMiddleware } from '../middleware/i-turn-middleware.js';
-import { ConversationClient } from '../clients/conversation-client.js';
-import { UserTokenClient } from '../clients/user-token-client.js';
-import { TokenManager } from '../auth/token-manager.js';
-import type { BotApplicationOptions } from './bot-application-options.js';
-import { type ActivityHandler, createContext } from './activity-context.js';
+import type { IncomingMessage, ServerResponse } from 'node:http'
+import type { CoreActivity, ResourceResponse } from '../schema/core-activity.js'
+import type { ITurnMiddleware } from '../middleware/i-turn-middleware.js'
+import { ConversationClient } from '../clients/conversation-client.js'
+import { UserTokenClient } from '../clients/user-token-client.js'
+import { TokenManager } from '../auth/token-manager.js'
+import type { BotApplicationOptions } from './bot-application-options.js'
+import { type ActivityHandler, createContext } from './activity-context.js'
 
 /**
  * Core bot application that processes incoming Bot Framework activities.
@@ -28,32 +28,32 @@ import { type ActivityHandler, createContext } from './activity-context.js';
  */
 export class BotApplication {
   /** Resolved options for this application instance. */
-  readonly options: BotApplicationOptions;
+  readonly options: BotApplicationOptions
 
   /** Client for sending, updating, and deleting activities via the Bot Framework API. */
-  readonly conversationClient: ConversationClient;
+  readonly conversationClient: ConversationClient
 
   /** Client for OAuth token operations via the Bot Framework token service. */
-  readonly userTokenClient: UserTokenClient;
+  readonly userTokenClient: UserTokenClient
 
-  private readonly middlewares: ITurnMiddleware[] = [];
-  private readonly handlers = new Map<string, ActivityHandler>();
-  private readonly tokenManager: TokenManager;
+  private readonly middlewares: ITurnMiddleware[] = []
+  private readonly handlers = new Map<string, ActivityHandler>()
+  private readonly tokenManager: TokenManager
 
   /**
    * @param options - Application configuration. All fields are optional and
    *   fall back to environment variables (`CLIENT_ID`, `CLIENT_SECRET`, etc.).
    */
-  constructor(options: BotApplicationOptions = {}) {
-    this.options = options;
-    this.tokenManager = new TokenManager(options);
+  constructor (options: BotApplicationOptions = {}) {
+    this.options = options
+    this.tokenManager = new TokenManager(options)
     const tokenProvider = () =>
       this.tokenManager.getBotToken().then((t) => {
-        if (!t) throw new Error('No credentials configured — set CLIENT_ID and CLIENT_SECRET (or use managed identity)');
-        return t;
-      });
-    this.conversationClient = new ConversationClient(tokenProvider);
-    this.userTokenClient = new UserTokenClient(tokenProvider);
+        if (!t) throw new Error('No credentials configured — set CLIENT_ID and CLIENT_SECRET (or use managed identity)')
+        return t
+      })
+    this.conversationClient = new ConversationClient(tokenProvider)
+    this.userTokenClient = new UserTokenClient(tokenProvider)
   }
 
   /**
@@ -71,9 +71,9 @@ export class BotApplication {
    *   await send(`you said "${activity.text}"`);
    * });
    */
-  on(type: string, handler: ActivityHandler): this {
-    this.handlers.set(type, handler);
-    return this;
+  on (type: string, handler: ActivityHandler): this {
+    this.handlers.set(type, handler)
+    return this
   }
 
   /**
@@ -84,9 +84,9 @@ export class BotApplication {
    * @param middleware - Middleware implementing {@link ITurnMiddleware}.
    * @returns `this` for method chaining.
    */
-  use(middleware: ITurnMiddleware): this {
-    this.middlewares.push(middleware);
-    return this;
+  use (middleware: ITurnMiddleware): this {
+    this.middlewares.push(middleware)
+    return this
   }
 
   /**
@@ -98,15 +98,15 @@ export class BotApplication {
    * @param req - Node.js `IncomingMessage`.
    * @param res - Node.js `ServerResponse`.
    */
-  async processAsync(req: IncomingMessage, res: ServerResponse): Promise<void> {
+  async processAsync (req: IncomingMessage, res: ServerResponse): Promise<void> {
     try {
-      const body = await readBody(req);
-      await this.processBody(body);
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end('{}');
+      const body = await readBody(req)
+      await this.processBody(body)
+      res.writeHead(200, { 'Content-Type': 'application/json' })
+      res.end('{}')
     } catch {
-      res.writeHead(500);
-      res.end('Internal server error');
+      res.writeHead(500)
+      res.end('Internal server error')
     }
   }
 
@@ -119,10 +119,10 @@ export class BotApplication {
    *
    * @param body - Raw JSON string of the activity payload.
    */
-  async processBody(body: string): Promise<void> {
-    const activity = JSON.parse(body) as CoreActivity;
-    assertActivity(activity);
-    await this.runPipelineAsync(activity);
+  async processBody (body: string): Promise<void> {
+    const activity = JSON.parse(body) as CoreActivity
+    assertActivity(activity)
+    await this.runPipelineAsync(activity)
   }
 
   /**
@@ -133,45 +133,45 @@ export class BotApplication {
    * @param activity - Activity payload to send.
    * @returns Resource response with the new activity ID.
    */
-  async sendActivityAsync(
+  async sendActivityAsync (
     serviceUrl: string,
     conversationId: string,
     activity: Partial<CoreActivity>
   ): Promise<ResourceResponse | undefined> {
-    return this.conversationClient.sendActivityAsync(serviceUrl, conversationId, activity);
+    return this.conversationClient.sendActivityAsync(serviceUrl, conversationId, activity)
   }
 
   /** @internal Dispatch the activity to its registered handler. */
-  protected async handleActivityAsync(activity: CoreActivity): Promise<void> {
-    const handler = this.handlers.get(activity.type);
+  protected async handleActivityAsync (activity: CoreActivity): Promise<void> {
+    const handler = this.handlers.get(activity.type)
     if (handler) {
-      await handler(createContext(activity, this));
+      await handler(createContext(activity, this))
     }
   }
 
-  private async runPipelineAsync(activity: CoreActivity): Promise<void> {
-    let index = 0;
+  private async runPipelineAsync (activity: CoreActivity): Promise<void> {
+    let index = 0
     const next = async (): Promise<void> => {
       if (index < this.middlewares.length) {
-        await this.middlewares[index++].onTurnAsync(this, activity, next);
+        await this.middlewares[index++].onTurnAsync(this, activity, next)
       } else {
-        await this.handleActivityAsync(activity);
+        await this.handleActivityAsync(activity)
       }
-    };
-    await next();
+    }
+    await next()
   }
 }
 
-function assertActivity(value: unknown): asserts value is CoreActivity {
+function assertActivity (value: unknown): asserts value is CoreActivity {
   if (typeof value !== 'object' || value === null) {
-    throw new Error('Activity must be a JSON object');
+    throw new Error('Activity must be a JSON object')
   }
-  const a = value as Record<string, unknown>;
+  const a = value as Record<string, unknown>
   if (typeof a['type'] !== 'string' || !a['type']) {
-    throw new Error('Activity missing required field: type');
+    throw new Error('Activity missing required field: type')
   }
   if (typeof a['serviceUrl'] !== 'string' || !a['serviceUrl']) {
-    throw new Error('Activity missing required field: serviceUrl');
+    throw new Error('Activity missing required field: serviceUrl')
   }
   if (
     typeof a['conversation'] !== 'object' ||
@@ -179,15 +179,15 @@ function assertActivity(value: unknown): asserts value is CoreActivity {
     typeof (a['conversation'] as Record<string, unknown>)['id'] !== 'string' ||
     !(a['conversation'] as Record<string, unknown>)['id']
   ) {
-    throw new Error('Activity missing required field: conversation.id');
+    throw new Error('Activity missing required field: conversation.id')
   }
 }
 
-function readBody(req: IncomingMessage): Promise<string> {
+function readBody (req: IncomingMessage): Promise<string> {
   return new Promise((resolve, reject) => {
-    const chunks: Buffer[] = [];
-    req.on('data', (chunk: Buffer) => chunks.push(chunk));
-    req.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
-    req.on('error', reject);
-  });
+    const chunks: Buffer[] = []
+    req.on('data', (chunk: Buffer) => chunks.push(chunk))
+    req.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')))
+    req.on('error', reject)
+  })
 }

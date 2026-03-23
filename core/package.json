@@ -13,6 +13,13 @@
   "author": "",
   "license": "ISC",
   "type": "commonjs",
+  "devDependencies": {
+    "eslint": "^9.25.1",
+    "neostandard": "^0.12.1",
+    "rimraf": "^6.0.1",
+    "tsx": "^4.19.3",
+    "typescript": "^5.4.5"
+  },
   "workspaces": [
     "packages/*",
     "samples/*"

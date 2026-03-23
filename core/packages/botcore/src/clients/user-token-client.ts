@@ -1,10 +1,10 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { BotHttpClient, type TokenProvider } from './bot-http-client.js';
-import type { CoreActivity } from '../schema/core-activity.js';
+import { BotHttpClient, type TokenProvider } from './bot-http-client.js'
+import type { CoreActivity } from '../schema/core-activity.js'
 
-const TOKEN_SERVICE_URL = 'https://token.botframework.com';
+const TOKEN_SERVICE_URL = 'https://token.botframework.com'
 
 /** The OAuth token status for a user on a specific connection. */
 export interface TokenStatus {
@@ -79,13 +79,13 @@ export interface AadResourceUrls {
  * exchange, user sign-out, and AAD token acquisition.
  */
 export class UserTokenClient {
-  private readonly http: BotHttpClient;
+  private readonly http: BotHttpClient
 
   /**
    * @param getToken - Optional token provider for authenticating outgoing requests.
    */
-  constructor(getToken?: TokenProvider) {
-    this.http = new BotHttpClient(getToken);
+  constructor (getToken?: TokenProvider) {
+    this.http = new BotHttpClient(getToken)
   }
 
   /**
@@ -96,7 +96,7 @@ export class UserTokenClient {
    * @param connectionName - Optional connection name to filter results.
    * @returns Array of token status records; empty if none found.
    */
-  async getTokenStatusAsync(
+  async getTokenStatusAsync (
     userId: string,
     channelId: string,
     connectionName?: string
@@ -105,14 +105,14 @@ export class UserTokenClient {
       userId,
       channelId,
       include: connectionName,
-    };
+    }
     const result = await this.http.get<TokenStatus[]>(
       TOKEN_SERVICE_URL,
       '/api/usertoken/GetTokenStatus',
       params,
       { operationDescription: 'get token status' }
-    );
-    return result ?? [];
+    )
+    return result ?? []
   }
 
   /**
@@ -124,7 +124,7 @@ export class UserTokenClient {
    * @param code - Magic code from the sign-in flow (optional).
    * @returns The user token, or `undefined` if no token is stored.
    */
-  async getTokenAsync(
+  async getTokenAsync (
     userId: string,
     channelId: string,
     connectionName: string,
@@ -135,13 +135,13 @@ export class UserTokenClient {
       channelId,
       connectionName,
       code,
-    };
+    }
     return this.http.get<UserToken>(
       TOKEN_SERVICE_URL,
       '/api/usertoken/GetToken',
       params,
       { operationDescription: 'get token', returnNullOnNotFound: true }
-    );
+    )
   }
 
   /**
@@ -152,7 +152,7 @@ export class UserTokenClient {
    * @param finalRedirect - Optional URL to redirect to after sign-in completes.
    * @returns Sign-in resource, or `undefined` if unavailable.
    */
-  async getSignInResourceAsync(
+  async getSignInResourceAsync (
     connectionName: string,
     activity: CoreActivity,
     finalRedirect?: string
@@ -160,13 +160,13 @@ export class UserTokenClient {
     const params: Record<string, string | undefined> = {
       state: buildStateParam(connectionName, activity),
       finalRedirect,
-    };
+    }
     return this.http.get<SignInResource>(
       TOKEN_SERVICE_URL,
       '/api/botsignin/GetSignInResource',
       params,
       { operationDescription: 'get sign-in resource' }
-    );
+    )
   }
 
   /**
@@ -178,7 +178,7 @@ export class UserTokenClient {
    * @param request - Token exchange request (URI or raw token).
    * @returns The exchanged user token, or `undefined` if exchange fails.
    */
-  async exchangeTokenAsync(
+  async exchangeTokenAsync (
     userId: string,
     channelId: string,
     connectionName: string,
@@ -188,11 +188,11 @@ export class UserTokenClient {
       userId,
       channelId,
       connectionName,
-    };
-    const url = buildTokenUrl(TOKEN_SERVICE_URL, '/api/usertoken/ExchangeToken', params);
+    }
+    const url = buildTokenUrl(TOKEN_SERVICE_URL, '/api/usertoken/ExchangeToken', params)
     return this.http.send<UserToken>('POST', url, request, {
       operationDescription: 'exchange token',
-    });
+    })
   }
 
   /**
@@ -202,7 +202,7 @@ export class UserTokenClient {
    * @param channelId - Channel the user is on.
    * @param connectionName - Optional connection name to sign out from. Omit to sign out of all connections.
    */
-  async signOutUserAsync(
+  async signOutUserAsync (
     userId: string,
     channelId: string,
     connectionName?: string
@@ -211,13 +211,13 @@ export class UserTokenClient {
       userId,
       channelId,
       connectionName,
-    };
+    }
     await this.http.delete(
       TOKEN_SERVICE_URL,
       '/api/usertoken/SignOut',
       params,
       { operationDescription: 'sign out user' }
-    );
+    )
   }
 
   /**
@@ -229,7 +229,7 @@ export class UserTokenClient {
    * @param resourceUrls - List of AAD resource URIs to fetch tokens for.
    * @returns Map from resource URL to user token; empty object if none returned.
    */
-  async getAadTokensAsync(
+  async getAadTokensAsync (
     userId: string,
     channelId: string,
     connectionName: string,
@@ -239,19 +239,19 @@ export class UserTokenClient {
       userId,
       channelId,
       connectionName,
-    };
-    const url = buildTokenUrl(TOKEN_SERVICE_URL, '/api/usertoken/GetAadTokens', params);
+    }
+    const url = buildTokenUrl(TOKEN_SERVICE_URL, '/api/usertoken/GetAadTokens', params)
     const result = await this.http.send<Record<string, UserToken>>(
       'POST',
       url,
       resourceUrls,
       { operationDescription: 'get AAD tokens' }
-    );
-    return result ?? {};
+    )
+    return result ?? {}
   }
 }
 
-function buildStateParam(connectionName: string, activity: CoreActivity): string {
+function buildStateParam (connectionName: string, activity: CoreActivity): string {
   const state = {
     ConnectionName: connectionName,
     Conversation: {
@@ -263,11 +263,11 @@ function buildStateParam(connectionName: string, activity: CoreActivity): string
     },
     RelatesTo: null,
     MSAppId: activity.recipient?.id,
-  };
-  return Buffer.from(JSON.stringify(state)).toString('base64');
+  }
+  return Buffer.from(JSON.stringify(state)).toString('base64')
 }
 
-function buildTokenUrl(
+function buildTokenUrl (
   base: string,
   path: string,
   params: Record<string, string | undefined>
@@ -275,7 +275,7 @@ function buildTokenUrl(
   const query = Object.entries(params)
     .filter(([, v]) => v !== undefined)
     .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v!)}`)
-    .join('&');
-  const url = `${base}${path}`;
-  return query ? `${url}?${query}` : url;
+    .join('&')
+  const url = `${base}${path}`
+  return query ? `${url}?${query}` : url
 }

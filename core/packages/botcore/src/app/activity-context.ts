@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import type { CoreActivity, ResourceResponse } from '../schema/core-activity.js';
-import type { BotApplication } from './bot-application.js';
+import type { CoreActivity, ResourceResponse } from '../schema/core-activity.js'
+import type { BotApplication } from './bot-application.js'
 
 /**
  * The turn context passed to every activity handler.
@@ -28,7 +28,7 @@ export interface ActivityContext<TActivity extends CoreActivity = CoreActivity> 
  */
 export type ActivityHandler<TActivity extends CoreActivity = CoreActivity> = (
   ctx: ActivityContext<TActivity>
-) => Promise<void>;
+) => Promise<void>
 
 /**
  * Create an {@link ActivityContext} for the given activity and application.
@@ -37,22 +37,22 @@ export type ActivityHandler<TActivity extends CoreActivity = CoreActivity> = (
  * @param app - The `BotApplication` instance processing the turn.
  * @returns A context object bound to the activity's conversation.
  */
-export function createContext<TActivity extends CoreActivity>(
+export function createContext<TActivity extends CoreActivity> (
   activity: TActivity,
   app: BotApplication
 ): ActivityContext<TActivity> {
   return {
     activity,
-    send(textOrActivity: string | Partial<CoreActivity>): Promise<ResourceResponse | undefined> {
+    send (textOrActivity: string | Partial<CoreActivity>): Promise<ResourceResponse | undefined> {
       const outgoing: Partial<CoreActivity> =
         typeof textOrActivity === 'string'
           ? { type: 'message', text: textOrActivity }
-          : textOrActivity;
+          : textOrActivity
       return app.sendActivityAsync(
         activity.serviceUrl,
         activity.conversation.id,
         outgoing
-      );
+      )
     },
-  };
+  }
 }

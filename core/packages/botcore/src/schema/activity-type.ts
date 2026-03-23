@@ -25,7 +25,8 @@ export const ActivityType = {
   EndOfConversation: 'endOfConversation',
   Command: 'command',
   CommandResult: 'commandResult',
-} as const;
+} as const
 
 /** Union type of all known activity type strings. */
-export type ActivityType = (typeof ActivityType)[keyof typeof ActivityType];
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export type ActivityType = (typeof ActivityType)[keyof typeof ActivityType]
