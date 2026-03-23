@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "loc": "node scripts/loc.mjs",
     "build": "npm run build --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
     "lint:fix": "npm run lint:fix --workspaces --if-present",
@@ -18,7 +19,7 @@
     "neostandard": "^0.12.1",
     "rimraf": "^6.0.1",
     "tsx": "^4.19.3",
-    "typescript": "^5.4.5"
+    "typescript": "^6.0.2"
   },
   "workspaces": [
     "packages/*",
