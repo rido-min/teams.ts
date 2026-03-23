@@ -70,12 +70,13 @@ export class BotHttpClient {
       const response = await this.http.request<T>(config)
       return response.data ?? undefined
     } catch (err: unknown) {
-      if (
-        options.returnNullOnNotFound &&
-        isAxiosError(err) &&
-        err.response?.status === 404
-      ) {
-        return undefined
+      if (isAxiosError(err)) {
+        if (options.returnNullOnNotFound && err.response?.status === 404) {
+          return undefined
+        }
+        const status = err.response?.status ?? 'no response'
+        const body = JSON.stringify(err.response?.data) ?? ''
+        throw new Error(`${method} ${url} failed with ${status}: ${body}`)
       }
       throw err
     }
@@ -178,6 +179,6 @@ function buildUrl (
   return url
 }
 
-function isAxiosError (err: unknown): err is { response?: { status: number } } {
+function isAxiosError (err: unknown): err is { response?: { status: number; data?: unknown } } {
   return typeof err === 'object' && err !== null && 'response' in err
 }

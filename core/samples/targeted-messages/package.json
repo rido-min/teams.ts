@@ -1,0 +1,16 @@
+{
+  "name": "sample-targeted-messages",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "npx tsx index.ts"
+  },
+  "dependencies": {
+    "@microsoft/teams.botcore": "*",
+    "express": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.13.0"
+  }
+}
