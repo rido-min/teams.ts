@@ -9,6 +9,7 @@ import { UserTokenClient } from '../clients/user-token-client.js'
 import { TokenManager } from '../auth/token-manager.js'
 import type { BotApplicationOptions } from './bot-application-options.js'
 import { type ActivityHandler, createContext } from './activity-context.js'
+import { getLogger } from '../logging/logger.js'
 
 /**
  * Core bot application that processes incoming Bot Framework activities.
@@ -99,6 +100,7 @@ export class BotApplication {
    * @param res - Node.js `ServerResponse`.
    */
   async processAsync (req: IncomingMessage, res: ServerResponse): Promise<void> {
+    getLogger().debug('Start processing HTTP request for activity')
     try {
       const body = await readBody(req)
       await this.processBody(body)
@@ -122,7 +124,15 @@ export class BotApplication {
   async processBody (body: string): Promise<void> {
     const activity = JSON.parse(body) as CoreActivity
     assertActivity(activity)
-    await this.runPipelineAsync(activity)
+    getLogger().info('Activity received: type=%s id=%s serviceUrl=%s', activity.type, activity.id, activity.serviceUrl)
+    getLogger().trace('Received activity: %s', body)
+    try {
+      await this.runPipelineAsync(activity)
+      getLogger().info('Finished processing activity: id=%s', activity.id)
+    } catch (err) {
+      getLogger().error('Error processing activity: id=%s', activity.id, err)
+      throw err
+    }
   }
 
   /**

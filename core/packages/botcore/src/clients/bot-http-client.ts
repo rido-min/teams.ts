@@ -106,14 +106,16 @@ export class BotHttpClient {
    * @param endpoint - Path relative to `baseUrl`.
    * @param body - Request body.
    * @param options - Request options.
+   * @param params - Optional query-string parameters (undefined values omitted).
    */
   async post<T>(
     baseUrl: string,
     endpoint: string,
     body?: unknown,
-    options?: BotRequestOptions
+    options?: BotRequestOptions,
+    params?: Record<string, string | undefined>
   ): Promise<T | undefined> {
-    const url = buildUrl(baseUrl, endpoint)
+    const url = buildUrl(baseUrl, endpoint, params)
     return this.send<T>('POST', url, body, options)
   }
 
@@ -124,14 +126,16 @@ export class BotHttpClient {
    * @param endpoint - Path relative to `baseUrl`.
    * @param body - Request body.
    * @param options - Request options.
+   * @param params - Optional query-string parameters (undefined values omitted).
    */
   async put<T>(
     baseUrl: string,
     endpoint: string,
     body?: unknown,
-    options?: BotRequestOptions
+    options?: BotRequestOptions,
+    params?: Record<string, string | undefined>
   ): Promise<T | undefined> {
-    const url = buildUrl(baseUrl, endpoint)
+    const url = buildUrl(baseUrl, endpoint, params)
     return this.send<T>('PUT', url, body, options)
   }
 

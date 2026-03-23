@@ -4,9 +4,7 @@
 import * as jwt from 'jsonwebtoken'
 import jwksClient from 'jwks-rsa'
 import axios from 'axios'
-import createDebug from 'debug'
-
-const debug = createDebug('teams:botcore:auth')
+import { getLogger } from '../logging/logger.js'
 
 const BOT_OPENID_METADATA_URL =
   'https://login.botframework.com/v1/.well-known/openidconfiguration'
@@ -16,10 +14,10 @@ let cachedJwks: ReturnType<typeof jwksClient> | undefined
 
 async function getJwks (): Promise<ReturnType<typeof jwksClient>> {
   if (!cachedJwks) {
-    debug('fetching JWKS URI from %s', BOT_OPENID_METADATA_URL)
+    getLogger().debug('Fetching JWKS URI from %s', BOT_OPENID_METADATA_URL)
     const resp = await axios.get<{ jwks_uri: string }>(BOT_OPENID_METADATA_URL)
     cachedJwksUri = resp.data.jwks_uri
-    debug('JWKS URI resolved: %s', cachedJwksUri)
+    getLogger().debug('JWKS URI resolved: %s', cachedJwksUri)
     cachedJwks = jwksClient({ jwksUri: cachedJwksUri })
   }
   return cachedJwks
@@ -40,12 +38,12 @@ export async function validateBotToken (
   if (!audience) throw new BotAuthError('No appId configured for token validation')
 
   if (!authHeader?.startsWith('Bearer ')) {
-    debug('auth failed: missing or malformed Authorization header')
+    getLogger().debug('Auth failed: missing or malformed Authorization header')
     throw new BotAuthError('Missing or invalid Authorization header')
   }
 
   const token = authHeader.slice(7)
-  debug('validating token for audience %s', audience)
+  getLogger().debug('Validating token for audience %s', audience)
 
   const jwks = await getJwks()
 
@@ -53,10 +51,10 @@ export async function validateBotToken (
     jwt.verify(
       token,
       (header, callback) => {
-        debug('fetching signing key kid=%s', header.kid)
+        getLogger().trace('Fetching signing key kid=%s', header.kid)
         jwks.getSigningKey(header.kid, (err, key) => {
           if (err) {
-            debug('signing key fetch failed: %s', err.message)
+            getLogger().debug('Signing key fetch failed: %s', err.message)
             return callback(err, undefined)
           }
           callback(null, key?.getPublicKey())
@@ -65,10 +63,10 @@ export async function validateBotToken (
       { audience, algorithms: ['RS256'] },
       (err) => {
         if (err) {
-          debug('token validation failed: %s', err.message)
+          getLogger().debug('Token validation failed: %s', err.message)
           reject(new BotAuthError(`Token validation failed: ${err.message}`))
         } else {
-          debug('token validated successfully')
+          getLogger().debug('Token validated successfully')
           resolve()
         }
       }
@@ -76,6 +74,7 @@ export async function validateBotToken (
   })
 }
 
+/** Error thrown when Bot Framework JWT validation fails. */
 export class BotAuthError extends Error {
   constructor (message: string) {
     super(message)
@@ -92,8 +91,10 @@ type NextFn = (err?: unknown) => void
 /**
  * Express middleware that validates the Bot Framework JWT token.
  *
+ * @param appId - The bot's client ID. Falls back to CLIENT_ID env var.
+ *
  * @example
- * app.post('/api/messages', botAuthExpress(appId), (req, res) => bot.processAsync(req, res));
+ * app.post('/api/messages', botAuthExpress(appId), (req, res) => bot.processAsync(req, res))
  */
 export function botAuthExpress (
   appId?: string
@@ -116,16 +117,18 @@ export function botAuthExpress (
 // ── Hono middleware ───────────────────────────────────────────────────────────
 
 type HonoContext = {
-  req: { header(name: string): string | undefined };
-  text(body: string, status?: number): Response;
+  req: { header(name: string): string | undefined }
+  text(body: string, status?: number): Response
 }
 type HonoNext = () => Promise<Response | void>
 
 /**
  * Hono middleware that validates the Bot Framework JWT token.
  *
+ * @param appId - The bot's client ID. Falls back to CLIENT_ID env var.
+ *
  * @example
- * honoApp.post('/api/messages', botAuthHono(appId), handler);
+ * honoApp.post('/api/messages', botAuthHono(appId), handler)
  */
 export function botAuthHono (
   appId?: string

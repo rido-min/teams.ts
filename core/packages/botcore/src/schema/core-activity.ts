@@ -11,6 +11,12 @@ export interface ChannelAccount {
   aadObjectId?: string;
   /** Role of the entity (e.g. `"user"`, `"bot"`, `"skill"`). */
   role?: string;
+  /**
+   * When `true`, the activity is a Targeted Message addressed to this
+   * specific recipient. Causes `?isTargetedActivity=true` to be appended
+   * to send, update, and delete requests.
+   */
+  isTargeted?: boolean;
   /** Additional channel-specific properties. */
   properties?: Record<string, unknown>;
 }

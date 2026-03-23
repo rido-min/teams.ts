@@ -26,7 +26,6 @@ const server = express();
 // server.use(express.json());
 
 server.post('/api/messages', botAuthExpress(), (req, res) => {
-  console.log('received message', req.body);
   app.processAsync(req, res);
 });
 

@@ -7,9 +7,7 @@ import {
   type AuthenticationResult,
   type LogLevel as MSALLogLevel,
 } from '@azure/msal-node'
-import createDebug from 'debug'
-
-const debug = createDebug('teams:botcore:msal')
+import { getLogger } from '../logging/logger.js'
 
 const BOT_TOKEN_SCOPE = 'https://api.botframework.com/.default'
 const BOT_TOKEN_TENANT = 'botframework.com'
@@ -17,26 +15,26 @@ const AUTHORITY_BASE = 'https://login.microsoftonline.com'
 
 export type TokenManagerOptions = {
   /** Application (client) ID. Falls back to CLIENT_ID env var. */
-  readonly clientId?: string;
+  readonly clientId?: string
   /** Client secret. Falls back to CLIENT_SECRET env var. */
-  readonly clientSecret?: string;
+  readonly clientSecret?: string
   /** Tenant ID. Falls back to TENANT_ID env var. */
-  readonly tenantId?: string;
+  readonly tenantId?: string
   /**
    * Custom token factory. When provided, called instead of MSAL for every
    * token acquisition.
    */
-  readonly token?: (scope: string, tenantId: string) => Promise<string>;
+  readonly token?: (scope: string, tenantId: string) => Promise<string>
   /**
    * Managed identity client ID for federated identity credentials.
    * Use `"system"` for system-assigned managed identity.
    * Falls back to MANAGED_IDENTITY_CLIENT_ID env var.
    */
-  managedIdentityClientId?: 'system' | (string & Record<never, never>);
+  managedIdentityClientId?: 'system' | (string & Record<never, never>)
 }
 
 type ResolvedOptions = Required<Omit<TokenManagerOptions, 'token'>> & {
-  token?: TokenManagerOptions['token'];
+  token?: TokenManagerOptions['token']
 }
 
 /**
@@ -80,19 +78,19 @@ export class TokenManager {
     const { clientId, clientSecret, token, managedIdentityClientId } = this.opts
 
     if (!clientId) {
-      debug('no clientId configured, skipping token acquisition')
+      getLogger().warn('Running without auth — no clientId configured')
       return null
     }
 
     // Custom token factory
     if (token) {
-      debug('acquiring token via custom factory scope=%s tenantId=%s', scope, tenantId)
+      getLogger().debug('Acquiring token via custom factory scope=%s tenantId=%s', scope, tenantId)
       return token(scope, tenantId)
     }
 
     // Client secret → confidential client credentials
     if (clientSecret) {
-      debug('acquiring token via client credentials clientId=%s scope=%s tenantId=%s', clientId, scope, tenantId)
+      getLogger().debug('Configuring authentication with client secret clientId=%s tenantId=%s', clientId, tenantId)
       return this.getTokenWithClientCredentials(clientId, clientSecret, scope, tenantId)
     }
 
@@ -102,7 +100,8 @@ export class TokenManager {
       managedIdentityClientId.toLowerCase() !== clientId.toLowerCase()
 
     if (hasFederated) {
-      debug('acquiring token via federated identity clientId=%s managedIdentityClientId=%s scope=%s', clientId, managedIdentityClientId, scope)
+      const identityType = managedIdentityClientId === 'system' ? 'System-Assigned' : 'User-Assigned'
+      getLogger().debug('Configuring authentication with Federated Identity Credential (Managed Identity) with %s Managed Identity clientId=%s', identityType, clientId)
       return this.getTokenWithFederatedCredentials(
         clientId,
         managedIdentityClientId!,
@@ -111,7 +110,7 @@ export class TokenManager {
       )
     }
 
-    debug('acquiring token via user managed identity clientId=%s scope=%s', clientId, scope)
+    getLogger().debug('Configuring authentication with User-Assigned Managed Identity clientId=%s', clientId)
     return this.getTokenWithManagedIdentity(clientId, scope)
   }
 
@@ -122,9 +121,9 @@ export class TokenManager {
     tenantId: string
   ): Promise<string | null> {
     const client = this.getConfidentialClient(clientId, clientSecret, tenantId)
-    debug('MSAL acquireTokenByClientCredential scope=%s', scope)
+    getLogger().debug('Acquiring app-only token for scope: %s', scope)
     const result = await client.acquireTokenByClientCredential({ scopes: [scope] })
-    debug('MSAL token acquired expiresOn=%s', result?.expiresOn)
+    getLogger().debug('Token acquired expiresOn=%s', result?.expiresOn)
     return this.unwrap(result)
   }
 
@@ -134,9 +133,9 @@ export class TokenManager {
   ): Promise<string | null> {
     const resource = stripDefault(scope)
     const client = this.getOrCreateManagedIdentityClient({ clientId })
-    debug('MSAL managed identity acquireToken resource=%s', resource)
+    getLogger().debug('Acquiring app-only token for scope: %s', scope)
     const result = await client.acquireToken({ resource })
-    debug('MSAL managed identity token acquired expiresOn=%s', result?.expiresOn)
+    getLogger().debug('Token acquired expiresOn=%s', result?.expiresOn)
     return this.unwrap(result)
   }
 
@@ -152,11 +151,11 @@ export class TokenManager {
         : { userAssignedClientId: managedIdentityClientId }
     )
 
-    debug('MSAL federated: acquiring MI assertion token')
+    getLogger().debug('Acquiring agentic token for AgenticAppId %s', clientId)
     const miToken = await miClient.acquireToken({
       resource: 'api://AzureADTokenExchange',
     })
-    debug('MSAL federated: MI assertion token acquired')
+    getLogger().debug('Agentic token acquired')
 
     const confidentialClient = new ConfidentialClientApplication({
       auth: {
@@ -167,11 +166,11 @@ export class TokenManager {
       system: { loggerOptions: this.msalLoggerOptions() },
     })
 
-    debug('MSAL federated: exchanging assertion for scope=%s', scope)
+    getLogger().debug('Acquiring app-only token for scope: %s', scope)
     const result = await confidentialClient.acquireTokenByClientCredential({
       scopes: [scope],
     })
-    debug('MSAL federated: token acquired expiresOn=%s', result?.expiresOn)
+    getLogger().debug('Token acquired expiresOn=%s', result?.expiresOn)
     return this.unwrap(result)
   }
 

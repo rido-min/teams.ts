@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 import { BotHttpClient, type BotRequestOptions, type TokenProvider } from './bot-http-client.js'
+import { getLogger } from '../logging/logger.js'
 import type {
   ChannelAccount,
   ConversationAccount,
@@ -37,6 +38,7 @@ export class ConversationClient {
 
   /**
    * @param getToken - Optional token provider used to authenticate outgoing requests.
+   * @param logger - Optional logger instance.
    */
   constructor (getToken?: TokenProvider) {
     this.http = new BotHttpClient(getToken)
@@ -55,11 +57,15 @@ export class ConversationClient {
     conversationId: string,
     activity: Partial<CoreActivity>
   ): Promise<ResourceResponse | undefined> {
+    const isTargeted = activity.recipient?.isTargeted
+    const url = `${serviceUrl}/v3/conversations/${encodeConversationId(conversationId)}/activities${isTargeted ? '?isTargetedActivity=true' : ''}`
+    getLogger().trace('Sending activity to %s', url)
     return this.http.post<ResourceResponse>(
       serviceUrl,
       `/v3/conversations/${encodeConversationId(conversationId)}/activities`,
       activity,
-      { operationDescription: 'send activity' }
+      { operationDescription: 'send activity' },
+      isTargeted ? { isTargetedActivity: 'true' } : undefined
     )
   }
 
@@ -78,11 +84,46 @@ export class ConversationClient {
     activityId: string,
     activity: Partial<CoreActivity>
   ): Promise<ResourceResponse | undefined> {
+    const isTargeted = activity.recipient?.isTargeted
+    const endpoint = `/v3/conversations/${encodeConversationId(conversationId)}/activities/${activityId}`
+    const url = `${serviceUrl}${endpoint}${isTargeted ? '?isTargetedActivity=true' : ''}`
+    getLogger().trace('Updating activity at %s', url)
     return this.http.put<ResourceResponse>(
       serviceUrl,
-      `/v3/conversations/${encodeConversationId(conversationId)}/activities/${activityId}`,
+      endpoint,
       activity,
-      { operationDescription: 'update activity' }
+      { operationDescription: 'update activity' },
+      isTargeted ? { isTargetedActivity: 'true' } : undefined
+    )
+  }
+
+  /**
+   * Update a Targeted Message activity.
+   *
+   * Equivalent to {@link updateActivityAsync} with `activity.recipient.isTargeted = true`,
+   * but provided as a convenience method matching the C# `UpdateTargetedActivityAsync` API.
+   * Always appends `?isTargetedActivity=true` to the request URL.
+   *
+   * @param serviceUrl - Bot Framework service URL.
+   * @param conversationId - Conversation ID.
+   * @param activityId - ID of the activity to update.
+   * @param activity - Updated activity payload.
+   * @returns The resource response.
+   */
+  async updateTargetedActivityAsync (
+    serviceUrl: string,
+    conversationId: string,
+    activityId: string,
+    activity: Partial<CoreActivity>
+  ): Promise<ResourceResponse | undefined> {
+    const endpoint = `/v3/conversations/${encodeConversationId(conversationId)}/activities/${activityId}`
+    getLogger().trace('Updating targeted activity at %s%s', serviceUrl, endpoint)
+    return this.http.put<ResourceResponse>(
+      serviceUrl,
+      endpoint,
+      activity,
+      { operationDescription: 'update targeted activity' },
+      { isTargetedActivity: 'true' }
     )
   }
 
@@ -98,11 +139,39 @@ export class ConversationClient {
     conversationId: string,
     activityId: string
   ): Promise<void> {
+    const url = `${serviceUrl}/v3/conversations/${encodeConversationId(conversationId)}/activities/${activityId}`
+    getLogger().trace('Deleting activity at %s', url)
     await this.http.delete(
       serviceUrl,
       `/v3/conversations/${encodeConversationId(conversationId)}/activities/${activityId}`,
       undefined,
       { operationDescription: 'delete activity' }
+    )
+  }
+
+  /**
+   * Delete a Targeted Message activity.
+   *
+   * Equivalent to {@link deleteActivityAsync} but always appends
+   * `?isTargetedActivity=true` to the request URL, matching the C#
+   * `DeleteTargetedActivityAsync` API.
+   *
+   * @param serviceUrl - Bot Framework service URL.
+   * @param conversationId - Conversation ID.
+   * @param activityId - ID of the activity to delete.
+   */
+  async deleteTargetedActivityAsync (
+    serviceUrl: string,
+    conversationId: string,
+    activityId: string
+  ): Promise<void> {
+    const endpoint = `/v3/conversations/${encodeConversationId(conversationId)}/activities/${activityId}`
+    getLogger().trace('Deleting targeted activity at %s%s', serviceUrl, endpoint)
+    await this.http.delete(
+      serviceUrl,
+      endpoint,
+      { isTargetedActivity: 'true' },
+      { operationDescription: 'delete targeted activity' }
     )
   }
 
@@ -117,6 +186,8 @@ export class ConversationClient {
     serviceUrl: string,
     conversationId: string
   ): Promise<ChannelAccount[]> {
+    const url = `${serviceUrl}/v3/conversations/${encodeConversationId(conversationId)}/members`
+    getLogger().trace('Getting conversation members from %s', url)
     const result = await this.http.get<ChannelAccount[]>(
       serviceUrl,
       `/v3/conversations/${encodeConversationId(conversationId)}/members`,
@@ -139,6 +210,7 @@ export class ConversationClient {
     conversationId: string,
     memberId: string
   ): Promise<ChannelAccount | undefined> {
+    getLogger().trace('Getting conversation member from %s conversationId=%s memberId=%s', serviceUrl, conversationId, memberId)
     return this.http.get<ChannelAccount>(
       serviceUrl,
       `/v3/conversations/${encodeConversationId(conversationId)}/members/${memberId}`,
@@ -162,6 +234,7 @@ export class ConversationClient {
     pageSize?: number,
     continuationToken?: string
   ): Promise<PagedMembersResult<ChannelAccount>> {
+    getLogger().trace('Getting paged conversation members from %s conversationId=%s', serviceUrl, conversationId)
     const params: Record<string, string | undefined> = {
       pageSize: pageSize?.toString(),
       continuationToken,
@@ -187,6 +260,8 @@ export class ConversationClient {
     conversationId: string,
     memberId: string
   ): Promise<void> {
+    const url = `${serviceUrl}/v3/conversations/${encodeConversationId(conversationId)}/members/${memberId}`
+    getLogger().trace('Deleting conversation member at %s', url)
     await this.http.delete(
       serviceUrl,
       `/v3/conversations/${encodeConversationId(conversationId)}/members/${memberId}`,
@@ -206,6 +281,7 @@ export class ConversationClient {
     serviceUrl: string,
     parameters: ConversationParameters
   ): Promise<ConversationResourceResponse | undefined> {
+    getLogger().trace('Creating conversation at %s', serviceUrl)
     return this.http.post<ConversationResourceResponse>(
       serviceUrl,
       '/v3/conversations',
@@ -225,6 +301,7 @@ export class ConversationClient {
     serviceUrl: string,
     continuationToken?: string
   ): Promise<ConversationsResult> {
+    getLogger().trace('Getting conversations from %s', serviceUrl)
     const params: Record<string, string | undefined> = { continuationToken }
     const result = await this.http.get<ConversationsResult>(
       serviceUrl,
@@ -250,6 +327,8 @@ export class ConversationClient {
     transcript: Transcript,
     options?: BotRequestOptions
   ): Promise<ResourceResponse | undefined> {
+    const url = `${serviceUrl}/v3/conversations/${encodeConversationId(conversationId)}/activities/history`
+    getLogger().trace('Sending conversation history to %s', url)
     return this.http.post<ResourceResponse>(
       serviceUrl,
       `/v3/conversations/${encodeConversationId(conversationId)}/activities/history`,
@@ -272,6 +351,8 @@ export class ConversationClient {
     activityId: string,
     reactionType: string
   ): Promise<void> {
+    const url = `${serviceUrl}/v3/conversations/${encodeConversationId(conversationId)}/activities/${activityId}/reactions`
+    getLogger().trace('Adding reaction at %s', url)
     await this.http.post(
       serviceUrl,
       `/v3/conversations/${encodeConversationId(conversationId)}/activities/${activityId}/reactions`,
@@ -294,6 +375,8 @@ export class ConversationClient {
     activityId: string,
     reactionType: string
   ): Promise<void> {
+    const url = `${serviceUrl}/v3/conversations/${encodeConversationId(conversationId)}/activities/${activityId}/reactions/${reactionType}`
+    getLogger().trace('Deleting reaction at %s', url)
     await this.http.delete(
       serviceUrl,
       `/v3/conversations/${encodeConversationId(conversationId)}/activities/${activityId}/reactions/${reactionType}`,
@@ -315,6 +398,8 @@ export class ConversationClient {
     conversationId: string,
     attachment: AttachmentData
   ): Promise<ResourceResponse | undefined> {
+    const url = `${serviceUrl}/v3/conversations/${encodeConversationId(conversationId)}/attachments`
+    getLogger().trace('Uploading attachment to %s', url)
     return this.http.post<ResourceResponse>(
       serviceUrl,
       `/v3/conversations/${encodeConversationId(conversationId)}/attachments`,
@@ -334,6 +419,7 @@ export class ConversationClient {
     serviceUrl: string,
     conversationId: string
   ): Promise<ConversationAccount | undefined> {
+    getLogger().trace('Getting conversation account from %s conversationId=%s', serviceUrl, conversationId)
     return this.http.get<ConversationAccount>(
       serviceUrl,
       `/v3/conversations/${encodeConversationId(conversationId)}`,
@@ -346,5 +432,8 @@ export class ConversationClient {
 // The 'agents' channel uses a long ID that must be truncated at the first semicolon
 function encodeConversationId (conversationId: string): string {
   const truncated = conversationId.split(';')[0]
+  if (truncated !== conversationId) {
+    getLogger().info("Truncating conversation ID for 'agents' channel to comply with length restrictions")
+  }
   return encodeURIComponent(truncated)
 }

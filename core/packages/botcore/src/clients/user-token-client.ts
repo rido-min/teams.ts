@@ -3,6 +3,7 @@
 
 import { BotHttpClient, type TokenProvider } from './bot-http-client.js'
 import type { CoreActivity } from '../schema/core-activity.js'
+import { getLogger } from '../logging/logger.js'
 
 const TOKEN_SERVICE_URL = 'https://token.botframework.com'
 
@@ -83,6 +84,7 @@ export class UserTokenClient {
 
   /**
    * @param getToken - Optional token provider for authenticating outgoing requests.
+   * @param logger - Optional logger instance.
    */
   constructor (getToken?: TokenProvider) {
     this.http = new BotHttpClient(getToken)
@@ -101,6 +103,7 @@ export class UserTokenClient {
     channelId: string,
     connectionName?: string
   ): Promise<TokenStatus[]> {
+    getLogger().info('Calling API endpoint: GetTokenStatus')
     const params: Record<string, string | undefined> = {
       userId,
       channelId,
@@ -130,6 +133,7 @@ export class UserTokenClient {
     connectionName: string,
     code?: string
   ): Promise<UserToken | undefined> {
+    getLogger().info('Calling API endpoint: GetToken')
     const params: Record<string, string | undefined> = {
       userId,
       channelId,
@@ -157,6 +161,7 @@ export class UserTokenClient {
     activity: CoreActivity,
     finalRedirect?: string
   ): Promise<SignInResource | undefined> {
+    getLogger().info('Calling API endpoint: GetSignInResource')
     const params: Record<string, string | undefined> = {
       state: buildStateParam(connectionName, activity),
       finalRedirect,
@@ -184,6 +189,7 @@ export class UserTokenClient {
     connectionName: string,
     request: TokenExchangeRequest
   ): Promise<UserToken | undefined> {
+    getLogger().info('Calling API endpoint: ExchangeToken')
     const params: Record<string, string | undefined> = {
       userId,
       channelId,
@@ -207,6 +213,7 @@ export class UserTokenClient {
     channelId: string,
     connectionName?: string
   ): Promise<void> {
+    getLogger().info('Calling API endpoint: SignOut')
     const params: Record<string, string | undefined> = {
       userId,
       channelId,
@@ -235,6 +242,7 @@ export class UserTokenClient {
     connectionName: string,
     resourceUrls: AadResourceUrls
   ): Promise<Record<string, UserToken>> {
+    getLogger().info('Calling API endpoint: GetAadTokens')
     const params: Record<string, string | undefined> = {
       userId,
       channelId,
