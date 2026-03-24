@@ -215,7 +215,8 @@ export class TeamsAdapter implements Adapter<TeamsThreadId, CoreActivity> {
     }
   }
 
-  async startTyping (threadId: string): Promise<void> {
+  // Teams has a single typing indicator state — _status is accepted but ignored.
+  async startTyping (threadId: string, _status?: string): Promise<void> {
     const { serviceUrl, conversationId } = decodeThreadId(threadId)
     await this.app.conversationClient.sendActivityAsync(serviceUrl, conversationId, { type: 'typing' })
   }

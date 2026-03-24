@@ -353,11 +353,9 @@ export class ConversationClient {
   ): Promise<void> {
     const url = `${serviceUrl}/v3/conversations/${encodeConversationId(conversationId)}/activities/${activityId}/reactions`
     getLogger().trace('Adding reaction at %s', url)
-    await this.http.post(
+    await this.http.put(
       serviceUrl,
-      `/v3/conversations/${encodeConversationId(conversationId)}/activities/${activityId}/reactions`,
-      { type: reactionType },
-      { operationDescription: 'add reaction' }
+      `/v3/conversations/${encodeConversationId(conversationId)}/activities/${activityId}/reactions/${reactionType}`
     )
   }
 
