@@ -66,7 +66,7 @@ export class TeamsAdapter implements Adapter<TeamsThreadId, CoreActivity> {
   readonly name = 'teams'
   readonly userName: string
 
-  private chat!: ChatInstance
+  private chat: ChatInstance | undefined
   private readonly app: BotApplication
   private readonly converter: TeamsFormatConverter
 
@@ -99,6 +99,18 @@ export class TeamsAdapter implements Adapter<TeamsThreadId, CoreActivity> {
   }
 
   /**
+   * Returns true for personal (1:1) chats.
+   *
+   * In Teams, all channel and group-chat conversation IDs begin with `"19:"`.
+   * Personal (1:1) DMs use a different format (e.g. `"8:orgid:..."`) and never
+   * start with `"19:"`, so a single prefix check is sufficient.
+   */
+  isDM (threadId: string): boolean {
+    const { conversationId } = decodeThreadId(threadId)
+    return !conversationId.startsWith('19:')
+  }
+
+  /**
    * Handle an incoming Bot Framework webhook request.
    *
    * Validates the Bearer token, dispatches message activities to the Chat
@@ -120,6 +132,14 @@ export class TeamsAdapter implements Adapter<TeamsThreadId, CoreActivity> {
     const activity = JSON.parse(body) as CoreActivity
 
     if (activity.type === 'message') {
+      if (!this.chat) {
+        throw new Error(
+          'TeamsAdapter has not been initialized. ' +
+          'Call await chat.initialize() before handling webhooks, ' +
+          'or pass the adapter to the Chat constructor so it initializes automatically.'
+        )
+      }
+
       const threadId = encodeThreadId({
         serviceUrl: activity.serviceUrl,
         conversationId: activity.conversation.id,
@@ -248,6 +268,18 @@ function activityToMessage (activity: CoreActivity, threadId: string, botId: str
   // Normalise Teams HTML to markdown for consistent mdast parsing
   const markdownText = activity.textFormat === 'html' ? teamsHtmlToMarkdown(rawText) : rawText
 
+  // Detect @-mention via activity entities — more reliable than text matching
+  // because the mention display name in Teams may differ from adapter.userName.
+  // Teams prefixes bot IDs with "28:" in mention entities (e.g. "28:abc-123"),
+  // while clientId is the bare GUID, so we check both exact and suffix match.
+  const isMention = (activity.entities ?? []).some((e) => {
+    if (e.type !== 'mention') return false
+    const mentioned = (e as Record<string, unknown>)['mentioned'] as Record<string, unknown> | undefined
+    const mentionedId = mentioned?.['id'] as string | undefined
+    if (!mentionedId || !botId) return false
+    return mentionedId === botId || mentionedId.endsWith(`:${botId}`)
+  })
+
   const data: MessageData<CoreActivity> = {
     id: activity.id ?? '',
     threadId,
@@ -260,6 +292,7 @@ function activityToMessage (activity: CoreActivity, threadId: string, botId: str
       edited: false,
     },
     attachments: mapAttachments(activity.attachments ?? []),
+    isMention,
   }
 
   return new Message(data)

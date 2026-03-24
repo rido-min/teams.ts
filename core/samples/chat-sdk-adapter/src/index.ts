@@ -115,6 +115,9 @@ honoApp.post('/api/messages', (c) => {
 honoApp.get('/health', (c) => c.json({ status: 'ok' }))
 
 const PORT = Number(process.env['PORT'] ?? 3978)
+// Initialize the Chat instance (and the adapter) before accepting traffic.
+await chat.initialize()
+
 serve({ fetch: honoApp.fetch, port: PORT }, () => {
   console.log(`Bot listening on http://localhost:${PORT}/api/messages`)
 })

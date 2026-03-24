@@ -1,9 +1,13 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import * as jwt from 'jsonwebtoken'
+import { createRequire } from 'node:module'
 import jwksClient from 'jwks-rsa'
 import axios from 'axios'
+
+// jsonwebtoken is a CJS-only package. In Node.js ESM, import * or named imports
+// do not expose module.exports properties. createRequire loads it as CJS directly.
+const jwt = createRequire(import.meta.url)('jsonwebtoken') as typeof import('jsonwebtoken')
 import { getLogger } from '../logging/logger.js'
 
 const BOT_OPENID_METADATA_URL =
