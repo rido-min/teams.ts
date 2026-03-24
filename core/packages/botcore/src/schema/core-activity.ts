@@ -95,6 +95,8 @@ export interface CoreActivity {
   replyToId?: string;
   /** Text content of a message activity. */
   text?: string;
+  /** Format of the text field: `"plain"`, `"html"`, or `"markdown"`. */
+  textFormat?: 'plain' | 'html' | 'markdown';
   /** Name of the event or invoke operation. */
   name?: string;
   /** Locale of the activity (e.g. `"en-US"`). */
