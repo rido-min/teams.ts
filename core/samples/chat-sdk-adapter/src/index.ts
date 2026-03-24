@@ -6,15 +6,15 @@
 // Demonstrates how to use @microsoft/teams.botcore-chat-adapter to connect
 // a Chat SDK bot to Microsoft Teams via Hono.
 //
-// Run: npx tsx index.ts
+// Run: npx tsx src/index.ts
 
 import { serve } from '@hono/node-server'
-import { Chat } from 'chat'
+import { Chat, Card, Actions, Button, LinkButton, Fields, Field, CardText, emoji } from 'chat'
 import { createMemoryState } from '@chat-adapter/state-memory'
 import { Hono } from 'hono'
 import { TeamsAdapter } from '@microsoft/teams.botcore-chat-adapter'
 
-// ── Shared command handler ────────────────────────────────────────────────────
+// ── Shared types ──────────────────────────────────────────────────────────────
 
 import type { Thread, Message } from 'chat'
 
@@ -53,6 +53,23 @@ chat.onSubscribedMessage(async (thread, message) => {
   await handleMessage(thread, message)
 })
 
+// Called when a user reacts to a message (e.g. thumbs up on a bot message).
+chat.onReaction(async (event) => {
+  const action = event.added ? 'added' : 'removed'
+  console.log(`[reaction] ${event.user.fullName} ${action} ${event.emoji} on message ${event.messageId}`)
+})
+
+// Called when a user clicks an Adaptive Card button (Action.Submit).
+chat.onAction('approve', async (event) => {
+  console.log(`[action] approve by ${event.user.fullName}, value=${event.value}`)
+  await event.thread?.post(`${emoji.check} **Approved** by ${event.user.fullName}!`)
+})
+
+chat.onAction('reject', async (event) => {
+  console.log(`[action] reject by ${event.user.fullName}`)
+  await event.thread?.post(`${emoji.x} **Rejected** by ${event.user.fullName}.`)
+})
+
 async function handleMessage (thread: Thread, message: Message): Promise<void> {
   if (message.text.trim() === '') return
 
@@ -62,7 +79,7 @@ async function handleMessage (thread: Thread, message: Message): Promise<void> {
   const lower = message.text.toLowerCase().trim()
 
   if (lower === 'help') {
-    // Reply with a markdown-formatted help card.
+    // Reply with a markdown-formatted help table.
     await thread.post({
       markdown: [
         '**Available commands**',
@@ -72,20 +89,44 @@ async function handleMessage (thread: Thread, message: Message): Promise<void> {
         '| `help` | Show this message |',
         '| `ping` | Get a pong reply |',
         '| `echo <text>` | Echo text back |',
-        '| `react` | React to your message |',
+        '| `card` | Show an Adaptive Card with action buttons |',
+        '| `react` | React to your message with a like |',
       ].join('\n'),
     })
     return
   }
 
   if (lower === 'ping') {
-    await thread.post('Pong!')
+    await thread.post('Pong! 🏓')
     return
   }
 
   if (lower.startsWith('echo ')) {
     const payload = message.text.slice(5)
     await thread.post({ markdown: `**Echo:** ${payload}` })
+    return
+  }
+
+  if (lower === 'card') {
+    // Send an Adaptive Card with buttons — these fire chat.onAction() when clicked.
+    await thread.post(
+      Card({
+        title: 'Approval Request',
+        subtitle: `From ${message.author.fullName}`,
+        children: [
+          CardText('Do you want to approve or reject this request?'),
+          Fields([
+            Field({ label: 'Requested by', value: message.author.fullName }),
+            Field({ label: 'Channel', value: message.threadId }),
+          ]),
+          Actions([
+            Button({ id: 'approve', label: 'Approve', style: 'primary' }),
+            Button({ id: 'reject', label: 'Reject', style: 'danger' }),
+            LinkButton({ label: 'Learn more', url: 'https://learn.microsoft.com/en-us/microsoftteams/platform/' }),
+          ]),
+        ],
+      })
+    )
     return
   }
 

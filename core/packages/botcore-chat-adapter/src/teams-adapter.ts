@@ -15,6 +15,8 @@ import {
   type WebhookOptions,
   Message,
   NotImplementedError,
+  convertEmojiPlaceholders,
+  getEmoji,
   isCardElement,
   parseMarkdown,
   stringifyMarkdown,
@@ -32,6 +34,7 @@ import {
 } from '@microsoft/teams.botcore'
 import { decodeThreadId, encodeThreadId, type TeamsThreadId } from './thread-id.js'
 import { TeamsFormatConverter, teamsHtmlToMarkdown } from './format-converter.js'
+import { cardToAdaptiveCard } from './cards.js'
 
 export interface TeamsAdapterOptions extends BotApplicationOptions {
   /** Display name reported as the bot's user name. Defaults to `"bot"`. */
@@ -113,9 +116,10 @@ export class TeamsAdapter implements Adapter<TeamsThreadId, CoreActivity> {
   /**
    * Handle an incoming Bot Framework webhook request.
    *
-   * Validates the Bearer token, dispatches message activities to the Chat
-   * SDK, and returns a `200 {}` response immediately (fire-and-forget via
-   * `waitUntil`).
+   * Validates the Bearer token, dispatches message/reaction/action activities
+   * to the Chat SDK, and returns a `200 {}` response immediately (fire-and-forget
+   * via `waitUntil`). Invoke activities return `invokeResponse` as required by
+   * the Bot Framework protocol.
    */
   async handleWebhook (request: Request, options?: WebhookOptions): Promise<Response> {
     const authHeader = request.headers.get('authorization') ?? undefined
@@ -131,24 +135,66 @@ export class TeamsAdapter implements Adapter<TeamsThreadId, CoreActivity> {
     const body = await request.text()
     const activity = JSON.parse(body) as CoreActivity
 
-    if (activity.type === 'message') {
-      if (!this.chat) {
-        throw new Error(
-          'TeamsAdapter has not been initialized. ' +
-          'Call await chat.initialize() before handling webhooks, ' +
-          'or pass the adapter to the Chat constructor so it initializes automatically.'
-        )
-      }
+    if (!this.chat) {
+      throw new Error(
+        'TeamsAdapter has not been initialized. ' +
+        'Call await chat.initialize() before handling webhooks, ' +
+        'or pass the adapter to the Chat constructor so it initializes automatically.'
+      )
+    }
 
-      const threadId = encodeThreadId({
-        serviceUrl: activity.serviceUrl,
-        conversationId: activity.conversation.id,
-      })
+    const botId = this.app.options.clientId ?? process.env['CLIENT_ID'] ?? ''
+    const threadId = encodeThreadId({
+      serviceUrl: activity.serviceUrl,
+      conversationId: activity.conversation.id,
+    })
+
+    if (activity.type === 'message') {
       this.chat.processMessage(
         this,
         threadId,
-        () => Promise.resolve(this.parseMessage(activity)),
+        () => Promise.resolve(activityToMessage(activity, threadId, botId)),
         options
+      )
+    } else if (activity.type === 'messageReaction') {
+      const addedReactions = (activity.reactionsAdded ?? []).map((r) => ({ type: r.type, added: true }))
+      const removedReactions = (activity.reactionsRemoved ?? []).map((r) => ({ type: r.type, added: false }))
+      for (const reaction of [...addedReactions, ...removedReactions]) {
+        this.chat.processReaction(
+          {
+            adapter: this,
+            threadId,
+            messageId: activity.replyToId ?? '',
+            added: reaction.added,
+            emoji: toEmojiValue(reaction.type),
+            rawEmoji: reaction.type,
+            user: accountToAuthor(activity.from, botId),
+            raw: activity,
+          },
+          options
+        )
+      }
+    } else if (activity.type === 'invoke' && activity.name === 'adaptiveCard/action') {
+      const invokeValue = activity.value as Record<string, unknown> | undefined
+      const actionPayload = invokeValue?.['action'] as Record<string, unknown> | undefined
+      const actionId = actionPayload?.['id'] as string ?? ''
+      const actionData = actionPayload?.['data'] as Record<string, unknown> | undefined
+      this.chat.processAction(
+        {
+          adapter: this,
+          threadId,
+          messageId: activity.replyToId ?? activity.id ?? '',
+          actionId,
+          value: actionData != null ? JSON.stringify(actionData) : undefined,
+          user: accountToAuthor(activity.from, botId),
+          raw: activity,
+        },
+        options
+      )
+      // Bot Framework requires an invokeResponse for invoke activities
+      return new Response(
+        JSON.stringify({ type: 'invokeResponse', value: { status: 200 } }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } }
       )
     }
 
@@ -169,34 +215,39 @@ export class TeamsAdapter implements Adapter<TeamsThreadId, CoreActivity> {
 
   async postMessage (threadId: string, message: AdapterPostableMessage): Promise<RawMessage<CoreActivity>> {
     const { serviceUrl, conversationId } = decodeThreadId(threadId)
+    const baseConversationId = conversationId.split(';')[0]
     const activity = this.toActivity(message)
-    const response = await this.app.conversationClient.sendActivityAsync(serviceUrl, conversationId, activity)
+    const response = await this.app.conversationClient.sendActivityAsync(serviceUrl, baseConversationId, activity)
     const id = response?.id ?? ''
-    return { id, threadId, raw: { ...activity, id, serviceUrl, channelId: 'msteams', from: { id: '' }, recipient: { id: '' }, conversation: { id: conversationId } } as CoreActivity }
+    return { id, threadId, raw: { ...activity, id, serviceUrl, channelId: 'msteams', from: { id: '' }, recipient: { id: '' }, conversation: { id: baseConversationId } } as CoreActivity }
   }
 
   async editMessage (threadId: string, messageId: string, message: AdapterPostableMessage): Promise<RawMessage<CoreActivity>> {
     const { serviceUrl, conversationId } = decodeThreadId(threadId)
+    const baseConversationId = conversationId.split(';')[0]
     const activity = this.toActivity(message)
-    await this.app.conversationClient.updateActivityAsync(serviceUrl, conversationId, messageId, activity)
-    return { id: messageId, threadId, raw: { ...activity, id: messageId, serviceUrl, channelId: 'msteams', from: { id: '' }, recipient: { id: '' }, conversation: { id: conversationId } } as CoreActivity }
+    await this.app.conversationClient.updateActivityAsync(serviceUrl, baseConversationId, messageId, activity)
+    return { id: messageId, threadId, raw: { ...activity, id: messageId, serviceUrl, channelId: 'msteams', from: { id: '' }, recipient: { id: '' }, conversation: { id: baseConversationId } } as CoreActivity }
   }
 
   async deleteMessage (threadId: string, messageId: string): Promise<void> {
     const { serviceUrl, conversationId } = decodeThreadId(threadId)
-    await this.app.conversationClient.deleteActivityAsync(serviceUrl, conversationId, messageId)
+    const baseConversationId = conversationId.split(';')[0]
+    await this.app.conversationClient.deleteActivityAsync(serviceUrl, baseConversationId, messageId)
   }
 
   async addReaction (threadId: string, messageId: string, emoji: EmojiValue | string): Promise<void> {
     const { serviceUrl, conversationId } = decodeThreadId(threadId)
+    const baseConversationId = conversationId.split(';')[0]
     const reactionType = typeof emoji === 'string' ? emoji : emoji.name
-    await this.app.conversationClient.addReactionAsync(serviceUrl, conversationId, messageId, reactionType)
+    await this.app.conversationClient.addReactionAsync(serviceUrl, baseConversationId, messageId, reactionType)
   }
 
   async removeReaction (threadId: string, messageId: string, emoji: EmojiValue | string): Promise<void> {
     const { serviceUrl, conversationId } = decodeThreadId(threadId)
+    const baseConversationId = conversationId.split(';')[0]
     const reactionType = typeof emoji === 'string' ? emoji : emoji.name
-    await this.app.conversationClient.deleteReactionAsync(serviceUrl, conversationId, messageId, reactionType)
+    await this.app.conversationClient.deleteReactionAsync(serviceUrl, baseConversationId, messageId, reactionType)
   }
 
   async fetchMessages (_threadId: string, _options?: FetchOptions): Promise<FetchResult<CoreActivity>> {
@@ -205,7 +256,8 @@ export class TeamsAdapter implements Adapter<TeamsThreadId, CoreActivity> {
 
   async fetchThread (threadId: string): Promise<ThreadInfo> {
     const { serviceUrl, conversationId } = decodeThreadId(threadId)
-    const conv = await this.app.conversationClient.getConversationAccountAsync(serviceUrl, conversationId)
+    const baseConversationId = conversationId.split(';')[0]
+    const conv = await this.app.conversationClient.getConversationAccountAsync(serviceUrl, baseConversationId)
     return {
       id: threadId,
       channelId: this.channelIdFromThreadId(threadId),
@@ -218,7 +270,8 @@ export class TeamsAdapter implements Adapter<TeamsThreadId, CoreActivity> {
   // Teams has a single typing indicator state — _status is accepted but ignored.
   async startTyping (threadId: string, _status?: string): Promise<void> {
     const { serviceUrl, conversationId } = decodeThreadId(threadId)
-    await this.app.conversationClient.sendActivityAsync(serviceUrl, conversationId, { type: 'typing' })
+    const baseConversationId = conversationId.split(';')[0]
+    await this.app.conversationClient.sendActivityAsync(serviceUrl, baseConversationId, { type: 'typing' })
   }
 
   renderFormatted (content: FormattedContent): string {
@@ -232,24 +285,26 @@ export class TeamsAdapter implements Adapter<TeamsThreadId, CoreActivity> {
     if (isCardElement(message)) {
       return {
         type: 'message',
-        attachments: [{ contentType: 'application/vnd.microsoft.card.adaptive', content: message }],
+        attachments: [{ contentType: 'application/vnd.microsoft.card.adaptive', content: cardToAdaptiveCard(message) }],
       }
     }
     if (typeof message === 'object' && 'card' in message) {
       return {
         type: 'message',
-        attachments: [{ contentType: 'application/vnd.microsoft.card.adaptive', content: message.card }],
+        attachments: [{ contentType: 'application/vnd.microsoft.card.adaptive', content: cardToAdaptiveCard(message.card) }],
       }
     }
 
     // AST → markdown (Teams supports markdown natively)
     if (typeof message === 'object' && 'ast' in message) {
-      return { type: 'message', text: stringifyMarkdown(message.ast), textFormat: 'markdown' }
+      const text = convertEmojiPlaceholders(stringifyMarkdown(message.ast), 'teams')
+      return { type: 'message', text, textFormat: 'markdown' }
     }
 
     // Markdown → markdown
     if (typeof message === 'object' && 'markdown' in message) {
-      return { type: 'message', text: message.markdown, textFormat: 'markdown' }
+      const text = convertEmojiPlaceholders(message.markdown, 'teams')
+      return { type: 'message', text, textFormat: 'markdown' }
     }
 
     // Raw HTML string
@@ -258,7 +313,8 @@ export class TeamsAdapter implements Adapter<TeamsThreadId, CoreActivity> {
     }
 
     // Plain string
-    return { type: 'message', text: message as string, textFormat: 'plain' }
+    const text = convertEmojiPlaceholders(message as string, 'teams')
+    return { type: 'message', text, textFormat: 'plain' }
   }
 }
 
@@ -305,7 +361,8 @@ function accountToAuthor (account: ChannelAccount, botId: string) {
     userName: account.name ?? account.id,
     fullName: account.name ?? account.id,
     isBot: (account.role === 'bot' ? true : 'unknown') as boolean | 'unknown',
-    isMe: account.id === botId,
+    // Teams sends bot IDs as "28:{appId}" in activity from/recipient fields
+    isMe: account.id === botId || account.id.endsWith(`:${botId}`),
   }
 }
 
@@ -314,14 +371,28 @@ type ChatAttachment = {
   url?: string
   name?: string
   mimeType?: string
+  fetchData?: () => Promise<Buffer>
 }
 
 function mapAttachments (botAttachments: BotAttachment[]): ChatAttachment[] {
   const result: ChatAttachment[] = []
   for (const a of botAttachments) {
+    // Skip Teams internal HTML-body attachments that lack a content URL
+    if (a.contentType === 'text/html' && !a.contentUrl) continue
     const type = mimeToAttachmentType(a.contentType)
     if (type && a.contentUrl) {
-      result.push({ type, url: a.contentUrl, name: a.name, mimeType: a.contentType })
+      const url = a.contentUrl
+      result.push({
+        type,
+        url,
+        name: a.name,
+        mimeType: a.contentType,
+        fetchData: async () => {
+          const res = await fetch(url)
+          const buf = await res.arrayBuffer()
+          return Buffer.from(buf)
+        },
+      })
     }
   }
   return result
@@ -334,4 +405,31 @@ function mimeToAttachmentType (contentType: string): 'image' | 'file' | 'video' 
   // Skip Adaptive Cards and Hero cards — they are not file attachments
   if (contentType.startsWith('application/vnd.microsoft.card')) return null
   return 'file'
+}
+
+/**
+ * Convert a Teams reaction type string to a Chat SDK EmojiValue.
+ * Falls back to an ad-hoc EmojiValue if the name is not in the standard map.
+ */
+function toEmojiValue (reactionType: string): EmojiValue {
+  // Map Teams reaction names to Chat SDK normalized emoji names
+  const teamsToEmoji: Record<string, string> = {
+    like: 'thumbs_up',
+    heart: 'heart',
+    laugh: 'laughing',
+    surprised: 'open_mouth',
+    sad: 'cry',
+    angry: 'rage',
+  }
+  const name = teamsToEmoji[reactionType] ?? reactionType
+  try {
+    return getEmoji(name)
+  } catch {
+    // Return a minimal EmojiValue for unknown reaction types
+    return {
+      name,
+      toJSON: () => `{{emoji:${name}}}`,
+      toString: () => `{{emoji:${name}}}`,
+    }
+  }
 }

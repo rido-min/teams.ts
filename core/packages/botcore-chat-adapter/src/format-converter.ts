@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { BaseFormatConverter, parseMarkdown, stringifyMarkdown } from 'chat'
-import type { Root } from 'chat'
+import type { Content, Root } from 'chat'
+import { BaseFormatConverter, isTextNode, parseMarkdown, stringifyMarkdown } from 'chat'
 
 /**
  * Format converter for Microsoft Teams.
@@ -13,6 +13,9 @@ import type { Root } from 'chat'
  *
  * Incoming Teams HTML (mentions, bold, italic, etc.) is normalised to
  * markdown before parsing into an mdast tree.
+ *
+ * Outgoing messages convert `@name` text nodes back to Teams `<at>name</at>`
+ * mention pills so they render as proper mentions in the Teams client.
  */
 export class TeamsFormatConverter extends BaseFormatConverter {
   toAst (platformText: string): Root {
@@ -20,7 +23,18 @@ export class TeamsFormatConverter extends BaseFormatConverter {
   }
 
   fromAst (ast: Root): string {
-    return stringifyMarkdown(ast)
+    return this.fromAstWithNodeConverter(ast, (node) => this.nodeToTeams(node))
+  }
+
+  private nodeToTeams (node: Content): string {
+    // Convert plain-text @-mentions to Teams <at> HTML mention pills
+    if (isTextNode(node) && node.value.startsWith('@')) {
+      const name = node.value.slice(1)
+      if (name.length > 0) {
+        return `<at>${name}</at>`
+      }
+    }
+    return this.defaultNodeToText(node, (n) => this.nodeToTeams(n))
   }
 }
 
@@ -63,3 +77,6 @@ export function teamsHtmlToMarkdown (html: string): string {
     .replace(/&nbsp;/g, ' ')
     .trim()
 }
+
+// Re-export for callers that relied on the old stringifyMarkdown-based fromAst
+export { stringifyMarkdown }

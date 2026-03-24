@@ -15,8 +15,13 @@ Framework REST API provided by `@microsoft/teams.botcore`.
 | Receive follow-up messages | `chat.onSubscribedMessage()` |
 | Send plain text | `thread.post("hello")` |
 | Send markdown | `thread.post({ markdown: "**bold**" })` |
+| Send Adaptive Cards | `thread.post(Card({ title: "...", children: [...] }))` |
+| Card buttons (Action.Submit) | `chat.onAction("approve", handler)` |
+| Card links (Action.OpenUrl) | `LinkButton({ url, label })` in `Actions([...])` |
+| Reaction events | `chat.onReaction(handler)` |
 | Show typing indicator | `thread.startTyping()` |
 | Add a reaction | `adapter.addReaction(threadId, messageId, "like")` |
+| Emoji placeholders | `emoji.thumbs_up` → 👍 in Teams |
 | Webhook auth | JWT validation inside `TeamsAdapter.handleWebhook()` |
 
 ## Prerequisites
@@ -58,8 +63,9 @@ Once the bot is installed in a Teams chat, try these messages:
 | Message | Response |
 |---------|----------|
 | `help` | Markdown table of available commands |
-| `ping` | `Pong!` |
+| `ping` | `Pong! 🏓` |
 | `echo <text>` | Bold echo of `<text>` |
+| `card` | Adaptive Card with Approve / Reject buttons |
 | `react` | Thumbs-up reaction on the user's message |
 | anything else | Plain echo |
 
@@ -70,14 +76,18 @@ Teams ──HTTP──► Hono ──► adapter.handleWebhook()
                               │
                     validateBotToken()  ← Bot Framework JWT
                               │
-                    chat.processMessage()
-                              │
-              ┌───────────────┼────────────────┐
-      onNewMention    onDirectMessage   onSubscribedMessage
-              └───────────────┼────────────────┘
-                        handleMessage()
-                              │
-                         thread.post() ──► ConversationClient ──► Teams
+                         activity.type?
+                      ┌──────┼────────────────────────┐
+                  message  messageReaction          invoke
+                      │        │                      │
+              processMessage  processReaction   processAction
+                      │                               │
+              ┌───────┼────────────────┐         onAction()
+      onNewMention  onDirectMessage  onSubscribedMessage
+              └───────┼────────────────┘
+                 handleMessage()
+                      │
+                 thread.post() ──► ConversationClient ──► Teams
 ```
 
 `TeamsAdapter` wraps `BotApplication` from `@microsoft/teams.botcore`.
@@ -102,3 +112,47 @@ const chat = new Chat({
 
 For managed identity deployments omit `clientSecret` and set
 `managedIdentityClientId` instead.
+
+## Adaptive Cards
+
+Send rich cards with buttons using the Chat SDK's card primitives:
+
+```ts
+import { Card, Text, Actions, Button, LinkButton, Fields, Field } from 'chat'
+
+await thread.post(
+  Card({
+    title: 'Approval Request',
+    children: [
+      Text('Please review and approve or reject.'),
+      Fields([
+        Field({ label: 'Requested by', value: message.author.fullName }),
+      ]),
+      Actions([
+        Button({ id: 'approve', label: 'Approve', style: 'primary' }),
+        Button({ id: 'reject',  label: 'Reject',  style: 'danger'  }),
+        LinkButton({ label: 'Docs', url: 'https://example.com' }),
+      ]),
+    ],
+  })
+)
+```
+
+Handle button clicks with `chat.onAction()`:
+
+```ts
+chat.onAction('approve', async (event) => {
+  await event.thread?.post(`Approved by ${event.user.fullName}!`)
+})
+```
+
+## Reaction events
+
+```ts
+chat.onReaction(async (event) => {
+  console.log(`${event.user.userName} ${event.added ? 'added' : 'removed'} ${event.emoji}`)
+})
+```
+
+Teams reaction types (`like`, `heart`, `laugh`, `surprised`, `sad`, `angry`)
+are automatically mapped to Chat SDK emoji values.
