@@ -15,8 +15,7 @@ export default tseslint.config(
     ignores: [
       '**/dist/**',
       '**/coverage/**',
-      '**/node_modules/**',
-      '**/coverage/**'
+      '**/node_modules/**'
     ]
   },
   {
@@ -31,8 +30,7 @@ export default tseslint.config(
     ignores: [
       '**/dist/**',
       '**/coverage/**',
-      '**/node_modules/**',
-      '**/coverage/**'
+      '**/node_modules/**'
     ],
     files: ['src/**/*.ts'],
       languageOptions: {
