@@ -4,7 +4,7 @@ import { RouteContext } from '../../context';
 
 import * as activities from './activities';
 
-export function router(ctx: RouteContext) {
+export function router (ctx: RouteContext) {
   return express.Router({ mergeParams: true }).use(
     '/:conversationId/activities',
     activities.router({

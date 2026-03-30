@@ -7,16 +7,18 @@ import { ApiClientSettings, mergeApiClientSettings } from './api-client-settings
 export class MeetingClient {
   readonly serviceUrl: string;
 
-  get http() {
+  get http () {
     return this._http;
   }
-  set http(v) {
+
+  set http (v) {
     this._http = v;
   }
+
   protected _http: Client;
   protected _apiClientSettings: Partial<ApiClientSettings>;
 
-  constructor(serviceUrl: string, options?: Client | ClientOptions, apiClientSettings?: Partial<ApiClientSettings>) {
+  constructor (serviceUrl: string, options?: Client | ClientOptions, apiClientSettings?: Partial<ApiClientSettings>) {
     this.serviceUrl = serviceUrl;
 
     if (!options) {
@@ -34,7 +36,7 @@ export class MeetingClient {
    * Retrieves meeting information including details, organizer, and conversation.
    * @param id - The meeting ID.
    */
-  async getById(id: string) {
+  async getById (id: string) {
     const res = await this.http.get<MeetingInfo>(`${this.serviceUrl}/v1/meetings/${encodeURIComponent(id)}`);
     return res.data;
   }
@@ -46,7 +48,7 @@ export class MeetingClient {
    * @param tenantId - The tenant ID of the meeting and user.
    * @returns {MeetingParticipant} The meeting participant information.
    */
-  async getParticipant(meetingId: string, id: string, tenantId: string) {
+  async getParticipant (meetingId: string, id: string, tenantId: string) {
     const res = await this.http.get<MeetingParticipant>(
       `${this.serviceUrl}/v1/meetings/${encodeURIComponent(meetingId)}/participants/${encodeURIComponent(id)}?tenantId=${encodeURIComponent(tenantId)}`
     );

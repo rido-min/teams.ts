@@ -1,9 +1,12 @@
 {
-  "extends": "@microsoft/teams.config/tsconfig.esm.json",
+  "extends": "@microsoft/teams.config/tsconfig.base.json",
   "compilerOptions": {
     "outDir": "dist",
-    "rootDir": "src",
-    "baseUrl": "."
+    "rootDir": "src"
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/**/*.spec.ts"],
+  "references": [
+    { "path": "../common" }
+  ]
 }

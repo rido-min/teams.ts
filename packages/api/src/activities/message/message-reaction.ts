@@ -15,8 +15,7 @@ export interface IMessageReactionActivity extends IActivity<'messageReaction'> {
 
 export class MessageReactionActivity
   extends Activity<'messageReaction'>
-  implements IMessageReactionActivity
-{
+  implements IMessageReactionActivity {
   /**
    * The collection of reactions added to the conversation.
    */
@@ -27,7 +26,7 @@ export class MessageReactionActivity
    */
   reactionsRemoved?: MessageReaction[];
 
-  constructor(value: Omit<Partial<IMessageReactionActivity>, 'type'> = {}) {
+  constructor (value: Omit<Partial<IMessageReactionActivity>, 'type'> = {}) {
     super({
       ...value,
       type: 'messageReaction',
@@ -39,21 +38,21 @@ export class MessageReactionActivity
   /**
    * initialize from interface
    */
-  static from(activity: IMessageReactionActivity) {
+  static from (activity: IMessageReactionActivity) {
     return new MessageReactionActivity(activity);
   }
 
   /**
    * convert to interface
    */
-  toInterface(): IMessageReactionActivity {
+  toInterface (): IMessageReactionActivity {
     return Object.assign({}, this);
   }
 
   /**
    * copy to a new instance
    */
-  clone(options: Omit<Partial<IMessageReactionActivity>, 'type'> = {}) {
+  clone (options: Omit<Partial<IMessageReactionActivity>, 'type'> = {}) {
     return new MessageReactionActivity({
       ...this.toInterface(),
       ...options,
@@ -64,7 +63,7 @@ export class MessageReactionActivity
    * Add a message reaction.
    * @deprecated Use the api.reactions.add instead.
    */
-  addReaction(reaction: MessageReaction) {
+  addReaction (reaction: MessageReaction) {
     if (!this.reactionsAdded) {
       this.reactionsAdded = [];
     }
@@ -77,7 +76,7 @@ export class MessageReactionActivity
    * Remove a message reaction.
    * @deprecated Use the api.reactions.remove instead.
    */
-  removeReaction(reaction: MessageReaction) {
+  removeReaction (reaction: MessageReaction) {
     if (!this.reactionsRemoved) {
       this.reactionsRemoved = [];
     }

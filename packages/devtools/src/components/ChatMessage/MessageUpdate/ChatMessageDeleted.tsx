@@ -36,7 +36,7 @@ const ChatMessageDeleted: FC<ChatMessageDeletedProps> = memo(
           <div className={classes.messageContent}>
             <div className={mergeClasses(classes.messageText, classes.messageDeleted)}>
               This message has been deleted.
-              <Link as="button" className={classes.messageDeletedLink} onClick={undoDelete} inline>
+              <Link as='button' className={classes.messageDeletedLink} onClick={undoDelete} inline>
                 Undo
               </Link>
             </div>

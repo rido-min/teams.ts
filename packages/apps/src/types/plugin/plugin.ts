@@ -30,7 +30,7 @@ export type OnActivityPluginEvent = (event: IActivityEvent) => void;
 export interface IPlugin<TActivityContext extends {} = {}, TEvents extends {} = {}> {
   /**
    * The event types that this plugin can emit. This is just a type, but we need it
-   * for the type system to pick it up. You don't actually need to assign this to 
+   * for the type system to pick it up. You don't actually need to assign this to
    * anything.
    * Simply having `__eventType!: MyEvents` works.
    */

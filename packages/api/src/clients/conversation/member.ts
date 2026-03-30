@@ -6,16 +6,18 @@ import { ApiClientSettings, mergeApiClientSettings } from '../api-client-setting
 export class ConversationMemberClient {
   readonly serviceUrl: string;
 
-  get http() {
+  get http () {
     return this._http;
   }
-  set http(v) {
+
+  set http (v) {
     this._http = v;
   }
+
   protected _http: Client;
   protected _apiClientSettings: Partial<ApiClientSettings>;
 
-  constructor(serviceUrl: string, options?: Client | ClientOptions, apiClientSettings?: Partial<ApiClientSettings>) {
+  constructor (serviceUrl: string, options?: Client | ClientOptions, apiClientSettings?: Partial<ApiClientSettings>) {
     this.serviceUrl = serviceUrl;
 
     if (!options) {
@@ -28,21 +30,21 @@ export class ConversationMemberClient {
     this._apiClientSettings = mergeApiClientSettings(apiClientSettings);
   }
 
-  async get(conversationId: string) {
+  async get (conversationId: string) {
     const res = await this.http.get<TeamsChannelAccount[]>(
       `${this.serviceUrl}/v3/conversations/${conversationId}/members`
     );
     return res.data;
   }
 
-  async getById(conversationId: string, id: string) {
+  async getById (conversationId: string, id: string) {
     const res = await this.http.get<TeamsChannelAccount>(
       `${this.serviceUrl}/v3/conversations/${conversationId}/members/${id}`
     );
     return res.data;
   }
 
-  async delete(conversationId: string, id: string) {
+  async delete (conversationId: string, id: string) {
     const res = await this.http.delete<void>(
       `${this.serviceUrl}/v3/conversations/${conversationId}/members/${id}`
     );

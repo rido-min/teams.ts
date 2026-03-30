@@ -11,19 +11,19 @@ import { IPlugin } from './types';
  * Provides no-op implementations for all methods
  */
 export class TestAdapter implements IHttpServerAdapter {
-  registerRoute(_method: HttpMethod, _path: string, _handler: HttpRouteHandler): void {
+  registerRoute (_method: HttpMethod, _path: string, _handler: HttpRouteHandler): void {
     // No-op for tests
   }
 
-  serveStatic(_path: string, _directory: string): void {
+  serveStatic (_path: string, _directory: string): void {
     // No-op for tests
   }
 
-  async start(_port: number): Promise<void> {
+  async start (_port: number): Promise<void> {
     // No-op for tests
   }
 
-  async stop(): Promise<void> {
+  async stop (): Promise<void> {
     // No-op for tests
   }
 }
@@ -41,7 +41,7 @@ export class TestAdapter implements IHttpServerAdapter {
  *   clientSecret: 'test-client-secret'
  * });
  */
-export function createTestApp<TPlugin extends IPlugin = IPlugin>(
+export function createTestApp<TPlugin extends IPlugin = IPlugin> (
   options?: AppOptions<TPlugin>
 ): App<TPlugin> {
   return new App({

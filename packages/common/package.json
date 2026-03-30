@@ -3,7 +3,6 @@
   "version": "0.0.0",
   "license": "MIT",
   "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "homepage": "https://github.com/microsoft/teams.ts",
   "bugs": "https://github.com/microsoft/teams.ts/issues",
@@ -12,7 +11,7 @@
     "README.md"
   ],
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "repository": {
     "type": "git",
@@ -29,52 +28,35 @@
   ],
   "exports": {
     ".": {
-      "types": {
-        "require": "./dist/index.d.ts",
-        "import": "./dist/index.d.mts"
-      },
+      "types": "./dist/index.d.ts",
       "require": "./dist/index.js",
-      "import": "./dist/index.mjs"
+      "import": "./dist/index.js"
     },
     "./events": {
-      "types": {
-        "require": "./dist/events/index.d.ts",
-        "import": "./dist/events/index.d.mts"
-      },
+      "types": "./dist/events/index.d.ts",
       "require": "./dist/events/index.js",
-      "import": "./dist/events/index.mjs"
+      "import": "./dist/events/index.js"
     },
     "./http": {
-      "types": {
-        "require": "./dist/http/index.d.ts",
-        "import": "./dist/http/index.d.mts"
-      },
+      "types": "./dist/http/index.d.ts",
       "require": "./dist/http/index.js",
-      "import": "./dist/http/index.mjs"
+      "import": "./dist/http/index.js"
     },
     "./logging": {
-      "types": {
-        "require": "./dist/logging/index.d.ts",
-        "import": "./dist/logging/index.d.mts"
-      },
+      "types": "./dist/logging/index.d.ts",
       "require": "./dist/logging/index.js",
-      "import": "./dist/logging/index.mjs"
+      "import": "./dist/logging/index.js"
     },
     "./storage": {
-      "types": {
-        "require": "./dist/storage/index.d.ts",
-        "import": "./dist/storage/index.d.mts"
-      },
+      "types": "./dist/storage/index.d.ts",
       "require": "./dist/storage/index.js",
-      "import": "./dist/storage/index.mjs"
+      "import": "./dist/storage/index.js"
     }
   },
   "scripts": {
-    "clean": "npx rimraf ./dist",
-    "lint": "npx eslint",
-    "lint:fix": "npx eslint --fix",
-    "build": "npx tsup",
-    "test": "npx jest"
+    "clean": "rm -rf dist",
+    "build": "tsc --build",
+    "test": "npx jest --config jest.config.cjs"
   },
   "dependencies": {
     "axios": "^1.12.0"
@@ -83,9 +65,8 @@
     "@microsoft/teams.config": "*",
     "@types/jest": "^29.5.12",
     "jest": "^29.7.0",
-    "rimraf": "^6.0.1",
     "ts-jest": "^29.2.5",
-    "tsup": "^8.4.0",
-    "typescript": "^5.4.5"
-  }
+    "typescript": "^5.8.0"
+  },
+  "type": "module"
 }

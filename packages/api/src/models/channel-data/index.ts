@@ -93,7 +93,7 @@ export type ChannelData = {
    * List of teams that a channel was shared with.
    */
   sharedWithTeams?: TeamInfo[]
-  
+
   /**
    * List of teams that a channel was unshared from.
    */

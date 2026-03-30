@@ -6,7 +6,7 @@ import { ConsoleLogger } from '@microsoft/teams.common/logging';
 import { DevtoolsPlugin } from '@microsoft/teams.dev';
 
 export class ActivityHandler extends TeamsActivityHandler {
-  constructor() {
+  constructor () {
     super();
     this.onMessage(async (ctx, next) => {
       await ctx.sendActivity('hi from botbuilder...');

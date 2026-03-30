@@ -28,7 +28,7 @@ describe('App', () => {
   describe('process', () => {
     it('should return status 200 if no route matches', async () => {
       const event: IActivityEvent = {
-        token: token,
+        token,
         body: activity,
       };
 
@@ -39,7 +39,7 @@ describe('App', () => {
 
     it('should return an invoke response', async () => {
       const event: IActivityEvent = {
-        token: token,
+        token,
         body: activity,
       };
 
@@ -65,7 +65,7 @@ describe('App', () => {
       } as ITaskFetchInvokeActivity;
 
       const event: IActivityEvent = {
-        token: token,
+        token,
         body: taskFetchInvokeActivity,
       };
 
@@ -88,7 +88,7 @@ describe('App', () => {
 
     it('should return 500 status response if an error is thrown', async () => {
       const event: IActivityEvent = {
-        token: token,
+        token,
         body: activity,
       };
 
@@ -116,7 +116,7 @@ describe('App', () => {
       } as unknown as ISignInFailureInvokeActivity;
 
       const event: IActivityEvent = {
-        token: token,
+        token,
         body: signinFailureActivity,
       };
 

@@ -7,20 +7,20 @@ import { TestAdapter } from './test-utils';
 
 class TestApp extends App {
   // Expose protected members for testing
-  public async testGetBotToken() {
+  public async testGetBotToken () {
     return this.getBotToken();
   }
 
-  public async testGetAppGraphToken(tenantId?: string) {
+  public async testGetAppGraphToken (tenantId?: string) {
     return this.getAppGraphToken(tenantId);
   }
 
-  public async testSend(conversationId: string, activity: any) {
+  public async testSend (conversationId: string, activity: any) {
     return this.send(conversationId, activity);
   }
 
   // Expose activitySender for mocking (it's protected, so we expose it publicly)
-  public get testActivitySender() {
+  public get testActivitySender () {
     return this.activitySender;
   }
 }

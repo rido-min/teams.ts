@@ -12,12 +12,12 @@ export class FileCopy implements IProjectAttributeOperation {
   private _from: string;
   private _to: string;
 
-  constructor(from: string, to: string) {
+  constructor (from: string, to: string) {
     this._from = from;
     this._to = to;
   }
 
-  up(_: IProject) {
+  up (_: IProject) {
     const relativeTo = path.relative(process.cwd(), this._to);
 
     if (!fs.existsSync(this._from)) {
@@ -31,7 +31,7 @@ export class FileCopy implements IProjectAttributeOperation {
     process.stdout.write('✔️\n');
   }
 
-  down(_: IProject) {
+  down (_: IProject) {
     const relativeTo = path.relative(process.cwd(), this._to);
 
     if (!fs.existsSync(this._to)) {

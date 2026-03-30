@@ -17,7 +17,7 @@ interface IFormData {
   text: string;
 }
 
-export function createCard(data: IFormData) {
+export function createCard (data: IFormData) {
   return new AdaptiveCard(
     new Image(IMAGE_URL),
     new TextBlock(data.title, {
@@ -38,7 +38,7 @@ export function createCard(data: IFormData) {
   );
 }
 
-export function createMessageDetailsCard(messagePayload: Message) {
+export function createMessageDetailsCard (messagePayload: Message) {
   const cardElements: CardElement[] = [
     new TextBlock('Message Details', {
       size: 'Large',
@@ -108,7 +108,7 @@ export function createMessageDetailsCard(messagePayload: Message) {
   return new AdaptiveCard(...cardElements);
 }
 
-export function createConversationMembersCard(members: (Account | TeamsChannelAccount)[]) {
+export function createConversationMembersCard (members: (Account | TeamsChannelAccount)[]) {
   const membersList = members.map((member) => member.name).join(', ');
 
   return new AdaptiveCard(
@@ -125,7 +125,7 @@ export function createConversationMembersCard(members: (Account | TeamsChannelAc
   );
 }
 
-export async function createDummyCards(searchQuery: string) {
+export async function createDummyCards (searchQuery: string) {
   const dummyItems = [
     {
       title: 'Item 1',
@@ -171,7 +171,7 @@ export async function createDummyCards(searchQuery: string) {
   return cards;
 }
 
-export function createLinkUnfurlCard(url: string) {
+export function createLinkUnfurlCard (url: string) {
   const thumbnail = {
     title: 'Unfurled Link',
     text: url,

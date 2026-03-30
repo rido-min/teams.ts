@@ -1,7 +1,7 @@
 import { Client } from './client';
 
 class HttpClient extends Client {
-  get instance() {
+  get instance () {
     return this.http;
   }
 }
@@ -101,9 +101,9 @@ describe('Client', () => {
 
     describe('token', () => {
       class Token {
-        constructor(private readonly value: string) {}
+        constructor (private readonly value: string) {}
 
-        toString() {
+        toString () {
           return this.value;
         }
       }

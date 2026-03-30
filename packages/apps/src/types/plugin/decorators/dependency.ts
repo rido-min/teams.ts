@@ -25,7 +25,7 @@ export type DependencyMetadata = {
  * add plugin dependencies via
  * `@Dependency()`
  */
-export function Dependency(options: DependencyOptions = {}) {
+export function Dependency (options: DependencyOptions = {}) {
   const name = options.name;
   const optional = options.optional || false;
 
@@ -58,21 +58,21 @@ export function Dependency(options: DependencyOptions = {}) {
 /**
  * inject the `App` `ILogger` instance
  */
-export function Logger() {
+export function Logger () {
   return Dependency({ name: 'ILogger' });
 }
 
 /**
  * inject the `App` `IStorage` instance
  */
-export function Storage() {
+export function Storage () {
   return Dependency({ name: 'IStorage' });
 }
 
 /**
  * inject the `App` `IHttpServer` instance
  */
-export function HttpServer() {
+export function HttpServer () {
   return Dependency({ name: 'IHttpServer' });
 }
 

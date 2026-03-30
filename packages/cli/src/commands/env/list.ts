@@ -6,7 +6,7 @@ type Args = {
   name?: string;
 };
 
-export function List({ envs }: IContext): CommandModule<{}, Args> {
+export function List ({ envs }: IContext): CommandModule<{}, Args> {
   return {
     command: 'list [name]',
     aliases: 'ls',

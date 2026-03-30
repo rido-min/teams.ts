@@ -83,14 +83,6 @@ export interface IActivity<T extends string = string> {
   replyToId?: string;
 
   /**
-   * Indicates if this is a targeted (ephemeral) message visible only to a specific recipient.
-   *
-   * @experimental This API is in preview and may change in the future.
-   * Diagnostic: ExperimentalTeamsTargeted
-   */
-  isTargeted: boolean;
-
-  /**
    * Represents the entities that were mentioned in the message.
    */
   entities?: Entity[];
@@ -194,15 +186,6 @@ export class Activity<T extends string = string> implements IActivity<T> {
   replyToId?: string;
 
   /**
-   * Indicates whether this is a targeted (ephemeral) message visible only to a specific
-   * recipient in a shared conversation. Other participants will not see this message.
-   *
-   * @experimental This API is in preview and may change in the future.
-   * Diagnostic: ExperimentalTeamsTargeted
-   */
-  isTargeted: boolean = false;
-
-  /**
    * Represents the entities that were mentioned in the message.
    */
   entities?: Entity[];
@@ -215,86 +198,86 @@ export class Activity<T extends string = string> implements IActivity<T> {
   /**
    * Information about the tenant in which the message was sent.
    */
-  get tenant() {
+  get tenant () {
     return this.channelData?.tenant;
   }
 
   /**
    * Information about the channel in which the message was sent.
    */
-  get channel() {
+  get channel () {
     return this.channelData?.channel;
   }
 
   /**
    * Information about the team in which the message was sent.
    */
-  get team() {
+  get team () {
     return this.channelData?.team;
   }
 
   /**
    * Information about the tenant in which the message was sent.
    */
-  get meeting() {
+  get meeting () {
     return this.channelData?.meeting;
   }
 
   /**
    * Notification settings for the message.
    */
-  get notification() {
+  get notification () {
     return this.channelData?.notification;
   }
 
-  constructor(value: Pick<IActivity<T>, 'type'> & Partial<Omit<IActivity<T>, 'type'>>) {
+  constructor (value: Pick<IActivity<T>, 'type'> & Partial<Omit<IActivity<T>, 'type'>>) {
     Object.assign(this, {
       channelId: 'msteams',
       ...value,
     });
   }
 
-  static from(activity: IActivity) {
+  static from (activity: IActivity) {
     return new Activity(activity);
   }
 
-  toInterface(): IActivity {
+  toInterface (): IActivity {
     return Object.assign({}, this);
   }
 
-  clone(options: Omit<Partial<IActivity>, 'type'> = {}) {
+  clone (options: Omit<Partial<IActivity>, 'type'> = {}) {
     return new Activity({
       ...this.toInterface(),
       ...options,
     });
   }
 
-  withId(value: string) {
+  withId (value: string) {
     this.id = value;
     return this;
   }
 
-  withReplyToId(value: string) {
+  withReplyToId (value: string) {
     this.replyToId = value;
     return this;
   }
 
-  withChannelId(value: ChannelID) {
+  withChannelId (value: ChannelID) {
     this.channelId = value;
     return this;
   }
 
-  withFrom(value: Account) {
+  withFrom (value: Account) {
     this.from = value;
     return this;
   }
 
-  withConversation(value: ConversationAccount) {
+  withConversation (value: ConversationAccount) {
     this.conversation = value;
     return this;
   }
 
-  withRelatesTo(value: ConversationReference) {
+  withRelatesTo (value: ConversationReference) {
     this.relatesTo = value;
     return this;
   }
@@ -309,33 +292,32 @@ export class Activity<T extends string = string> implements IActivity<T> {
    * @experimental This API is in preview and may change in the future.
    * Diagnostic: ExperimentalTeamsTargeted
    */
-  withRecipient(value: Account, isTargeted: boolean = false) {
-    this.recipient = value;
-    this.isTargeted = isTargeted;
+  withRecipient (value: Account, isTargeted: boolean = false) {
+    this.recipient = { ...value, isTargeted: isTargeted ? true : undefined };
     return this;
   }
 
-  withServiceUrl(value: string) {
+  withServiceUrl (value: string) {
     this.serviceUrl = value;
     return this;
   }
 
-  withTimestamp(value: Date) {
+  withTimestamp (value: Date) {
     this.timestamp = value;
     return this;
   }
 
-  withLocale(value: string) {
+  withLocale (value: string) {
     this.locale = value;
     return this;
   }
 
-  withLocalTimestamp(value: Date) {
+  withLocalTimestamp (value: Date) {
     this.localTimestamp = value;
     return this;
   }
 
-  withChannelData(value: ChannelData) {
+  withChannelData (value: ChannelData) {
     this.channelData = { ...this.channelData, ...value };
     return this;
   }
@@ -343,7 +325,7 @@ export class Activity<T extends string = string> implements IActivity<T> {
   /**
    * Add an entity.
    */
-  addEntity(value: Entity) {
+  addEntity (value: Entity) {
     if (!this.entities) {
       this.entities = [];
     }
@@ -355,7 +337,7 @@ export class Activity<T extends string = string> implements IActivity<T> {
   /**
    * Add multiple entities
    */
-  addEntities(...value: Entity[]) {
+  addEntities (...value: Entity[]) {
     if (!this.entities) {
       this.entities = [];
     }
@@ -367,7 +349,7 @@ export class Activity<T extends string = string> implements IActivity<T> {
   /**
    * Add the `Generated By AI` label.
    */
-  addAiGenerated() {
+  addAiGenerated () {
     const messageEntity: AIMessageEntity = this.ensureSingleRootLevelMessageEntity();
     if (messageEntity.additionalType?.includes('AIGeneratedContent')) {
       return this;
@@ -384,7 +366,7 @@ export class Activity<T extends string = string> implements IActivity<T> {
   /**
    * Enable message feedback
    */
-  addFeedback() {
+  addFeedback () {
     if (!this.channelData) {
       this.channelData = {};
     }
@@ -396,7 +378,7 @@ export class Activity<T extends string = string> implements IActivity<T> {
   /**
    * Add citations
    */
-  addCitation(position: number, appearance: CitationAppearance) {
+  addCitation (position: number, appearance: CitationAppearance) {
     const messageEntity: CitationEntity = this.ensureSingleRootLevelMessageEntity();
     if (!messageEntity.citation) {
       messageEntity.citation = [];
@@ -429,7 +411,7 @@ export class Activity<T extends string = string> implements IActivity<T> {
   /**
    * is this a streaming activity
    */
-  isStreaming() {
+  isStreaming () {
     return this.entities?.some((e) => e.type === 'streaminfo') || false;
   }
 
@@ -437,7 +419,7 @@ export class Activity<T extends string = string> implements IActivity<T> {
    * Get or create the base message entity.
    * There should only be one root level message entity.
    */
-  private ensureSingleRootLevelMessageEntity(): MessageEntity {
+  private ensureSingleRootLevelMessageEntity (): MessageEntity {
     let mesageEntity = this.entities?.find(
       (e) => e.type === 'https://schema.org/Message' && e['@type'] === 'Message'
     ) as MessageEntity | undefined;

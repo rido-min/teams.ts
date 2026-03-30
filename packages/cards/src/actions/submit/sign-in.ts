@@ -17,22 +17,22 @@ export class SignInAction extends SubmitAction implements ISignInAction {
    */
   data: MSTeamsData<ISignInData>;
 
-  constructor(value: string, options: SubmitActionOptions = {}) {
+  constructor (value: string, options: SubmitActionOptions = {}) {
     super(options);
     Object.assign(this, options);
     this.data = { msteams: new SignInData(value) };
   }
 
-  static from(options: SignInActionOptions) {
+  static from (options: SignInActionOptions) {
     return new SignInAction(options.data.msteams.value, options);
   }
 
-  withData(value: ISignInData) {
+  withData (value: ISignInData) {
     super.withData({ msteams: value });
     return this;
   }
 
-  withValue(value: string) {
+  withValue (value: string) {
     this.data.msteams.value = value;
     return this;
   }
@@ -55,7 +55,7 @@ export class SignInData implements ISignInData {
    */
   value: string;
 
-  constructor(value: string) {
+  constructor (value: string) {
     this.type = 'signin';
     this.value = value;
   }

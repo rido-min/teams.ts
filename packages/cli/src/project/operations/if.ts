@@ -8,21 +8,21 @@ export class If implements IProjectAttributeOperation {
   private _then?: IProjectAttributeOperation;
   private _else?: IProjectAttributeOperation;
 
-  constructor(...conditions: Array<() => boolean | Promise<boolean>>) {
+  constructor (...conditions: Array<() => boolean | Promise<boolean>>) {
     this._conditions = conditions;
   }
 
-  then(operation: IProjectAttributeOperation) {
+  then (operation: IProjectAttributeOperation) {
     this._then = operation;
     return this;
   }
 
-  else(operation: IProjectAttributeOperation) {
+  else (operation: IProjectAttributeOperation) {
     this._else = operation;
     return this;
   }
 
-  async up(project: IProject) {
+  async up (project: IProject) {
     const res = await Promise.all(this._conditions.map((condition) => condition()));
 
     if (res.includes(false)) {
@@ -33,7 +33,7 @@ export class If implements IProjectAttributeOperation {
     await this._then?.up(project);
   }
 
-  async down(project: IProject) {
+  async down (project: IProject) {
     const res = await Promise.all(this._conditions.map((condition) => condition()));
 
     if (res.includes(false)) {

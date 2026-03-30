@@ -2,7 +2,7 @@ import * as api from '@microsoft/teams.api';
 
 import { IActivityContext } from '../contexts';
 
-export function stripMentionsText(options?: api.StripMentionsTextOptions) {
+export function stripMentionsText (options?: api.StripMentionsTextOptions) {
   return ({ activity, next }: IActivityContext<api.Activity, any>) => {
     if (
       activity.type === 'message' ||

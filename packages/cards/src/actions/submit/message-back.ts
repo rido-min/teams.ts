@@ -19,7 +19,7 @@ export class MessageBackAction extends SubmitAction implements IMessageBackActio
    */
   data: MSTeamsData<IMessageBackData>;
 
-  constructor(data: IMessageBackData, options: SubmitActionOptions = {}) {
+  constructor (data: IMessageBackData, options: SubmitActionOptions = {}) {
     super(options);
     Object.assign(this, options);
     this.data = {
@@ -27,11 +27,11 @@ export class MessageBackAction extends SubmitAction implements IMessageBackActio
     };
   }
 
-  static from(options: MessageBackActionOptions) {
+  static from (options: MessageBackActionOptions) {
     return new MessageBackAction(options.data.msteams, options);
   }
 
-  withData(value: IMessageBackData) {
+  withData (value: IMessageBackData) {
     super.withData({ msteams: value });
     return this;
   }
@@ -78,14 +78,14 @@ export class MessageBackData implements IMessageBackData {
    */
   value: string;
 
-  constructor(text: string, value: string, displayText?: string) {
+  constructor (text: string, value: string, displayText?: string) {
     this.type = 'messageBack';
     this.text = text;
     this.value = value;
     this.displayText = displayText;
   }
 
-  withDisplayText(value: string) {
+  withDisplayText (value: string) {
     this.displayText = value;
     return this;
   }

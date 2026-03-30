@@ -4,7 +4,7 @@ import { AnimationCard, AudioCard, HeroCard, ThumbnailCard, VideoCard } from '..
 import { OAuthCard } from '../oauth';
 import { SigninCard } from '../sign-in';
 
-export function cardAttachment<T extends CardAttachmentType>(
+export function cardAttachment<T extends CardAttachmentType> (
   type: T,
   content: CardAttachmentTypes[T]['content']
 ): CardAttachmentTypes[T] {

@@ -8,7 +8,7 @@ import './App.css';
 
 const clientId = import.meta.env.VITE_CLIENT_ID;
 
-export default function App() {
+export default function App () {
   const [content, setContent] = React.useState('');
   const [app, setApp] = React.useState<client.App | null>(null);
 
@@ -36,7 +36,6 @@ export default function App() {
     setContent(JSON.stringify(context, null, 2));
   }, [app]);
 
-
   const postChatMessage = React.useCallback(async () => {
     if (!app) {
       return;
@@ -47,7 +46,6 @@ export default function App() {
     setContent(`Message posted to conversation ${conversationId}`);
   }, [app]);
 
-
   const whoAmI = React.useCallback(async () => {
     if (!app) {
       return;
@@ -57,7 +55,6 @@ export default function App() {
     const me = await app.graph.call(endpoints.me.get);
     setContent(JSON.stringify(me, null, 2));
   }, [app]);
-
 
   const togglePresentationMode = React.useCallback(async () => {
     if (!app) {
@@ -76,15 +73,14 @@ export default function App() {
     };
     await app.graph.call(endpoints.me.presence.setPresence.create, newPresence);
     setContent(`You're now ${newPresence.activity}`);
-
   }, [app]);
 
   return (
-    <div className="App">
+    <div className='App'>
       <h1>👋 Welcome</h1>
       <p>This test app lets you try out some of the features offered by Teams SDK for Teams Tab app developers.</p>
 
-      <div className="actions">
+      <div className='actions'>
         <button disabled={!app} onClick={showTeamsJsContext}>Show TeamsJs context</button>
         <button disabled={!app} onClick={postChatMessage}>Post chat message</button>
         <button disabled={!app} onClick={whoAmI}>Who am I?</button>

@@ -1,8 +1,28 @@
 {
-  "extends": "@microsoft/teams.config/tsconfig.node.json",
+  "extends": "@microsoft/teams.config/tsconfig.base.json",
   "compilerOptions": {
     "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": "src",
+    "composite": true
   },
-  "include": ["src/**/*.ts"]
+  "include": [
+    "src/**/*.ts"
+  ],
+  "references": [
+    {
+      "path": "../../external/mcpclient"
+    },
+    {
+      "path": "../../packages/ai"
+    },
+    {
+      "path": "../../packages/apps"
+    },
+    {
+      "path": "../../packages/dev"
+    },
+    {
+      "path": "../../packages/openai"
+    }
+  ]
 }

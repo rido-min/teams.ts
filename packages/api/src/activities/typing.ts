@@ -13,7 +13,7 @@ export class TypingActivity extends Activity<'typing'> implements ITypingActivit
    */
   text?: string;
 
-  constructor(value: Omit<Partial<ITypingActivity>, 'type'> = {}) {
+  constructor (value: Omit<Partial<ITypingActivity>, 'type'> = {}) {
     super({
       type: 'typing',
       ...value,
@@ -25,21 +25,21 @@ export class TypingActivity extends Activity<'typing'> implements ITypingActivit
   /**
    * initialize from interface
    */
-  static from(activity: ITypingActivity) {
+  static from (activity: ITypingActivity) {
     return new TypingActivity(activity);
   }
 
   /**
    * convert to interface
    */
-  toInterface(): ITypingActivity {
+  toInterface (): ITypingActivity {
     return Object.assign({}, this);
   }
 
   /**
    * copy to a new instance
    */
-  clone(options: Omit<Partial<ITypingActivity>, 'type'> = {}) {
+  clone (options: Omit<Partial<ITypingActivity>, 'type'> = {}) {
     return new TypingActivity({
       ...this.toInterface(),
       ...options,
@@ -49,7 +49,7 @@ export class TypingActivity extends Activity<'typing'> implements ITypingActivit
   /**
    * The text content of the message.
    */
-  withText(value: string) {
+  withText (value: string) {
     this.text = value;
     return this;
   }
@@ -57,7 +57,7 @@ export class TypingActivity extends Activity<'typing'> implements ITypingActivit
   /**
    * Append text
    */
-  addText(text: string) {
+  addText (text: string) {
     if (!this.text) {
       this.text = '';
     }
@@ -71,7 +71,7 @@ export class TypingActivity extends Activity<'typing'> implements ITypingActivit
    * @param id the stream id
    * @param sequence the sequence number (index) of the chunk
    */
-  addStreamUpdate(sequence: number = 0) {
+  addStreamUpdate (sequence: number = 0) {
     if (!this.channelData) {
       this.channelData = {};
     }

@@ -2,11 +2,12 @@
   "name": "@microsoft/teams.ts",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "homepage": "https://github.com/microsoft/teams.ts",
   "bugs": "https://github.com/microsoft/teams.ts/issues",
   "packageManager": "npm@10.8.1",
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "repository": {
     "type": "git",
@@ -30,25 +31,18 @@
   "scripts": {
     "version:stamp": "node scripts/version.js",
     "version:get": "nbgv get-version -v NpmPackageVersion",
-    "clean": "npx turbo clean",
-    "build": "npx turbo build",
-    "build:packages": "npx turbo build --filter=./packages/*",
-    "build:essential": "npx turbo build --filter='./packages/*' --filter='!./packages/graph' --filter='!./packages/graph-endpoints' --filter='!./packages/graph-endpoints-beta' --filter='!./packages/graph-tools' --filter='!./external/*'",
-    "build:examples": "npx turbo build --filter=./examples/*",
-    "build:external": "npx turbo build --filter=./external/*",
-    "dev": "npx turbo dev",
-    "lint": "npx turbo lint --concurrency=100%",
-    "lint:fix": "npx turbo lint:fix --concurrency=100%",
-    "test": "npx turbo test --concurrency=100%"
+    "clean": "npm run clean --workspaces --if-present",
+    "build": "tsc --build",
+    "build:endpoints": "tsc --build packages/graph-endpoints packages/graph-endpoints-beta",
+    "lint": "NODE_OPTIONS=--max-old-space-size=16384 eslint",
+    "lint:fix": "NODE_OPTIONS=--max-old-space-size=16384 eslint --fix",
+    "test": "npm test --workspaces --if-present"
   },
   "devDependencies": {
-    "@turbo/gen": "^2.5.7",
+    "eslint": "^9.25.1",
+    "neostandard": "^0.13.0",
     "nerdbank-gitversioning": "^3.9.50",
-    "turbo": "^2.4.0",
-    "typescript": "^5.4.5"
-  },
-  "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "4.40.1"
+    "typescript": "^6.0.2"
   },
   "overrides": {
     "restify": {

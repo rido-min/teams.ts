@@ -36,16 +36,18 @@ const JsonObjectRow: FC<JsonObjectRowProps> = (props) => {
         isPrimitive={isPrimitive}
       />
       <JsonKey isArray={isArray} keyName={keyName} />
-      {isObject ? (
-        <ValueDisplay
-          value={value}
-          isCircularRef={isCircularRef}
-          isExpanded={isExpanded}
-          isEmpty={isEmpty}
-        />
-      ) : (
-        <JsonPrimitiveWrapper value={value} />
-      )}
+      {isObject
+        ? (
+          <ValueDisplay
+            value={value}
+            isCircularRef={isCircularRef}
+            isExpanded={isExpanded}
+            isEmpty={isEmpty}
+          />
+          )
+        : (
+          <JsonPrimitiveWrapper value={value} />
+          )}
     </div>
   );
 };

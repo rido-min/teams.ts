@@ -25,16 +25,18 @@ export type GetBotSignInResourceParams = {
 };
 
 export class BotSignInClient {
-  get http() {
+  get http () {
     return this._http;
   }
-  set http(v) {
+
+  set http (v) {
     this._http = v;
   }
+
   protected _http: Client;
   protected _apiClientSettings: Partial<ApiClientSettings>;
 
-  constructor(options?: Client | ClientOptions, apiClientSettings?: Partial<ApiClientSettings>) {
+  constructor (options?: Client | ClientOptions, apiClientSettings?: Partial<ApiClientSettings>) {
     if (!options) {
       this._http = new Client();
     } else if ('request' in options) {
@@ -45,7 +47,7 @@ export class BotSignInClient {
     this._apiClientSettings = mergeApiClientSettings(apiClientSettings);
   }
 
-  async getUrl(params: GetBotSignInUrlParams) {
+  async getUrl (params: GetBotSignInUrlParams) {
     const q = qs.stringify(params);
     const res = await this.http.get<string>(
       `${this._apiClientSettings.oauthUrl}/${BOT_SIGNIN_ENDPOINTS.URL}?${q}`
@@ -54,7 +56,7 @@ export class BotSignInClient {
     return res.data;
   }
 
-  async getResource(params: GetBotSignInResourceParams) {
+  async getResource (params: GetBotSignInResourceParams) {
     const q = qs.stringify(params);
     const res = await this.http.get<SignInUrlResponse>(
       `${this._apiClientSettings.oauthUrl}/${BOT_SIGNIN_ENDPOINTS.RESOURCE}?${q}`

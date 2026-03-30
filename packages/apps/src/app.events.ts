@@ -16,12 +16,12 @@ import { AppEvents, IPlugin } from './types';
 export function event<
   TPlugin extends IPlugin,
   Name extends keyof AppEvents<TPlugin>
->(this: App<TPlugin>, name: Name, cb: EventHandler<AppEvents<TPlugin>[Name]>) {
+> (this: App<TPlugin>, name: Name, cb: EventHandler<AppEvents<TPlugin>[Name]>) {
   this.events.on(name, cb);
   return this;
 }
 
-export async function onError<TPlugin extends IPlugin>(
+export async function onError<TPlugin extends IPlugin> (
   this: App<TPlugin>,
   event: IErrorEvent
 ) {
@@ -34,7 +34,7 @@ export async function onError<TPlugin extends IPlugin>(
   this.events.emit('error', event);
 }
 
-export async function onActivitySent<TPlugin extends IPlugin>(
+export async function onActivitySent<TPlugin extends IPlugin> (
   this: App<TPlugin>,
   event: IActivitySentEvent
 ) {
@@ -47,7 +47,7 @@ export async function onActivitySent<TPlugin extends IPlugin>(
   this.events.emit('activity.sent', event);
 }
 
-export async function onActivityResponse<TPlugin extends IPlugin>(
+export async function onActivityResponse<TPlugin extends IPlugin> (
   this: App<TPlugin>,
   event: IActivityResponseEvent
 ) {

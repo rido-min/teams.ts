@@ -15,7 +15,7 @@ const useStyles = makeStyles({
 });
 
 const MarkdownLink: FC<React.AnchorHTMLAttributes<HTMLAnchorElement>> = (props) => (
-  <Link {...props} target="_blank" rel="noopener noreferrer" />
+  <Link {...props} target='_blank' rel='noopener noreferrer' />
 );
 
 const MarkdownCode: FC<HTMLProps<HTMLElement>> = ({ children, className, ...props }) => {

@@ -8,7 +8,7 @@ export const useClasses = makeStyles({
     margin: 0,
     padding: '0.5rem',
     color: tokens.colorNeutralForeground2Link,
-    border: `2px solid transparent`,
+    border: '2px solid transparent',
     '&:hover': {
       color: tokens.colorBrandForegroundLinkHover,
       textDecorationLine: 'none',

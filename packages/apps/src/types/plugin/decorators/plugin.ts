@@ -28,7 +28,7 @@ export type PluginOptions = {
  * turn any class into a plugin via
  * `@Plugin({ ... })`
  */
-export function Plugin(metadata: Partial<PluginOptions> = {}) {
+export function Plugin (metadata: Partial<PluginOptions> = {}) {
   return <T extends Constructor<{}>>(Base: T) => {
     const name = metadata.name || Base.name;
     const version = metadata.version || '0.0.0';

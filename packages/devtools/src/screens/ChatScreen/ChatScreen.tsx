@@ -216,36 +216,37 @@ const ChatScreen: FC<ChatScreenProps> = ({ isConnected }) => {
 
   return (
     <div className={mergeClasses(screenClasses.screenContainer, classes.flexRow)}>
-      <nav id="chat-sidebar" className={classes.sideBar} aria-label="Chat navigation"></nav>
+      <nav id='chat-sidebar' className={classes.sideBar} aria-label='Chat navigation' />
       <Chat>
         <div className={mergeClasses(classes.chatContainer, screenClasses.scrollbarContainer)}>
-          <div id="messages-list" className={classes.messagesList}>
+          <div id='messages-list' className={classes.messagesList}>
             {chat &&
               (messages[chat.id] || []).map((message: Message) => (
                 <ChatMessageContainer key={message.id} value={message} isConnected={isConnected}>
-                  {currentlyEditingMessageId === message.id ? (
-                    <ChatMessageEdit
-                      message={message}
-                      onEditComplete={(messageId, content, attachments) =>
-                        handleEditComplete(messageId, {
-                          body: { content },
-                          attachments,
-                        })
-                      }
-                      onEditCancel={handleConfirmCancel}
-                      isUpdating={false}
-                      onCardProcessed={handleCardProcessed}
-                    />
-                  ) : (
-                    <ChatMessage
-                      content={message.body?.content || ''}
-                      feedback={feedback[message.id]}
-                      sendDirection={message.from?.user?.id === 'devtools' ? 'sent' : 'received'}
-                      streaming={streaming[message.id]}
-                      value={message}
-                      onMessageAction={handleMessageAction}
-                    />
-                  )}
+                  {currentlyEditingMessageId === message.id
+                    ? (
+                      <ChatMessageEdit
+                        message={message}
+                        onEditComplete={(messageId, content, attachments) =>
+                          handleEditComplete(messageId, {
+                            body: { content },
+                            attachments,
+                          })}
+                        onEditCancel={handleConfirmCancel}
+                        isUpdating={false}
+                        onCardProcessed={handleCardProcessed}
+                      />
+                      )
+                    : (
+                      <ChatMessage
+                        content={message.body?.content || ''}
+                        feedback={feedback[message.id]}
+                        sendDirection={message.from?.user?.id === 'devtools' ? 'sent' : 'received'}
+                        streaming={streaming[message.id]}
+                        value={message}
+                        onMessageAction={handleMessageAction}
+                      />
+                      )}
                 </ChatMessageContainer>
               ))}
           </div>

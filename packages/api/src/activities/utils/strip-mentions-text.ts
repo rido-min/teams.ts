@@ -26,7 +26,7 @@ export type StripMentionsTextOptions = {
  * remove "\<at>...\</at>" text from an activity
  * @param activity the activity
  */
-export function stripMentionsText<TActivity extends TextActivity>(
+export function stripMentionsText<TActivity extends TextActivity> (
   activity: TActivity,
   { accountId, tagOnly }: StripMentionsTextOptions = {}
 ): TActivity['text'] {

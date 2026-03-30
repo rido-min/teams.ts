@@ -20,26 +20,27 @@ interface SocketEventTypes {
 }
 
 export class SocketClient {
-  get connected() {
+  get connected () {
     return this._connected;
   }
+
   private _connected = false;
 
   private _socket?: WebSocket;
   private readonly _events: Map<keyof SocketEventTypes, (value: any) => void | Promise<void>>;
 
-  constructor() {
+  constructor () {
     this._events = new Map();
   }
 
-  connect() {
+  connect () {
     this._socket = new WebSocket('/devtools/sockets');
     this._socket.addEventListener('message', this._onMessage.bind(this));
     this._socket.addEventListener('open', this._onConnect.bind(this));
     this._socket.addEventListener('close', this._onDisconnect.bind(this));
   }
 
-  disconnect() {
+  disconnect () {
     this._socket?.close();
   }
 
@@ -54,14 +55,14 @@ export class SocketClient {
     this._events.delete(event);
   }
 
-  private async _onConnect() {
+  private async _onConnect () {
     this._connected = true;
     const handler = this._events.get('connect');
     if (!handler) return;
     await handler(null);
   }
 
-  private async _onDisconnect() {
+  private async _onDisconnect () {
     this._connected = false;
     this._events.clear();
     const handler = this._events.get('disconnect');
@@ -69,7 +70,7 @@ export class SocketClient {
     await handler(null);
   }
 
-  private async _onMessage(event: MessageEvent<any>) {
+  private async _onMessage (event: MessageEvent<any>) {
     const ev: ActivityEvent = JSON.parse(event.data);
 
     if (ev.type.startsWith('activity.')) {

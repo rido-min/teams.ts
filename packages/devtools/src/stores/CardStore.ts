@@ -1,16 +1,16 @@
-import { IAdaptiveCard } from "@microsoft/teams.cards";
-import { create } from "zustand";
-import { devtools } from "zustand/middleware";
+import { IAdaptiveCard } from '@microsoft/teams.cards';
+import { create } from 'zustand';
+import { devtools } from 'zustand/middleware';
 
 interface CardStore {
   currentCard: IAdaptiveCard | null;
   editingMessageId: string | null;
   draftMessage: string | null;
-  targetComponent: "compose" | "edit" | null;
+  targetComponent: 'compose' | 'edit' | null;
   processedCardIds: Set<string>;
   setCurrentCard: (
     card: IAdaptiveCard | null,
-    target?: "compose" | "edit",
+    target?: 'compose' | 'edit',
   ) => void;
   setDraftMessage: (message?: string) => void;
   setEditingMessageId: (id: string | null) => void;
@@ -26,7 +26,7 @@ export const useCardStore = create<CardStore>()(
     draftMessage: null,
     targetComponent: null,
     processedCardIds: new Set<string>(),
-    setCurrentCard: (card, target = "compose") =>
+    setCurrentCard: (card, target = 'compose') =>
       set((state) => ({
         currentCard: card,
         targetComponent: target,
@@ -41,5 +41,5 @@ export const useCardStore = create<CardStore>()(
         processedCardIds: new Set([...state.processedCardIds, id]),
       })),
     clearProcessedCardIds: () => set({ processedCardIds: new Set<string>() }),
-  })),
+  }))
 );

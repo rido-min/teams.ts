@@ -33,7 +33,7 @@ const OverflowCell: FC<OverflowCellProps> = ({ content, className, subtractSelec
   }
 
   return (
-    <Tooltip content={content} relationship="label" positioning="above">
+    <Tooltip content={content} relationship='label' positioning='above'>
       {cell}
     </Tooltip>
   );

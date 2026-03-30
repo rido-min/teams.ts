@@ -1,11 +1,34 @@
 {
-  "extends": "@microsoft/teams.config/tsconfig.node.json",
+  "extends": "@microsoft/teams.config/tsconfig.base.json",
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": ".",
+    "composite": true,
     "jsx": "preserve",
-    "lib": ["ES2022", "DOM", "DOM.Iterable"]
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ]
   },
-  "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules", "dist", ".next"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    ".next"
+  ],
+  "references": [
+    {
+      "path": "../../packages/api"
+    },
+    {
+      "path": "../../packages/apps"
+    },
+    {
+      "path": "../../packages/common"
+    }
+  ]
 }

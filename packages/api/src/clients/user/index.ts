@@ -7,16 +7,18 @@ import { UserTokenClient } from './token';
 export class UserClient {
   readonly token: UserTokenClient;
 
-  get http() {
+  get http () {
     return this._http;
   }
-  set http(v) {
+
+  set http (v) {
     this._http = v;
   }
+
   protected _http: Client;
   protected _apiClientSettings: Partial<ApiClientSettings>;
 
-  constructor(options?: Client | ClientOptions, apiClientSettings?: Partial<ApiClientSettings>) {
+  constructor (options?: Client | ClientOptions, apiClientSettings?: Partial<ApiClientSettings>) {
     if (!options) {
       this._http = new Client();
     } else if ('request' in options) {

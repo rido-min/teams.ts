@@ -12,7 +12,6 @@ import { z } from 'zod';
 
 import { IChatPrompt } from '@microsoft/teams.ai';
 import {
-  Dependency,
   ExpressAdapter,
   HttpServer,
   IHttpServer,
@@ -22,7 +21,6 @@ import {
   Plugin,
 } from '@microsoft/teams.apps';
 import { ILogger } from '@microsoft/teams.common';
-import { DevtoolsPlugin } from '@microsoft/teams.dev';
 
 import pkg from '../package.json';
 
@@ -117,9 +115,6 @@ export class McpPlugin implements IPlugin {
   @HttpServer()
   readonly httpServer!: IHttpServer;
 
-  @Dependency({ optional: true })
-  readonly devtoolsPlugin?: DevtoolsPlugin;
-
   readonly server: McpServer;
   protected id: number = -1;
   protected inspector: string;
@@ -128,7 +123,7 @@ export class McpPlugin implements IPlugin {
     type: 'sse',
   };
 
-  constructor(options: McpServer | McpPluginOptions = {}) {
+  constructor (options: McpServer | McpPluginOptions = {}) {
     this.inspector =
       options instanceof McpServer
         ? 'http://localhost:5173'
@@ -141,7 +136,7 @@ export class McpPlugin implements IPlugin {
             name: options.name || 'mcp',
             version: options.version || '0.0.0',
           },
-          options,
+          options
         );
 
     if (!(options instanceof McpServer) && options.transport) {
@@ -153,10 +148,11 @@ export class McpPlugin implements IPlugin {
    * add a chat prompt to your server
    * @param prompt the chat prompt
    */
-  use(prompt: IChatPrompt) {
+  use (prompt: IChatPrompt) {
     for (const fn of prompt.functions) {
+      // eslint-disable-next-line no-eval
       const schema: z.AnyZodObject = eval(
-        jsonSchemaToZod(fn.parameters, { module: 'cjs' }),
+        jsonSchemaToZod(fn.parameters, { module: 'cjs' })
       );
       this.server.tool(
         fn.name,
@@ -172,7 +168,7 @@ export class McpPlugin implements IPlugin {
   /**
    * Pass through call to the underlying MCP server
    */
-  tool(...params: Parameters<McpServer['tool']>) {
+  tool (...params: Parameters<McpServer['tool']>) {
     this.server.tool(...params);
     return this;
   }
@@ -180,7 +176,7 @@ export class McpPlugin implements IPlugin {
   /**
    * Pass through call to the underlying MCP server
    */
-  prompt(...params: Parameters<McpServer['prompt']>) {
+  prompt (...params: Parameters<McpServer['prompt']>) {
     this.server.prompt(...params);
     return this;
   }
@@ -188,18 +184,12 @@ export class McpPlugin implements IPlugin {
   /**
    * Pass through call to the underlying MCP server
    */
-  resource(...params: Parameters<McpServer['resource']>) {
+  resource (...params: Parameters<McpServer['resource']>) {
     this.server.resource(...params);
     return this;
   }
 
-  onInit() {
-    this.devtoolsPlugin?.addPage({
-      name: 'mcp',
-      displayName: 'MCP',
-      url: this.inspector,
-    });
-
+  onInit () {
     if (this.transport.type === 'sse') {
       return this.onInitSSE(this.transport);
     }
@@ -207,22 +197,22 @@ export class McpPlugin implements IPlugin {
     return this.onInitStdio(this.transport);
   }
 
-  onStart({ port }: IPluginStartEvent) {
+  onStart ({ port }: IPluginStartEvent) {
     if (this.transport.type === 'sse') {
       this.logger.info(
-        `listening at http://localhost:${port}${this.transport.path || '/mcp'}`,
+        `listening at http://localhost:${port}${this.transport.path || '/mcp'}`
       );
     } else {
       this.logger.info('listening on stdin');
     }
   }
 
-  protected onInitStdio(options: McpStdioTransportOptions) {
+  protected onInitStdio (options: McpStdioTransportOptions) {
     const transport = new StdioServerTransport(options.stdin, options.stdout);
     return this.server.connect(transport);
   }
 
-  protected onInitSSE(options: McpSSETransportOptions) {
+  protected onInitSSE (options: McpSSETransportOptions) {
     const path = options.path || '/mcp';
 
     const adapter = this.httpServer.adapter;
@@ -264,7 +254,7 @@ export class McpPlugin implements IPlugin {
     });
   }
 
-  protected onToolCall(name: string, prompt: IChatPrompt) {
+  protected onToolCall (name: string, prompt: IChatPrompt) {
     return async (args: any): Promise<CallToolResult> => {
       try {
         const res = await prompt.call(name, args);
@@ -297,7 +287,7 @@ export class McpPlugin implements IPlugin {
     };
   }
 
-  protected isCallToolResult(value: any): value is CallToolResult {
+  protected isCallToolResult (value: any): value is CallToolResult {
     if (!!value || !('content' in value)) return false;
     const { content } = value;
 
@@ -308,7 +298,7 @@ export class McpPlugin implements IPlugin {
           'type' in item &&
           (item.type === 'text' ||
             item.type === 'image' ||
-            item.type === 'resource'),
+            item.type === 'resource')
       )
     );
   }

@@ -12,26 +12,26 @@ export class LocalStorage<T = any> implements IStorage<string, T> {
   protected readonly _keys: string[];
   protected readonly _options: LocalStorageOptions;
 
-  get keys() {
+  get keys () {
     return this._keys;
   }
 
-  get size() {
+  get size () {
     return this._store.size;
   }
 
-  constructor(data: Record<string, T> = {}, options: LocalStorageOptions = {}) {
+  constructor (data: Record<string, T> = {}, options: LocalStorageOptions = {}) {
     this._store = new Map<string, T>(Object.entries(data));
     this._keys = Object.keys(data);
     this._options = options;
   }
 
-  get(key: string) {
+  get (key: string) {
     this._hit(key);
     return this._store.get(key);
   }
 
-  set(key: string, value: T) {
+  set (key: string, value: T) {
     if (!this._hit(key)) {
       this._keys.push(key);
     }
@@ -49,7 +49,7 @@ export class LocalStorage<T = any> implements IStorage<string, T> {
     this._store.set(key, value);
   }
 
-  delete(key: string) {
+  delete (key: string) {
     const i = this._keys.findIndex((k) => key === k);
 
     if (i > -1) {
@@ -59,7 +59,7 @@ export class LocalStorage<T = any> implements IStorage<string, T> {
     this._store.delete(key);
   }
 
-  toString() {
+  toString () {
     return JSON.stringify(
       Array.from(this._store.entries()).map(([key, value]) => ({
         key,
@@ -70,7 +70,7 @@ export class LocalStorage<T = any> implements IStorage<string, T> {
     );
   }
 
-  protected _hit(key: string) {
+  protected _hit (key: string) {
     if (!this._store.has(key)) return false;
     if (this._keys[this._keys.length - 1] === key) return true;
 

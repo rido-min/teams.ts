@@ -18,6 +18,10 @@ type AuthResult =
 export type HttpServerOptions = {
   readonly skipAuth?: boolean;
   readonly logger?: ILogger;
+  /**
+   * URL path for the Teams messaging endpoint
+   */
+  readonly messagingEndpoint: string;
 };
 
 /**
@@ -26,6 +30,7 @@ export type HttpServerOptions = {
 export interface IHttpServer {
   handleRequest(request: IHttpServerRequest): Promise<IHttpServerResponse>;
   readonly adapter: IHttpServerAdapter;
+  readonly messagingEndpoint: string;
 }
 
 /**
@@ -45,19 +50,28 @@ export class HttpServer implements IHttpServer {
   protected serviceTokenValidator?: ServiceTokenValidator;
 
   private _adapter: IHttpServerAdapter;
+  private _messagingEndpoint: string;
 
   /**
    * Get the underlying adapter
    * Useful for plugins that need adapter-specific features
    */
-  get adapter(): IHttpServerAdapter {
+  get adapter (): IHttpServerAdapter {
     return this._adapter;
   }
 
-  constructor(adapter: IHttpServerAdapter, options?: HttpServerOptions) {
+  /**
+   * Get the messaging endpoint path
+   */
+  get messagingEndpoint (): string {
+    return this._messagingEndpoint;
+  }
+
+  constructor (adapter: IHttpServerAdapter, options: HttpServerOptions) {
     this._adapter = adapter;
-    this.skipAuth = options?.skipAuth ?? false;
-    this.logger = options?.logger ?? new ConsoleLogger('HttpServer');
+    this.skipAuth = options.skipAuth ?? false;
+    this.logger = options.logger ?? new ConsoleLogger('HttpServer');
+    this._messagingEndpoint = options.messagingEndpoint;
   }
 
   /**
@@ -65,7 +79,7 @@ export class HttpServer implements IHttpServer {
    * Can be called multiple times - only initializes once
    * Called by App.initialize()
    */
-  async initialize(deps: {
+  async initialize (deps: {
     credentials?: Credentials;
   }) {
     if (this.initialized) {
@@ -86,7 +100,7 @@ export class HttpServer implements IHttpServer {
     }
 
     // Register Teams bot endpoint (POST only)
-    this._adapter.registerRoute('POST', '/api/messages', async (request) => {
+    this._adapter.registerRoute('POST', this._messagingEndpoint, async (request) => {
       return this.handleRequest(request);
     });
 
@@ -97,22 +111,21 @@ export class HttpServer implements IHttpServer {
    * Start the HTTP server
    * Called by App.start()
    */
-  async start(port: number | string) {
-    const portNumber = typeof port === 'string' ? parseInt(port, 10) : port;
+  async start (port: number | string) {
     if (!this._adapter.start) {
       throw new Error(
         'Adapter does not implement start(). ' +
         'Either implement start() in your adapter, or manage server lifecycle manually.'
       );
     }
-    await this._adapter.start(portNumber);
+    await this._adapter.start(port);
   }
 
   /**
    * Stop the HTTP server
    * Called by App.stop() if implemented
    */
-  async stop() {
+  async stop () {
     if (!this._adapter.stop) {
       this.logger.warn('Adapter does not implement stop(). Skipping server shutdown.');
       return;
@@ -124,7 +137,7 @@ export class HttpServer implements IHttpServer {
    * Register a route handler with the adapter
    * Used by app.function() and other app methods
    */
-  registerRoute(method: HttpMethod, path: string, handler: HttpRouteHandler) {
+  registerRoute (method: HttpMethod, path: string, handler: HttpRouteHandler) {
     this._adapter.registerRoute(method, path, handler);
   }
 
@@ -132,7 +145,7 @@ export class HttpServer implements IHttpServer {
    * Serve static files from a directory
    * Used by app.tab() and other app methods
    */
-  serveStatic(path: string, directory: string) {
+  serveStatic (path: string, directory: string) {
     if (this._adapter.serveStatic) {
       this._adapter.serveStatic(path, directory);
     }
@@ -142,7 +155,7 @@ export class HttpServer implements IHttpServer {
    * Handle incoming activity request
    * Validates JWT, dispatches to app, returns response
    */
-  async handleRequest(request: IHttpServerRequest): Promise<IHttpServerResponse> {
+  async handleRequest (request: IHttpServerRequest): Promise<IHttpServerResponse> {
     try {
       const body = request.body as ICoreActivity;
       this.logger.debug('Handling activity', body);
@@ -167,7 +180,7 @@ export class HttpServer implements IHttpServer {
   /**
    * Authorize the request by validating the JWT token.
    */
-  protected async authorize(
+  protected async authorize (
     headers: Record<string, string | string[]>,
     body: ICoreActivity
   ): Promise<AuthResult> {
@@ -202,5 +215,4 @@ export class HttpServer implements IHttpServer {
       return { success: false, error: 'JWT validation failed' };
     }
   }
-
 }

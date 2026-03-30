@@ -30,7 +30,7 @@ describe('HttpStream', () => {
 
   jest.useFakeTimers();
 
-  function mockCreate(successAfter = 0) {
+  function mockCreate (successAfter = 0) {
     let calls = 0;
     client.conversations.activities().create.mockImplementation(
       async (_activity: any) => {
@@ -76,7 +76,6 @@ describe('HttpStream', () => {
     expect(calls[2][0].text).toBe('Message 1Message 2Message 3Message 4Message 5Message 6Message 7Message 8Message 9Message 10Message 11Message 12Message 13Message 14');
   });
 
-
   test('stream error handled gracefully', async () => {
     mockCreate(1);
     const stream = new HttpStream(client, ref, logger);
@@ -96,7 +95,6 @@ describe('HttpStream', () => {
   });
 
   test('update sends typing activity', async () => {
-
     const stream = new HttpStream(client, ref, logger);
 
     stream.update('Thinking...');
@@ -127,7 +125,6 @@ describe('HttpStream', () => {
   });
 
   test('sequence of update and emit', async () => {
-
     const stream = new HttpStream(client, ref, logger);
 
     stream.update('Preparing...');
@@ -139,7 +136,6 @@ describe('HttpStream', () => {
     expect(calls.length).toBe(2);
     expect(calls[0][0].type).toBe('typing');
     expect(calls[1][0].text).toContain('Final message');
-
   });
 
   test('close times out if queue never flushes and id not set', async () => {

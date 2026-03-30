@@ -46,9 +46,8 @@ export const buildMsalConfig = (clientId: string, logger: ILogger): msal.Configu
               return;
             case msal.LogLevel.Warning:
               logger.warn(message);
-              return;
+              break;
             default:
-              return;
           }
         },
       },

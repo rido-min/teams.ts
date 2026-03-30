@@ -19,8 +19,8 @@ const ArgsSchema = z.object({
   clientSecret: z.string().optional(),
 });
 
-export function CSharp(_: IContext): CommandModule<{}, z.infer<typeof ArgsSchema>> {
-  const isCSharp = Settings.load().language == 'csharp';
+export function CSharp (_: IContext): CommandModule<{}, z.infer<typeof ArgsSchema>> {
+  const isCSharp = Settings.load().language === 'csharp';
   const atkPath = path.resolve(url.fileURLToPath(import.meta.url), '../..', 'configs', 'atk');
 
   return {

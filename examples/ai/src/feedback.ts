@@ -34,9 +34,9 @@ export const handleFeedbackLoop = async (
     const { id: sentMessageId } = await send(
       result.content != null
         ? new MessageActivity(result.content)
-            .addAiGenerated()
-            /** Add feedback buttons via this method */
-            .addFeedback()
+          .addAiGenerated()
+        /** Add feedback buttons via this method */
+          .addFeedback()
         : 'I did not generate a response.'
     );
 
@@ -47,6 +47,5 @@ export const handleFeedbackLoop = async (
       dislikes: 0,
       feedbacks: [],
     });
-
   }
 };

@@ -138,8 +138,8 @@ const ChatMessage: FC<ChatMessageProps> = memo(
             <PopoverTrigger disableButtonEnhancement>
               <div
                 tabIndex={0}
-                role="button"
-                aria-haspopup="true"
+                role='button'
+                aria-haspopup='true'
                 aria-expanded={isPopoverOpen}
                 onKeyDown={handleMessageKeyDown}
                 onFocus={handleFocus}

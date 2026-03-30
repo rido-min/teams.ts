@@ -6,9 +6,7 @@
   "homepage": "https://github.com/microsoft/teams.ts",
   "bugs": "https://github.com/microsoft/teams.ts/issues",
   "files": [
-    "eslint.config.js",
-    "jest.config.js",
-    "tsup.config.js"
+    "tsconfig.base.json"
   ],
   "publishConfig": {
     "access": "public"
@@ -18,16 +16,9 @@
     "url": "https://github.com/microsoft/teams.ts.git",
     "directory": "packages/config"
   },
-  "scripts": {
-    "lint": "npx eslint",
-    "lint:fix": "npx eslint --fix"
-  },
+  "scripts": {},
+  "type": "module",
   "devDependencies": {
-    "@eslint/js": "^9.25.1",
-    "@stylistic/eslint-plugin": "^4.2.0",
-    "eslint": "^9.25.1",
-    "eslint-plugin-import": "^2.31.0",
-    "typescript": "^5.4.5",
-    "typescript-eslint": "^8.26.0"
+    "typescript": "^6.0.2"
   }
 }

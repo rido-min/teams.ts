@@ -25,7 +25,7 @@ const JsonExpandButton: FC<JsonExpandButtonProps> = ({
 
   if (isEmpty) {
     return (
-      <Tooltip content="Empty non-primitive value" relationship="label" positioning="before">
+      <Tooltip content='Empty non-primitive value' relationship='label' positioning='before'>
         <span className={mergeClasses(classes.expandButton, classes.expandButtonDisabled)}>
           <TriangleRightFilled />
         </span>
@@ -34,9 +34,9 @@ const JsonExpandButton: FC<JsonExpandButtonProps> = ({
   }
 
   return (
-    <Tooltip content={isExpanded ? 'Collapse' : 'Expand'} relationship="label" positioning="before">
+    <Tooltip content={isExpanded ? 'Collapse' : 'Expand'} relationship='label' positioning='before'>
       <Button
-        appearance="transparent"
+        appearance='transparent'
         className={classes.expandButton}
         onClick={onClick}
         aria-expanded={isExpanded}

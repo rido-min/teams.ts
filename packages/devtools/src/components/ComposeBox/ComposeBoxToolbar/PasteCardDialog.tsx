@@ -83,14 +83,14 @@ const PasteCardDialog: FC<PasteCardDialogProps> = memo(
 
     return (
       <Dialog open={isOpen} {...modalAttributes}>
-        <DialogSurface aria-describedby="dialog-description">
+        <DialogSurface aria-describedby='dialog-description'>
           <DialogBody className={classes.dialog}>
             <DialogTitle>Paste Card JSON</DialogTitle>
-            <DialogContent id="dialog-description">
+            <DialogContent id='dialog-description'>
               <Textarea
                 value={jsonInput}
                 onChange={(e) => setJsonInput(e.target.value)}
-                placeholder="Paste your card JSON here..."
+                placeholder='Paste your card JSON here...'
                 disabled={disabled}
                 className={classes.textarea}
                 rows={10}
@@ -109,10 +109,10 @@ const PasteCardDialog: FC<PasteCardDialogProps> = memo(
               <Button ref={cancelButtonRef} onClick={onClose}>
                 Cancel
               </Button>
-              <Tooltip content={`Attach card (${isMac ? '⌘' : 'Ctrl'} Enter)`} relationship="label">
+              <Tooltip content={`Attach card (${isMac ? '⌘' : 'Ctrl'} Enter)`} relationship='label'>
                 <Button
                   ref={saveButtonRef}
-                  appearance="primary"
+                  appearance='primary'
                   onClick={handleSave}
                   disabled={disabled}
                 >

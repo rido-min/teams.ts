@@ -18,21 +18,21 @@ import {
  */
 export type MsalOptions = (
   | {
-      /**
+    /**
        * MSAL instance to use when making authenticated function calls to remote endpoints.
        * This is useful if you want to use a custom MSAL instance or if you want to share the
        * same MSAL instance across multiple apps.
        */
-      readonly msalInstance?: msal.IPublicClientApplication;
-      readonly configuration?: never;
-    }
+    readonly msalInstance?: msal.IPublicClientApplication;
+    readonly configuration?: never;
+  }
   | {
-      readonly msalInstance?: never;
-      /**
+    readonly msalInstance?: never;
+    /**
        * MSAL configuration to use when constructing an MSAL instance used
        * to make authenticated function calls to remote endpoints. */
-      readonly configuration?: msal.Configuration;
-    }
+    readonly configuration?: msal.Configuration;
+  }
 ) & {
   /**
    * Options to control scope consent pre-warming. If explicitly set to false, no pre-warming is performed.
@@ -78,24 +78,24 @@ export type AppOptions = {
 
 type AppState =
   | {
-      phase: 'stopped' | 'starting';
-      startedAt?: never;
-      msalInstance?: never;
-    }
+    phase: 'stopped' | 'starting';
+    startedAt?: never;
+    msalInstance?: never;
+  }
   | {
-      phase: 'started';
-      startedAt: Date;
-      msalInstance: msal.IPublicClientApplication;
-    };
+    phase: 'started';
+    startedAt: Date;
+    msalInstance: msal.IPublicClientApplication;
+  };
 
 /**
  * ExecOptions is used to specify options for the exec method.
  */
 export type ExecOptions = (
   | {
-      readonly msalTokenRequest?: msal.SilentRequest;
-      readonly permission?: never;
-    }
+    readonly msalTokenRequest?: msal.SilentRequest;
+    readonly permission?: never;
+  }
   | { readonly msalTokenRequest?: never; readonly permission?: string }
 ) & {
   readonly requestHeaders?: Record<string, string>;
@@ -116,24 +116,25 @@ export class App {
   /**
    * The apps logger
    */
-  get log() {
+  get log () {
     return this._log;
   }
+
   protected _log: ILogger;
 
   /**
    * The date/time when the app was successfully started.
    */
-  get startedAt() {
+  get startedAt () {
     return this._state?.startedAt;
   }
 
   /** The msal instance used in this app. undefined until the app is started. */
-  get msalInstance() {
+  get msalInstance () {
     return this._state.msalInstance;
   }
 
-  constructor(clientId: string, options: AppOptions = {}) {
+  constructor (clientId: string, options: AppOptions = {}) {
     if (!clientId) {
       throw new Error('Invalid client ID.');
     }
@@ -152,7 +153,7 @@ export class App {
    * @returns A promise that will be fulfilled when the app has started, or
    *          rejected if the initialization fails or times out.
    */
-  async start(): Promise<void> {
+  async start (): Promise<void> {
     if (this._state.phase !== 'stopped') {
       this._log.debug(`app already ${this._state.phase}`);
       return;
@@ -237,7 +238,7 @@ export class App {
    * should not mix the .default scope with named scopes.
    * @returns A promise that resolves to a boolean indicating whether the user has consented to the scopes.
    */
-  async hasConsentForScopes(scopes: string[]): Promise<boolean> {
+  async hasConsentForScopes (scopes: string[]): Promise<boolean> {
     const { msalInstance } = this.appStateGuard();
 
     return await hasConsentForScopes(msalInstance, scopes, this.log);
@@ -250,7 +251,7 @@ export class App {
    * should not mix the .default scope with named scopes.
    * @returns A value indicating whether consent has been acquired for the specified scopes.
    */
-  async ensureConsentForScopes(scopes: string[]): Promise<boolean> {
+  async ensureConsentForScopes (scopes: string[]): Promise<boolean> {
     const { msalInstance } = this.appStateGuard();
 
     try {
@@ -265,7 +266,7 @@ export class App {
     }
   }
 
-  private appStateGuard(): AppState & { phase: 'started' } {
+  private appStateGuard (): AppState & { phase: 'started' } {
     if (this._state.phase !== 'started') {
       throw new Error('App not started');
     }

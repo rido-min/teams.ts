@@ -185,7 +185,7 @@ export type IActivityContext<T extends Activity = Activity, TExtraContext = unkn
   IBaseActivityContext<T> & (TExtraContext extends Record<string, any> ? TExtraContext : {});
 
 export class ActivityContext<T extends Activity = Activity, TExtraCtx extends {} = {}>
-  implements IBaseActivityContext<T, TExtraCtx> {
+implements IBaseActivityContext<T, TExtraCtx> {
   appId!: string;
   activity!: T;
   ref!: ConversationReference;
@@ -200,11 +200,12 @@ export class ActivityContext<T extends Activity = Activity, TExtraCtx extends {}
   next!: (
     context?: IActivityContext
   ) => (void | InvokeResponse) | Promise<void | InvokeResponse>;
+
   [key: string]: any;
 
   private activitySender: IActivitySender;
 
-  constructor(value: IBaseActivityContextOptions & IActivityContextConstructorArgs) {
+  constructor (value: IBaseActivityContextOptions & IActivityContextConstructorArgs) {
     // Extract activitySender and next before Object.assign to avoid overwriting methods
     const { activitySender, next, ...rest } = value;
     Object.assign(this, rest);
@@ -230,12 +231,12 @@ export class ActivityContext<T extends Activity = Activity, TExtraCtx extends {}
     }
   }
 
-  async send(activity: ActivityLike, conversationRef?: ConversationReference) {
+  async send (activity: ActivityLike, conversationRef?: ConversationReference) {
     const params = toActivityParams(activity);
 
     // For targeted send, set the recipient if not already set.
     // For targeted update (params.id exists), we don't update recipient since recipient cannot be changed.
-    if (params.type === 'message' && params.isTargeted && !params.id) {
+    if (params.type === 'message' && params.recipient?.isTargeted && !params.id) {
       if (!params.recipient) {
         params.recipient = this.activity.from;
       }
@@ -244,7 +245,7 @@ export class ActivityContext<T extends Activity = Activity, TExtraCtx extends {}
     return await this.activitySender.send(params, conversationRef ?? this.ref);
   }
 
-  async reply(activity: ActivityLike) {
+  async reply (activity: ActivityLike) {
     activity = toActivityParams(activity);
     activity.replyToId = this.activity.id;
 
@@ -259,7 +260,7 @@ export class ActivityContext<T extends Activity = Activity, TExtraCtx extends {}
     return this.send(activity);
   }
 
-  async signin(options?: Partial<SignInOptions>) {
+  async signin (options?: Partial<SignInOptions>) {
     const {
       oauthCardText,
       signInButtonText,
@@ -341,7 +342,7 @@ export class ActivityContext<T extends Activity = Activity, TExtraCtx extends {}
     );
   }
 
-  async signout(connectionName?: string) {
+  async signout (connectionName?: string) {
     await this.api.users.token.signOut({
       channelId: this.activity.channelId,
       userId: this.activity.from.id,
@@ -349,7 +350,7 @@ export class ActivityContext<T extends Activity = Activity, TExtraCtx extends {}
     });
   }
 
-  toInterface(): IActivityContext {
+  toInterface (): IActivityContext {
     return {
       activity: this.activity,
       api: this.api,
@@ -371,7 +372,7 @@ export class ActivityContext<T extends Activity = Activity, TExtraCtx extends {}
     };
   }
 
-  private buildBlockQuoteForActivity(): string | null {
+  private buildBlockQuoteForActivity (): string | null {
     if (this.activity.type === 'message' && this.activity.text) {
       const maxLength = 120;
       const truncatedText =

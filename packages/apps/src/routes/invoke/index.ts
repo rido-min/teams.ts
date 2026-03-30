@@ -71,4 +71,3 @@ export const INVOKE_ALIASES: InvokeAliases = {
 export * from './file-consent';
 export * from './message-extension-submit';
 export * from './message-submit';
-

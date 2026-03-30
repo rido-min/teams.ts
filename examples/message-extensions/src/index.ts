@@ -44,7 +44,7 @@ app.on('message.ext.query-link', async ({ activity }) => {
   const { card, thumbnail } = createLinkUnfurlCard(url);
   const attachment = {
     ...cardAttachment('adaptive', card), // expanded card in the compose box...
-    preview: cardAttachment('thumbnail', thumbnail), //preview card in the compose box...
+    preview: cardAttachment('thumbnail', thumbnail), // preview card in the compose box...
   };
 
   return {
@@ -103,7 +103,7 @@ app.on('message.ext.query', async ({ activity }) => {
   const { commandId } = activity.value;
   const searchQuery = activity.value.parameters![0].value;
 
-  if (commandId == 'searchQuery') {
+  if (commandId === 'searchQuery') {
     const cards = await createDummyCards(searchQuery);
     const attachments = cards.map(({ card, thumbnail }) => {
       return {
@@ -116,7 +116,7 @@ app.on('message.ext.query', async ({ activity }) => {
       composeExtension: {
         type: 'result',
         attachmentLayout: 'list',
-        attachments: attachments,
+        attachments,
       },
     };
   }
@@ -148,7 +148,7 @@ app.on('message.ext.query-settings-url', async ({ activity }) => {
             type: 'openUrl',
             title: 'Settings',
             // ensure the bot endpoint is set in the environment variables
-            // process.env.BOT_ENDPOINT is not populated by default in the Teams Toolkit setup. 
+            // process.env.BOT_ENDPOINT is not populated by default in the Teams Toolkit setup.
             value: `${process.env.BOT_ENDPOINT}/tabs/settings?selectedOption=${escapedSelectedOption}`
           }
         ]
@@ -159,16 +159,16 @@ app.on('message.ext.query-settings-url', async ({ activity }) => {
 
 app.on('message.ext.setting', async ({ activity, send }) => {
   const { state } = activity.value;
-  if (state == 'CancelledByUser') {
+  if (state === 'CancelledByUser') {
     return {
       status: 400
     };
   }
   const selectedOption = state;
-  
+
   // Save the selected option to storage
   await app.storage.set(activity.from.id, { selectedOption });
-  
+
   await send(`Selected option: ${selectedOption}`);
 
   return {

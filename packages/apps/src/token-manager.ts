@@ -1,4 +1,3 @@
-
 import { AuthenticationResult, ConfidentialClientApplication, ManagedIdentityApplication, LogLevel as MSALLogLevel, NodeSystemOptions } from '@azure/msal-node';
 
 import { ClientCredentials, Credentials, IToken, JsonWebToken, TokenCredentials, FederatedIdentityCredentials, UserManagedIdentityCredentials } from '@microsoft/teams.api';
@@ -18,28 +17,27 @@ const MSAL_LOG_LEVEL_TO_LOG_LEVEL: Record<MSALLogLevel, LogLevel> = {
   [MSALLogLevel.Trace]: 'trace'
 };
 const LOG_LEVEL_TO_MSAL_LOG_LEVEL: Record<LogLevel, MSALLogLevel> = {
-  'error': MSALLogLevel.Error,
-  'warn': MSALLogLevel.Warning,
-  'info': MSALLogLevel.Info,
-  'debug': MSALLogLevel.Verbose,
-  'trace': MSALLogLevel.Trace
+  error: MSALLogLevel.Error,
+  warn: MSALLogLevel.Warning,
+  info: MSALLogLevel.Info,
+  debug: MSALLogLevel.Verbose,
+  trace: MSALLogLevel.Trace
 };
 
 type MSALLoggerOptions = NodeSystemOptions['loggerOptions'];
 
 // Type guard functions
-function isClientCredentials(credentials: Credentials): credentials is ClientCredentials {
+function isClientCredentials (credentials: Credentials): credentials is ClientCredentials {
   return 'clientSecret' in credentials;
 }
 
-function isTokenCredentials(credentials: Credentials): credentials is TokenCredentials {
+function isTokenCredentials (credentials: Credentials): credentials is TokenCredentials {
   return 'token' in credentials;
 }
 
-function isFederatedIdentityCredentials(credentials: Credentials): credentials is FederatedIdentityCredentials {
+function isFederatedIdentityCredentials (credentials: Credentials): credentials is FederatedIdentityCredentials {
   return 'managedIdentityType' in credentials;
 }
-
 
 export type TokenManagerOptions = {
   readonly clientId?: string;
@@ -56,7 +54,7 @@ export class TokenManager {
   private confidentialClientsByTenantId: Record<string, ConfidentialClientApplication> = {};
   private managedIdentityClient: ManagedIdentityApplication | null = null;
 
-  constructor(options: TokenManagerOptions, logger: ILogger) {
+  constructor (options: TokenManagerOptions, logger: ILogger) {
     this.logger = logger.child('TokenManager') ?? new ConsoleLogger('TokenManager');
     this._msalLogger = this.logger.child('azure/msal-node', {
       // Msal logging is fairly noisy. So we keep it quiet unless the user
@@ -66,15 +64,15 @@ export class TokenManager {
     this.credentials = this.initializeCredentials(options);
   }
 
-  async getBotToken(): Promise<IToken | null> {
+  async getBotToken (): Promise<IToken | null> {
     return await this.getToken(DEFAULT_BOT_TOKEN_SCOPE, this.resolveTenantId(undefined, DEFAULT_TENANT_FOR_BOT_TOKEN));
   }
 
-  async getGraphToken(tenantId?: string): Promise<IToken | null> {
+  async getGraphToken (tenantId?: string): Promise<IToken | null> {
     return await this.getToken(DEFAULT_GRAPH_TOKEN_SCOPE, this.resolveTenantId(tenantId, DEFAULT_TENANT_FOR_GRAPH_TOKEN));
   }
 
-  private initializeCredentials(options: TokenManagerOptions): Credentials | undefined {
+  private initializeCredentials (options: TokenManagerOptions): Credentials | undefined {
     const clientId = options.clientId ?? process.env.CLIENT_ID;
     const tenantId = options.tenantId ?? process.env.TENANT_ID;
     const clientSecret = options.clientSecret ?? process.env.CLIENT_SECRET;
@@ -117,7 +115,7 @@ export class TokenManager {
     return undefined;
   }
 
-  private async getToken(scope: string, tenantId: string): Promise<IToken | null> {
+  private async getToken (scope: string, tenantId: string): Promise<IToken | null> {
     if (!this.credentials) {
       return null;
     }
@@ -131,21 +129,21 @@ export class TokenManager {
     } else {
       return this.getTokenWithManagedIdentity(this.credentials, scope);
     }
-
   }
 
-  private async getTokenWithClientCredentials(credentials: ClientCredentials, scope: string, tenantId: string): Promise<IToken | null> {
+  private async getTokenWithClientCredentials (credentials: ClientCredentials, scope: string, tenantId: string): Promise<IToken | null> {
     const confidentialClient = this.getConfidentialClient(credentials, tenantId);
     const result = await confidentialClient.acquireTokenByClientCredential({ scopes: [scope] });
     return this.handleTokenResponse(result);
   }
 
-  private async getTokenWithTokenProvider(credentials: TokenCredentials, scope: string, tenantId: string): Promise<IToken | null> {
+  private async getTokenWithTokenProvider (credentials: TokenCredentials, scope: string, tenantId: string): Promise<IToken | null> {
     const token = await credentials.token(scope, tenantId);
 
     return new JsonWebToken(token);
   }
-  private async getTokenWithManagedIdentity(credentials: UserManagedIdentityCredentials, scope: string) {
+
+  private async getTokenWithManagedIdentity (credentials: UserManagedIdentityCredentials, scope: string) {
     const managedIdentityClient = this.getManagedIdentityClient(credentials);
     // Resource doesn't need the ./default suffix
     const resource = scope.replace('/.default', '');
@@ -155,7 +153,7 @@ export class TokenManager {
     return this.handleTokenResponse(result);
   }
 
-  private async getTokenWithFederatedCredentials(credentials: FederatedIdentityCredentials, scope: string, tenantId: string) {
+  private async getTokenWithFederatedCredentials (credentials: FederatedIdentityCredentials, scope: string, tenantId: string) {
     const managedIdentityClient = this.getManagedIdentityClient(credentials);
     const managedIdentityTokenRes = await managedIdentityClient.acquireToken({ resource: 'api://AzureADTokenExchange' });
     const confidentialClient = new ConfidentialClientApplication({
@@ -172,11 +170,11 @@ export class TokenManager {
     return this.handleTokenResponse(result);
   }
 
-  private resolveTenantId(tenantId: string | undefined, defaultTenantId: string) {
+  private resolveTenantId (tenantId: string | undefined, defaultTenantId: string) {
     return tenantId || this.credentials?.tenantId || defaultTenantId;
   }
 
-  private getConfidentialClient(credentials: ClientCredentials, tenantId: string) {
+  private getConfidentialClient (credentials: ClientCredentials, tenantId: string) {
     const cachedClient = this.confidentialClientsByTenantId[tenantId];
     if (cachedClient) {
       return cachedClient;
@@ -196,7 +194,7 @@ export class TokenManager {
     return client;
   }
 
-  private getManagedIdentityClient(credentials: UserManagedIdentityCredentials | FederatedIdentityCredentials): ManagedIdentityApplication {
+  private getManagedIdentityClient (credentials: UserManagedIdentityCredentials | FederatedIdentityCredentials): ManagedIdentityApplication {
     if (this.managedIdentityClient) {
       return this.managedIdentityClient;
     }
@@ -214,7 +212,7 @@ export class TokenManager {
       } else {
         this.managedIdentityClient = new ManagedIdentityApplication(
           {
-            managedIdentityIdParams: undefined, //no options automatically indicates system assigned managed identity
+            managedIdentityIdParams: undefined, // no options automatically indicates system assigned managed identity
             system: {
               loggerOptions: this.buildLoggerOptions()
             }
@@ -236,7 +234,7 @@ export class TokenManager {
     return this.managedIdentityClient;
   }
 
-  private handleTokenResponse(result: AuthenticationResult | null) {
+  private handleTokenResponse (result: AuthenticationResult | null) {
     if (!result) {
       throw new Error('Failed to get token');
     }
@@ -244,7 +242,7 @@ export class TokenManager {
     return new JsonWebToken(result.accessToken);
   }
 
-  private buildLoggerOptions(): MSALLoggerOptions {
+  private buildLoggerOptions (): MSALLoggerOptions {
     return {
       logLevel: this.logger.loggerOptions?.level != null ? LOG_LEVEL_TO_MSAL_LOG_LEVEL[this.logger.loggerOptions.level] : undefined,
       loggerCallback: (level, message) => {

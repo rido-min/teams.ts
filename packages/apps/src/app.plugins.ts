@@ -14,7 +14,7 @@ import { PLUGIN_METADATA_KEY, PluginOptions } from './types/plugin/decorators/pl
  * add a plugin
  * @param plugin plugin to add
  */
-export function plugin<TPlugin extends IPlugin>(this: App<TPlugin>, plugin: TPlugin) {
+export function plugin<TPlugin extends IPlugin> (this: App<TPlugin>, plugin: TPlugin) {
   const { name } = getMetadata(plugin);
 
   if (this.getPlugin(name)) {
@@ -32,7 +32,7 @@ export function plugin<TPlugin extends IPlugin>(this: App<TPlugin>, plugin: TPlu
 /**
  * get a plugin
  */
-export function getPlugin<TPlugin extends IPlugin>(
+export function getPlugin<TPlugin extends IPlugin> (
   this: App<TPlugin>,
   name: PluginName
 ): IPlugin | undefined {
@@ -45,7 +45,7 @@ export function getPlugin<TPlugin extends IPlugin>(
 /**
  * inject fields/events into a plugin
  */
-export function inject<TPlugin extends IPlugin>(this: App<TPlugin>, plugin: IPlugin) {
+export function inject<TPlugin extends IPlugin> (this: App<TPlugin>, plugin: IPlugin) {
   const { name, dependencies, events } = getMetadata(plugin);
 
   // inject dependencies
@@ -110,7 +110,7 @@ export function inject<TPlugin extends IPlugin>(this: App<TPlugin>, plugin: IPlu
 // PLUGIN HELPERS
 //
 
-export function getMetadata(plugin: IPlugin) {
+export function getMetadata (plugin: IPlugin) {
   if (!Reflect.hasMetadata(PLUGIN_METADATA_KEY, plugin.constructor)) {
     throw new Error(`type "${plugin.constructor.name}" is not a valid plugin`);
   }

@@ -18,17 +18,16 @@ interface ITestEvents {
   description: 'test-plugin',
 })
 class TestPlugin implements IPlugin<ITestEvents> {
-
   @Event('custom')
   private emit!: EmitPluginEvent<ITestEvents>;
 
   __eventType!: ITestEvents;
 
-  testEmit() {
+  testEmit () {
     this.emit('test', { message: 'hello', bar: 1 });
   }
 
-  onStart(_event: IPluginStartEvent): void | Promise<void> {
+  onStart (_event: IPluginStartEvent): void | Promise<void> {
     // Do nothing
   }
 }
@@ -75,18 +74,17 @@ describe('app.plugin', () => {
       version: '0.0.1',
       description: 'test-plugin',
     })
-    class ReservedEventPlugin implements IPlugin<{ 'activity': { foo: string } }> {
-
+    class ReservedEventPlugin implements IPlugin<{ activity: { foo: string } }> {
       @Event('custom')
       emit!: <Name extends 'activity'>(name: Name, arg: { foo: string }) => void;
 
-      __eventType!: { 'activity': { foo: string } };
+      __eventType!: { activity: { foo: string } };
 
-      onStart(_event: IPluginStartEvent): void | Promise<void> {
+      onStart (_event: IPluginStartEvent): void | Promise<void> {
         // No-op for tests
       }
 
-      testEmit() {
+      testEmit () {
         this.emit('activity', { foo: 'bar' });
       }
     }
@@ -117,16 +115,15 @@ describe('app.plugin', () => {
       description: 'test-plugin',
     })
     class LifecyclePlugin implements IPlugin {
-
-      onInit(): void {
+      onInit (): void {
         lifecycleOrder.push('onInit');
       }
 
-      onStart(_event: IPluginStartEvent): void {
+      onStart (_event: IPluginStartEvent): void {
         lifecycleOrder.push('onStart');
       }
 
-      onStop(): void {
+      onStop (): void {
         lifecycleOrder.push('onStop');
       }
     }
@@ -149,7 +146,7 @@ describe('app.plugin', () => {
       description: 'test-plugin',
     })
     class ErrorPlugin implements IPlugin {
-      onStart(_event: IPluginStartEvent): void {
+      onStart (_event: IPluginStartEvent): void {
         throw new Error('test error');
       }
     }
@@ -184,14 +181,14 @@ describe('app.plugin', () => {
       description: 'test-plugin',
     })
     class MyPlugin implements IPlugin<IMyContext> {
-      onActivity(_event: IPluginActivityEvent): IMyContext {
+      onActivity (_event: IPluginActivityEvent): IMyContext {
         return {
           foo: 4,
           bar: 'str',
         };
       }
 
-      onStart(_event: IPluginStartEvent): void | Promise<void> {
+      onStart (_event: IPluginStartEvent): void | Promise<void> {
         // No-op for tests
       }
     }
@@ -200,7 +197,6 @@ describe('app.plugin', () => {
       logger: new ConsoleLogger('test', { level: 'debug' }),
       plugins: [new MyPlugin()]
     });
-
 
     let receivedFoo: number = -1;
     let receivedBar: string = '';

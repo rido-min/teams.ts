@@ -33,7 +33,7 @@ export type InvokeResponse<T extends keyof InvokeResponseBody = any> = {
  * @param value value to compare
  * @returns true if value is type of InvokeResponse
  */
-export function isInvokeResponse(value: any): value is InvokeResponse {
+export function isInvokeResponse (value: any): value is InvokeResponse {
   return typeof value === 'object' && 'status' in value && typeof value.status === 'number';
 }
 

@@ -40,7 +40,7 @@ export class EventEmitter<EventTypes = Record<string, any>> implements IEventEmi
     return id;
   }
 
-  off(id: number) {
+  off (id: number) {
     for (const [_, subs] of this.subscriptions.entries()) {
       const i = subs.findIndex((s) => s.id === id);
 

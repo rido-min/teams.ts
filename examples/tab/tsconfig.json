@@ -1,4 +1,25 @@
 {
-  "files": [],
-  "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }]
+  "extends": "@microsoft/teams.config/tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "composite": true
+  },
+  "include": [
+    "src/**/*.ts"
+  ],
+  "references": [
+    {
+      "path": "../../packages/apps"
+    },
+    {
+      "path": "../../packages/client"
+    },
+    {
+      "path": "../../packages/dev"
+    },
+    {
+      "path": "../../packages/graph-endpoints"
+    }
+  ]
 }

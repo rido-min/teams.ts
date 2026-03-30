@@ -1,5 +1,5 @@
 {
-  "extends": "@microsoft/teams.config/tsconfig.esm.json",
+  "extends": "@microsoft/teams.config/tsconfig.base.json",
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": "src"

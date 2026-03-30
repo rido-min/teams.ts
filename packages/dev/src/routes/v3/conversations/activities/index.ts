@@ -4,7 +4,7 @@ import { RouteContext } from '../../../context';
 
 import { create } from './create';
 
-export function router(ctx: RouteContext) {
+export function router (ctx: RouteContext) {
   return express.Router({ mergeParams: true }).post(
     '/',
     create({

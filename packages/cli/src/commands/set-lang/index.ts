@@ -9,7 +9,7 @@ const ArgsSchema = z.object({
   language: z.string(),
 });
 
-export function SetLang(_: IContext): CommandModule<{}, z.infer<typeof ArgsSchema>> {
+export function SetLang (_: IContext): CommandModule<{}, z.infer<typeof ArgsSchema>> {
   const language = Settings.load().language ?? '';
   const currentLanguage = language ? `It is currently set to ${language}.` : '';
 

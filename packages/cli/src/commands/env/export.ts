@@ -7,7 +7,7 @@ type Args = {
   name?: string;
 };
 
-export function Export({ envs }: IContext): CommandModule<{}, Args> {
+export function Export ({ envs }: IContext): CommandModule<{}, Args> {
   return {
     command: 'export [name]',
     describe: 'export an environment to an environment file in your project',

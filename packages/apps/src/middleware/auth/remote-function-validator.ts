@@ -12,7 +12,7 @@ export class RemoteFunctionValidator {
   private entraTokenValidator: Pick<JwtValidator, 'validateAccessToken'>;
   private logger: ILogger;
 
-  constructor(entraTokenValidator: Pick<JwtValidator, 'validateAccessToken'>, logger: ILogger) {
+  constructor (entraTokenValidator: Pick<JwtValidator, 'validateAccessToken'>, logger: ILogger) {
     this.entraTokenValidator = entraTokenValidator;
     this.logger = logger;
   }
@@ -20,7 +20,7 @@ export class RemoteFunctionValidator {
   /**
    * Create a remote function validator for Entra tokens
    */
-  static create(
+  static create (
     tenantId: string,
     clientId: string,
     logger: ILogger,
@@ -44,7 +44,7 @@ export class RemoteFunctionValidator {
     return new RemoteFunctionValidator(jwtValidator, logger);
   }
 
-  async check(headers: Record<string, string | string[]>): Promise<IClientContext | null> {
+  async check (headers: Record<string, string | string[]>): Promise<IClientContext | null> {
     const h = (key: string) => {
       const v = headers[key];
       return Array.isArray(v) ? v[0] : v;

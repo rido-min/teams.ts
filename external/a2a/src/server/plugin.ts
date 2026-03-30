@@ -89,7 +89,7 @@ export class A2APlugin implements IPlugin {
   public readonly customExecutor?: AgentExecutor;
   private readonly middlewares: RequestHandler[] = [];
 
-  constructor(options: IA2APluginOptions) {
+  constructor (options: IA2APluginOptions) {
     this.card = options.agentCard;
     if (options.path) {
       this.path = options.path.startsWith('/')
@@ -103,10 +103,11 @@ export class A2APlugin implements IPlugin {
     this.customExecutor = options.agentExecutor;
   }
 
-  use(middleware: RequestHandler): void {
+  use (middleware: RequestHandler): void {
     this.middlewares.push(middleware);
   }
-  onInit() {
+
+  onInit () {
     const adapter = this.httpServer.adapter;
     if (!(adapter instanceof ExpressAdapter)) {
       throw new Error(
@@ -128,7 +129,7 @@ export class A2APlugin implements IPlugin {
       expressApp,
       this.path,
       allMiddlewares,
-      this.agentCardPath,
+      this.agentCardPath
     );
     this.log.info(`A2A agent set up at ${this.path}/${this.agentCardPath}`);
     this.log.info(`A2A agent listening at ${this.path}`);
@@ -136,7 +137,7 @@ export class A2APlugin implements IPlugin {
     adapter.use(expressApp);
   }
 
-  _createLoggingMiddleware(): RequestHandler {
+  _createLoggingMiddleware (): RequestHandler {
     return (req, _res, next) => {
       let logMessage = `A2A Request: ${req.method} ${req.url}`;
 
@@ -149,7 +150,7 @@ export class A2APlugin implements IPlugin {
     };
   }
 
-  _setupExecutor() {
+  _setupExecutor () {
     const executor: AgentExecutor = {
       execute: async (requestContext, eventBus) => {
         const ctx: A2AEvents['a2a:message'] = {
@@ -180,11 +181,11 @@ export class A2APlugin implements IPlugin {
     return executor;
   }
 
-  _setupRequestHandler(): A2ARequestHandler {
+  _setupRequestHandler (): A2ARequestHandler {
     return new DefaultRequestHandler(
       this.card,
       this.taskStore,
-      this.customExecutor ?? this._setupExecutor(),
+      this.customExecutor ?? this._setupExecutor()
     );
   }
 }

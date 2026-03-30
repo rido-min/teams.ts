@@ -21,10 +21,11 @@ export class Client {
    */
   readonly reactions: ReactionClient;
 
-  get http() {
+  get http () {
     return this._http;
   }
-  set http(v) {
+
+  set http (v) {
     this.bots.http = v;
     this.conversations.http = v;
     this.users.http = v;
@@ -33,10 +34,11 @@ export class Client {
     this.reactions.http = v;
     this._http = v;
   }
+
   protected _http: http.Client;
   protected _apiClientSettings: Partial<ApiClientSettings>;
 
-  constructor(serviceUrl: string, options?: http.Client | http.ClientOptions, apiClientSettings?: Partial<ApiClientSettings>) {
+  constructor (serviceUrl: string, options?: http.Client | http.ClientOptions, apiClientSettings?: Partial<ApiClientSettings>) {
     this.serviceUrl = serviceUrl;
 
     if (!options) {

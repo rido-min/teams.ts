@@ -15,7 +15,7 @@ import { HttpMethod, IHttpServerAdapter, HttpRouteHandler } from '@microsoft/tea
 export class RestifyAdapter implements IHttpServerAdapter {
   protected server: restify.Server;
 
-  constructor(server?: restify.Server) {
+  constructor (server?: restify.Server) {
     this.server = server || restify.createServer();
     this.server.use(restify.plugins.bodyParser());
   }
@@ -23,14 +23,14 @@ export class RestifyAdapter implements IHttpServerAdapter {
   /**
    * Get the Restify server instance for adding custom routes/plugins
    */
-  get instance(): restify.Server {
+  get instance (): restify.Server {
     return this.server;
   }
 
   /**
    * Register a route handler for a given HTTP method and path
    */
-  registerRoute(method: HttpMethod, path: string, handler: HttpRouteHandler): void {
+  registerRoute (method: HttpMethod, path: string, handler: HttpRouteHandler): void {
     const m = method.toLowerCase() as Lowercase<HttpMethod>;
     this.server[m](path, async (req: restify.Request, res: restify.Response) => {
       try {
@@ -48,7 +48,7 @@ export class RestifyAdapter implements IHttpServerAdapter {
   /**
    * Start the server
    */
-  async start(port: number): Promise<void> {
+  async start (port: number): Promise<void> {
     return new Promise<void>((resolve) => {
       this.server.listen(port, () => resolve());
     });
@@ -57,7 +57,7 @@ export class RestifyAdapter implements IHttpServerAdapter {
   /**
    * Stop the server
    */
-  async stop(): Promise<void> {
+  async stop (): Promise<void> {
     return new Promise<void>((resolve) => {
       this.server.close(() => resolve());
     });

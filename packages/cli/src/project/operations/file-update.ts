@@ -13,13 +13,13 @@ export class FileUpdate implements IProjectAttributeOperation {
   private _filename: string;
   private _content?: string | ((content: string) => string);
 
-  constructor(path: string, filename: string, content?: string | ((content: string) => string)) {
+  constructor (path: string, filename: string, content?: string | ((content: string) => string)) {
     this._path = path;
     this._filename = filename;
     this._content = content;
   }
 
-  up(_: IProject) {
+  up (_: IProject) {
     const filePath = path.join(this._path, this._filename);
     const relativeFilePath = path.relative(process.cwd(), filePath);
 
@@ -42,5 +42,5 @@ export class FileUpdate implements IProjectAttributeOperation {
     process.stdout.write('✔️\n');
   }
 
-  down(_: IProject) {}
+  down (_: IProject) {}
 }

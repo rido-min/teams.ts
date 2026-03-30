@@ -13,7 +13,7 @@ type Args = {
   name: string;
 };
 
-export function Remove(_: IContext): CommandModule<{}, Args> {
+export function Remove (_: IContext): CommandModule<{}, Args> {
   const configsPath = path.resolve(url.fileURLToPath(import.meta.url), '../..', 'configs');
 
   return {

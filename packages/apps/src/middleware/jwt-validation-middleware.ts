@@ -14,7 +14,7 @@ export type JwtValidatedRequest = express.Request & {
   validatedToken?: IToken;
 };
 
-export function withJwtValidation(params: JwtValidationParams) {
+export function withJwtValidation (params: JwtValidationParams) {
   const { credentials, logger: inputLogger } = params;
   const logger = inputLogger?.child('jwt-validation-middleware') ?? new ConsoleLogger('jwt-validation-middleware');
 

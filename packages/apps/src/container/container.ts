@@ -36,7 +36,7 @@ export class Container implements IContainer {
   protected readonly values = new Map<string, any>();
   protected readonly providers = new Map<string, Provider<any>>();
 
-  has(key: string) {
+  has (key: string) {
     return this.providers.has(key);
   }
 
@@ -69,7 +69,7 @@ export class Container implements IContainer {
     return value;
   }
 
-  toString() {
+  toString () {
     return Object.entries(this.values)
       .map(([key, value]) => `${key} => ${value}`)
       .join('\n');

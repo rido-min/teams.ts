@@ -9,16 +9,18 @@ export type ActivityParams = Pick<Activity, 'type'> & Partial<Activity>;
 export class ConversationActivityClient {
   readonly serviceUrl: string;
 
-  get http() {
+  get http () {
     return this._http;
   }
-  set http(v) {
+
+  set http (v) {
     this._http = v;
   }
+
   protected _http: Client;
   protected _apiClientSettings: Partial<ApiClientSettings>;
 
-  constructor(serviceUrl: string, options?: Client | ClientOptions, apiClientSettings?: Partial<ApiClientSettings>) {
+  constructor (serviceUrl: string, options?: Client | ClientOptions, apiClientSettings?: Partial<ApiClientSettings>) {
     this.serviceUrl = serviceUrl;
 
     if (!options) {
@@ -32,7 +34,7 @@ export class ConversationActivityClient {
     this._apiClientSettings = mergeApiClientSettings(apiClientSettings);
   }
 
-  async create(conversationId: string, params: ActivityParams) {
+  async create (conversationId: string, params: ActivityParams) {
     const res = await this.http.post<Resource>(
       `${this.serviceUrl}/v3/conversations/${conversationId}/activities`,
       params
@@ -40,7 +42,7 @@ export class ConversationActivityClient {
     return res.data;
   }
 
-  async update(conversationId: string, id: string, params: ActivityParams) {
+  async update (conversationId: string, id: string, params: ActivityParams) {
     const res = await this.http.put<Resource>(
       `${this.serviceUrl}/v3/conversations/${conversationId}/activities/${id}`,
       params
@@ -48,7 +50,7 @@ export class ConversationActivityClient {
     return res.data;
   }
 
-  async reply(conversationId: string, id: string, params: ActivityParams) {
+  async reply (conversationId: string, id: string, params: ActivityParams) {
     params.replyToId = id;
     const res = await this.http.post<Resource>(
       `${this.serviceUrl}/v3/conversations/${conversationId}/activities/${id}`,
@@ -57,21 +59,21 @@ export class ConversationActivityClient {
     return res.data;
   }
 
-  async delete(conversationId: string, id: string) {
+  async delete (conversationId: string, id: string) {
     const res = await this.http.delete<void>(
       `${this.serviceUrl}/v3/conversations/${conversationId}/activities/${id}`
     );
     return res.data;
   }
 
-  async getMembers(conversationId: string, id: string) {
+  async getMembers (conversationId: string, id: string) {
     const res = await this.http.get<Account[]>(
       `${this.serviceUrl}/v3/conversations/${conversationId}/activities/${id}/members`
     );
     return res.data;
   }
 
-  async createTargeted(conversationId: string, params: ActivityParams) {
+  async createTargeted (conversationId: string, params: ActivityParams) {
     const res = await this.http.post<Resource>(
       `${this.serviceUrl}/v3/conversations/${conversationId}/activities?isTargetedActivity=true`,
       params
@@ -79,7 +81,7 @@ export class ConversationActivityClient {
     return res.data;
   }
 
-  async updateTargeted(conversationId: string, id: string, params: ActivityParams) {
+  async updateTargeted (conversationId: string, id: string, params: ActivityParams) {
     const res = await this.http.put<Resource>(
       `${this.serviceUrl}/v3/conversations/${conversationId}/activities/${id}?isTargetedActivity=true`,
       params
@@ -87,7 +89,7 @@ export class ConversationActivityClient {
     return res.data;
   }
 
-  async deleteTargeted(conversationId: string, id: string) {
+  async deleteTargeted (conversationId: string, id: string) {
     const res = await this.http.delete<void>(
       `${this.serviceUrl}/v3/conversations/${conversationId}/activities/${id}?isTargetedActivity=true`
     );

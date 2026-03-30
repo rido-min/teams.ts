@@ -42,7 +42,7 @@ const useActivitiesGridClasses = makeStyles({
       fontWeight: 'inherit',
       padding: 0,
       gap: tokens.spacingHorizontalXS,
-      border: `0px solid transparent`,
+      border: '0px solid transparent',
       '&:focus-visible': {
         outline: 'none',
         boxShadow: 'none',

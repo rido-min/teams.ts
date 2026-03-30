@@ -14,14 +14,14 @@ export class FileEnvSet implements IProjectAttributeOperation {
   private _key: string;
   private _value: any;
 
-  constructor(path: string, filename: string, key: string, value: any) {
+  constructor (path: string, filename: string, key: string, value: any) {
     this._path = path;
     this._filename = filename;
     this._key = key;
     this._value = value;
   }
 
-  up(_: IProject) {
+  up (_: IProject) {
     const filePath = path.join(this._path, this._filename);
     const relativeFilePath = path.relative(process.cwd(), filePath);
     process.stdout.write(
@@ -46,7 +46,7 @@ export class FileEnvSet implements IProjectAttributeOperation {
     process.stdout.write('✔️\n');
   }
 
-  down(_: IProject) {
+  down (_: IProject) {
     const filePath = path.join(this._path, this._filename);
     const relativeFilePath = path.relative(process.cwd(), filePath);
 

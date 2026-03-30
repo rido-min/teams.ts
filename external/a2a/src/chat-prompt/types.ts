@@ -84,4 +84,3 @@ export type A2APluginUseParams = {
    */
   buildMessageFromAgentResponse?: BuildMessageFromAgentResponse;
 };
-

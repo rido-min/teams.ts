@@ -62,15 +62,15 @@ const MessageActionsToolbar: FC<MessageActionsProps> = memo(
           {messageReactions.map(({ label, reaction }) => (
             <Tooltip
               content={<span className={classes.tooltipText}>{reaction}</span>}
-              relationship="label"
+              relationship='label'
               key={`toolbar-${reaction}`}
             >
               <ToolbarToggleButton
-                as="button"
-                appearance="subtle"
+                as='button'
+                appearance='subtle'
                 aria-label={`React with ${reaction}`}
                 className={classes.toolbarButton}
-                size="small"
+                size='small'
                 name={reaction}
                 value={reaction}
                 onClick={() => handleReactionClick(reaction)}
@@ -87,12 +87,12 @@ const MessageActionsToolbar: FC<MessageActionsProps> = memo(
     const actionButtons = useMemo(
       () => (
         <>
-          <Tooltip content="Examine activity" relationship="label">
+          <Tooltip content='Examine activity' relationship='label'>
             <ToolbarButton
-              appearance="subtle"
+              appearance='subtle'
               className={classes.toolbarButton}
               icon={<SearchIcon />}
-              key="examine-activity"
+              key='examine-activity'
               onClick={handleExamineClick}
             />
           </Tooltip>
@@ -109,10 +109,10 @@ const MessageActionsToolbar: FC<MessageActionsProps> = memo(
             </Tooltip>
           )} */}
           {userSentMessage && conversationType === 'personal' && (
-            <Tooltip content="Edit" relationship="label">
+            <Tooltip content='Edit' relationship='label'>
               <ToolbarButton
-                aria-label="Edit"
-                key="Edit"
+                aria-label='Edit'
+                key='Edit'
                 icon={<EditIcon />}
                 className={classes.toolbarButton}
                 onClick={handleEdit}
@@ -139,7 +139,7 @@ const MessageActionsToolbar: FC<MessageActionsProps> = memo(
     );
 
     return (
-      <Toolbar aria-label="Message actions" {...props}>
+      <Toolbar aria-label='Message actions' {...props}>
         {reactionButtons}
         <ToolbarDivider />
         {actionButtons}

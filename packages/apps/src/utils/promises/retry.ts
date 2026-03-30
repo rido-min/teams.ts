@@ -19,7 +19,7 @@ export type RetryOptions = {
   readonly logger?: ILogger;
 };
 
-export async function retry<T = any>(factory: () => Promise<T>, options?: RetryOptions) {
+export async function retry<T = any> (factory: () => Promise<T>, options?: RetryOptions) {
   const max = options?.max ?? 5;
   const delay = options?.delay ?? 500;
   const log = options?.logger?.child('retry');

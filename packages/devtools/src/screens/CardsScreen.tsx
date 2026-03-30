@@ -1,4 +1,4 @@
-import { FC, memo, useEffect, useRef } from "react";
+import { FC, memo, useEffect, useRef } from 'react';
 import {
   Button,
   Subtitle1,
@@ -6,34 +6,34 @@ import {
   ToastBody,
   ToastTitle,
   useToastController,
-} from "@fluentui/react-components";
-import { AttachRegular } from "@fluentui/react-icons";
-import { IAdaptiveCard } from "@microsoft/teams.cards";
-import { useNavigate, useLocation } from "react-router";
+} from '@fluentui/react-components';
+import { AttachRegular } from '@fluentui/react-icons';
+import { IAdaptiveCard } from '@microsoft/teams.cards';
+import { useNavigate, useLocation } from 'react-router';
 
-import { adaptiveCardToolsBaseUrl } from "../components/Card/AdaptiveCard";
-import Logger from "../components/Logger/Logger";
-import { useCardStore } from "../stores/CardStore";
+import { adaptiveCardToolsBaseUrl } from '../components/Card/AdaptiveCard';
+import Logger from '../components/Logger/Logger';
+import { useCardStore } from '../stores/CardStore';
 
-import useCardsScreenClasses from "./CardsScreen.styles";
-import { sampleCard } from "./SampleCard";
+import useCardsScreenClasses from './CardsScreen.styles';
+import { sampleCard } from './SampleCard';
 
 const designerUrl = `${adaptiveCardToolsBaseUrl}/designer`;
 
 interface ICardPayloadMessage {
-  type: "cardPayload";
+  type: 'cardPayload';
   payload: string;
 }
 
-function isCardPayloadEventData(data: any): data is ICardPayloadMessage {
+function isCardPayloadEventData (data: any): data is ICardPayloadMessage {
   return (
-    typeof data === "object" &&
-    (data as ICardPayloadMessage).type === "cardPayload" &&
-    typeof (data as ICardPayloadMessage).payload === "string"
+    typeof data === 'object' &&
+    (data as ICardPayloadMessage).type === 'cardPayload' &&
+    typeof (data as ICardPayloadMessage).payload === 'string'
   );
 }
 
-const childLog = Logger.child("CardsScreen");
+const childLog = Logger.child('CardsScreen');
 
 const NewCardsScreen: FC = memo(() => {
   const cardsClasses = useCardsScreenClasses();
@@ -47,16 +47,16 @@ const NewCardsScreen: FC = memo(() => {
     const handleMessage = (event: MessageEvent) => {
       if (
         event.origin === adaptiveCardToolsBaseUrl &&
-        event.data === "ac-designer-ready"
+        event.data === 'ac-designer-ready'
       ) {
         // Send the card payload to the iframe
         iframeRef.current?.contentWindow?.postMessage(
           {
-            type: "cardPayload",
-            id: "card", // id is not used in the designer
+            type: 'cardPayload',
+            id: 'card', // id is not used in the designer
             payload: JSON.stringify(sampleCard),
           },
-          designerUrl,
+          designerUrl
         );
       }
 
@@ -67,30 +67,30 @@ const NewCardsScreen: FC = memo(() => {
         const isEditing = location.state?.isEditing ?? false;
 
         childLog.debug(
-          "Attaching card in mode:",
-          isEditing ? "edit" : "compose",
+          'Attaching card in mode:',
+          isEditing ? 'edit' : 'compose'
         );
-        childLog.info("Setting card in store:");
+        childLog.info('Setting card in store:');
 
-        setCurrentCard(card, isEditing ? "edit" : "compose");
+        setCurrentCard(card, isEditing ? 'edit' : 'compose');
 
         dispatchToast(
           <Toast>
             <ToastTitle>Card Attached</ToastTitle>
-            <ToastBody>{`Card has been attached to the compose box.`}</ToastBody>
+            <ToastBody>Card has been attached to the compose box.</ToastBody>
           </Toast>,
-          { intent: "success" },
+          { intent: 'success' }
         );
 
         // Navigate to ChatScreen after setting the card
-        navigate("/chat", { state: { isEditing } });
+        navigate('/chat', { state: { isEditing } });
       }
     };
 
-    window.addEventListener("message", handleMessage);
+    window.addEventListener('message', handleMessage);
 
     return () => {
-      window.removeEventListener("message", handleMessage);
+      window.removeEventListener('message', handleMessage);
     };
   });
 
@@ -98,9 +98,9 @@ const NewCardsScreen: FC = memo(() => {
     // Send a message to the iframe to get the current card payload
     iframeRef.current?.contentWindow?.postMessage(
       {
-        type: "getCurrentCardPayload",
+        type: 'getCurrentCardPayload',
       },
-      designerUrl,
+      designerUrl
     );
   };
 
@@ -109,26 +109,26 @@ const NewCardsScreen: FC = memo(() => {
       <div className={cardsClasses.header}>
         <Subtitle1>Adaptive Cards Designer</Subtitle1>
         <Button
-          appearance="primary"
+          appearance='primary'
           icon={<AttachRegular />}
           onClick={onGetCurrentCardPayloadClick}
-          style={{ alignSelf: "flex-end" }}
+          style={{ alignSelf: 'flex-end' }}
         >
           Attach card
         </Button>
       </div>
       <iframe
-        id="card-designer"
+        id='card-designer'
         ref={iframeRef}
         className={cardsClasses.iframe}
         src={designerUrl}
-        title="Adaptive Cards Designer"
-        width="100%"
-        height="100%"
-      ></iframe>
+        title='Adaptive Cards Designer'
+        width='100%'
+        height='100%'
+      />
     </div>
   );
 });
 
-NewCardsScreen.displayName = "NewCardsScreen";
+NewCardsScreen.displayName = 'NewCardsScreen';
 export default NewCardsScreen;

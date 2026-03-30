@@ -20,7 +20,7 @@ const MessageReactionButton: FC<MessageReactionButtonProps> = memo(
     return (
       <Tooltip
         content={<span className={classes.tooltipText}>{reaction.type}</span>}
-        relationship="label"
+        relationship='label'
         positioning={{ align: 'center', position: 'below' }}
       >
         <Button
@@ -29,8 +29,8 @@ const MessageReactionButton: FC<MessageReactionButtonProps> = memo(
             isFromUser && classes.reactionFromUser
           ).trim()}
           onClick={onReactionClick}
-          shape="circular"
-          size="small"
+          shape='circular'
+          size='small'
         >
           {reactionEmoji}
         </Button>

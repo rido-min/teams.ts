@@ -163,7 +163,7 @@ export class MessageActivity extends Activity<'message'> implements IMessageActi
    */
   value?: any;
 
-  constructor(text: string = '', value: Omit<Partial<IMessageActivity>, 'type'> = {}) {
+  constructor (text: string = '', value: Omit<Partial<IMessageActivity>, 'type'> = {}) {
     super({
       ...value,
       type: 'message',
@@ -175,14 +175,14 @@ export class MessageActivity extends Activity<'message'> implements IMessageActi
   /**
    * initialize from interface
    */
-  static from(activity: IMessageActivity) {
+  static from (activity: IMessageActivity) {
     return new MessageActivity(activity.text, activity);
   }
 
   /**
    * convert to interface
    */
-  toInterface(): IMessageActivity {
+  toInterface (): IMessageActivity {
     return Object.assign(
       {
         stripMentionsText: this.stripMentionsText.bind(this),
@@ -196,7 +196,7 @@ export class MessageActivity extends Activity<'message'> implements IMessageActi
   /**
    * copy to a new instance
    */
-  clone(options: Omit<Partial<IMessageActivity>, 'type'> = {}) {
+  clone (options: Omit<Partial<IMessageActivity>, 'type'> = {}) {
     return new MessageActivity(this.text, {
       ...this.toInterface(),
       ...options,
@@ -206,7 +206,7 @@ export class MessageActivity extends Activity<'message'> implements IMessageActi
   /**
    * The text content of the message.
    */
-  withText(value: string) {
+  withText (value: string) {
     this.text = value;
     return this;
   }
@@ -214,7 +214,7 @@ export class MessageActivity extends Activity<'message'> implements IMessageActi
   /**
    * The text to speak.
    */
-  withSpeak(value: string) {
+  withSpeak (value: string) {
     this.speak = value;
     return this;
   }
@@ -224,7 +224,7 @@ export class MessageActivity extends Activity<'message'> implements IMessageActi
    * expecting, or ignoring user input after the message is delivered to the client. Possible
    * values include: 'acceptingInput', 'ignoringInput', 'expectingInput'
    */
-  withInputHint(value: InputHint) {
+  withInputHint (value: InputHint) {
     this.inputHint = value;
     return this;
   }
@@ -232,7 +232,7 @@ export class MessageActivity extends Activity<'message'> implements IMessageActi
   /**
    * The text to display if the channel cannot render cards.
    */
-  withSummary(value: string) {
+  withSummary (value: string) {
     this.summary = value;
     return this;
   }
@@ -240,7 +240,7 @@ export class MessageActivity extends Activity<'message'> implements IMessageActi
   /**
    * Format of text fields Default:markdown. Possible values include: 'markdown', 'plain', 'xml'
    */
-  withTextFormat(value: TextFormat) {
+  withTextFormat (value: TextFormat) {
     this.textFormat = value;
     return this;
   }
@@ -249,7 +249,7 @@ export class MessageActivity extends Activity<'message'> implements IMessageActi
    * The layout hint for multiple attachments. Default: list. Possible values include: 'list',
    * 'carousel'
    */
-  withAttachmentLayout(value: AttachmentLayout) {
+  withAttachmentLayout (value: AttachmentLayout) {
     this.attachmentLayout = value;
     return this;
   }
@@ -257,7 +257,7 @@ export class MessageActivity extends Activity<'message'> implements IMessageActi
   /**
    * The suggested actions for the activity.
    */
-  withSuggestedActions(value: SuggestedActions) {
+  withSuggestedActions (value: SuggestedActions) {
     this.suggestedActions = value;
     return this;
   }
@@ -265,7 +265,7 @@ export class MessageActivity extends Activity<'message'> implements IMessageActi
   /**
    * The importance of the activity. Possible values include: 'low', 'normal', 'high'
    */
-  withImportance(value: Importance) {
+  withImportance (value: Importance) {
     this.importance = value;
     return this;
   }
@@ -274,7 +274,7 @@ export class MessageActivity extends Activity<'message'> implements IMessageActi
    * A delivery hint to signal to the recipient alternate delivery paths for the activity.
    * The default delivery mode is "default". Possible values include: 'normal', 'notification'
    */
-  withDeliveryMode(value: DeliveryMode) {
+  withDeliveryMode (value: DeliveryMode) {
     this.deliveryMode = value;
     return this;
   }
@@ -283,7 +283,7 @@ export class MessageActivity extends Activity<'message'> implements IMessageActi
    * The time at which the activity should be considered to be "expired" and should not be
    * presented to the recipient.
    */
-  withExpiration(value: Date) {
+  withExpiration (value: Date) {
     this.expiration = value;
     return this;
   }
@@ -291,7 +291,7 @@ export class MessageActivity extends Activity<'message'> implements IMessageActi
   /**
    * Append text
    */
-  addText(text: string) {
+  addText (text: string) {
     this.text += text;
     return this;
   }
@@ -299,7 +299,7 @@ export class MessageActivity extends Activity<'message'> implements IMessageActi
   /**
    * Attachments
    */
-  addAttachments(...value: Attachment[]) {
+  addAttachments (...value: Attachment[]) {
     if (!this.attachments) {
       this.attachments = [];
     }
@@ -313,7 +313,7 @@ export class MessageActivity extends Activity<'message'> implements IMessageActi
    * @param account the account to mention
    * @param options options to customize the mention
    */
-  addMention(account: Account, options: AddMentionOptions = {}) {
+  addMention (account: Account, options: AddMentionOptions = {}) {
     const text = options.text || account.name;
     const addText = options.addText ?? true;
 
@@ -338,7 +338,7 @@ export class MessageActivity extends Activity<'message'> implements IMessageActi
   /**
    * remove "\<at>...\</at>" text from an activity
    */
-  stripMentionsText(options: StripMentionsTextOptions = {}) {
+  stripMentionsText (options: StripMentionsTextOptions = {}) {
     this.text = stripMentionsText(this, options);
     return this;
   }
@@ -346,7 +346,7 @@ export class MessageActivity extends Activity<'message'> implements IMessageActi
   /**
    * is the recipient account mentioned
    */
-  isRecipientMentioned() {
+  isRecipientMentioned () {
     return (this.entities || [])
       .filter((e) => e.type === 'mention')
       .some((e) => e.mentioned.id === this.recipient.id);
@@ -355,7 +355,7 @@ export class MessageActivity extends Activity<'message'> implements IMessageActi
   /**
    * get a mention by the account id if exists
    */
-  getAccountMention(accountId: string) {
+  getAccountMention (accountId: string) {
     return (this.entities || [])
       .filter((e) => e.type === 'mention')
       .find((e) => e.mentioned.id === accountId);
@@ -365,7 +365,7 @@ export class MessageActivity extends Activity<'message'> implements IMessageActi
    * Add stream info, making
    * this a final stream message
    */
-  addStreamFinal() {
+  addStreamFinal () {
     if (!this.channelData) {
       this.channelData = {};
     }
@@ -390,7 +390,7 @@ export class MessageActivity extends Activity<'message'> implements IMessageActi
    * @experimental This API is in preview and may change in the future.
    * Diagnostic: ExperimentalTeamsTargeted
    */
-  withRecipient(account: Account, isTargeted: boolean = false): this {
+  withRecipient (account: Account, isTargeted: boolean = false): this {
     super.withRecipient(account, isTargeted);
     return this;
   }

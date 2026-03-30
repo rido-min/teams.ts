@@ -6,7 +6,7 @@ type Args = {
   name: string;
 };
 
-export function Select({ envs }: IContext): CommandModule<{}, Args> {
+export function Select ({ envs }: IContext): CommandModule<{}, Args> {
   return {
     command: 'select <name>',
     describe: 'select an environment',

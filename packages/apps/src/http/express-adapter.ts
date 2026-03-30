@@ -31,7 +31,7 @@ export class ExpressAdapter implements IHttpServerAdapter {
   protected logger: ILogger;
   protected onError?: (err: Error) => void;
 
-  constructor(server?: http.Server, options?: { logger?: ILogger; onError?: (err: Error) => void }) {
+  constructor (server?: http.Server, options?: { logger?: ILogger; onError?: (err: Error) => void }) {
     this.express = express();
     this.server = server || http.createServer();
     this.server.on('request', this.express);
@@ -51,7 +51,7 @@ export class ExpressAdapter implements IHttpServerAdapter {
   /**
    * Register a route handler for a given HTTP method and path
    */
-  registerRoute(method: HttpMethod, path: string, handler: HttpRouteHandler): void {
+  registerRoute (method: HttpMethod, path: string, handler: HttpRouteHandler): void {
     if (method !== 'POST') {
       throw new Error(`Unsupported HTTP method: ${method}`);
     }
@@ -78,7 +78,7 @@ export class ExpressAdapter implements IHttpServerAdapter {
   /**
    * Start the server listening on the specified port
    */
-  async start(port: number): Promise<void> {
+  async start (port: number | string): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       // Handle startup errors
       this.server.once('error', (err) => {
@@ -104,14 +104,14 @@ export class ExpressAdapter implements IHttpServerAdapter {
   /**
    * Serve static files from a directory
    */
-  serveStatic(path: string, directory: string): void {
+  serveStatic (path: string, directory: string): void {
     this.express.use(path, cors(), express.static(directory));
   }
 
   /**
    * Stop the server and close all connections
    */
-  async stop(): Promise<void> {
+  async stop (): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       this.server.close((err) => {
         if (err) {

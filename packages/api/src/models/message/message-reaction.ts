@@ -9,7 +9,6 @@ import { MessageUser } from './message-user';
  */
 export type MessageReactionType = 'like' | 'heart' | '1f440_eyes' | '2705_whiteheavycheckmark' | 'launch' | '1f4cc_pushpin' | (string & {});
 
-
 /**
  * Represents a reaction on a message, including the reaction type, timestamp, and user.
  *

@@ -3,7 +3,7 @@
 import fs from 'fs';
 import path from 'path';
 
-function fixEsmImportPaths(filePath: string) {
+function fixEsmImportPaths (filePath: string) {
   let content = fs.readFileSync(filePath, 'utf8');
   // Regex to match extensionless relative imports (with minified code support)
   content = content.replace(
@@ -38,7 +38,7 @@ function fixEsmImportPaths(filePath: string) {
   fs.writeFileSync(filePath, content, 'utf8');
 }
 
-export function walk(dir: string) {
+export function walk (dir: string) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const fullPath = path.join(dir, entry.name);
     if (entry.isDirectory()) {
@@ -50,14 +50,14 @@ export function walk(dir: string) {
 }
 
 // CLI interface
-export function fixEsmImports(distFolder?: string) {
+export function fixEsmImports (distFolder?: string) {
   const targetFolder = distFolder || path.join(process.cwd(), 'dist');
-  
+
   if (!fs.existsSync(targetFolder)) {
     console.error(`❌ Error: Directory ${targetFolder} does not exist`);
     return;
   }
-  
+
   console.log('Updating ESM imports...');
   walk(targetFolder);
   console.log('✅ ESM imports in .mjs files have been fixed to include .mjs extensions.');

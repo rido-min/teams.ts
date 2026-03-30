@@ -8,7 +8,7 @@ import { List } from './list';
 import { Select } from './select';
 import { Set } from './set';
 
-export function Env(context: IContext): CommandModule<{}, {}> {
+export function Env (context: IContext): CommandModule<{}, {}> {
   return {
     command: 'env',
     aliases: 'e',

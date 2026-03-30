@@ -20,7 +20,7 @@ const ChatAvatarWrapper: FC<ChatAvatarProps> = ({ id, isConnected }) => {
 
   return (
     <div id={id} className={mergeClasses(classes.avatar, classes.avatarSpacer)}>
-      <Avatar name="User" badge={{ status: isConnected ? 'available' : 'offline' }} size={40} />
+      <Avatar name='User' badge={{ status: isConnected ? 'available' : 'offline' }} size={40} />
     </div>
   );
 };

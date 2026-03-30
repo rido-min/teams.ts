@@ -1,3 +1,4 @@
+/* eslint-disable no-template-curly-in-string */
 import fs from 'node:fs';
 import path from 'node:path';
 import url from 'node:url';
@@ -11,12 +12,12 @@ export class AgentsToolkitAttribute implements IProjectAttribute {
   readonly alias = 'atk';
   readonly description = 'include M365 Agents Toolkit configuration';
 
-  constructor(name: string) {
+  constructor (name: string) {
     this.id = `atk[${name}]`;
     this.name = name;
   }
 
-  typescript(targetDir: string) {
+  typescript (targetDir: string) {
     return new Compound(
       new Copy(
         path.resolve(url.fileURLToPath(import.meta.url), '../..', 'configs', 'atk', this.name, 'typescript'),
@@ -72,7 +73,7 @@ export class AgentsToolkitAttribute implements IProjectAttribute {
     );
   }
 
-  csharp(targetDir: string) {
+  csharp (targetDir: string) {
     // Get the .sln file in the target directory
     const slnFile = fs.readdirSync(targetDir).find((file) => file.endsWith('.sln'));
     if (!slnFile) {
@@ -99,32 +100,32 @@ export class AgentsToolkitAttribute implements IProjectAttribute {
         const jsonArray = JSON.parse(content);
         const atkDebugProfiles = [
           {
-            'Name': 'Microsoft Teams (browser)',
-            'Projects': [
+            Name: 'Microsoft Teams (browser)',
+            Projects: [
               {
-                'Path': 'TeamsApp\\TeamsApp.ttkproj',
-                'Action': 'StartWithoutDebugging',
-                'DebugTarget': 'Microsoft Teams (browser)'
+                Path: 'TeamsApp\\TeamsApp.ttkproj',
+                Action: 'StartWithoutDebugging',
+                DebugTarget: 'Microsoft Teams (browser)'
               },
               {
-                'Path': `${slnFileName}\\${slnFileName}.csproj`,
-                'Action': 'Start',
-                'DebugTarget': 'Start Project'
+                Path: `${slnFileName}\\${slnFileName}.csproj`,
+                Action: 'Start',
+                DebugTarget: 'Start Project'
               }
             ]
           },
           {
-            'Name': 'Microsoft Teams (browser) (skip update Teams App)',
-            'Projects': [
+            Name: 'Microsoft Teams (browser) (skip update Teams App)',
+            Projects: [
               {
-                'Path': 'TeamsApp\\TeamsApp.ttkproj',
-                'Action': 'StartWithoutDebugging',
-                'DebugTarget': 'Microsoft Teams (browser) (skip update Teams App)'
+                Path: 'TeamsApp\\TeamsApp.ttkproj',
+                Action: 'StartWithoutDebugging',
+                DebugTarget: 'Microsoft Teams (browser) (skip update Teams App)'
               },
               {
-                'Path': `${slnFileName}\\${slnFileName}.csproj`,
-                'Action': 'Start',
-                'DebugTarget': 'Start Project'
+                Path: `${slnFileName}\\${slnFileName}.csproj`,
+                Action: 'Start',
+                DebugTarget: 'Start Project'
               }
             ]
           }
@@ -159,7 +160,7 @@ export class AgentsToolkitAttribute implements IProjectAttribute {
     );
   }
 
-  python(targetDir: string) {
+  python (targetDir: string) {
     return new Copy(
       path.resolve(
         url.fileURLToPath(import.meta.url),

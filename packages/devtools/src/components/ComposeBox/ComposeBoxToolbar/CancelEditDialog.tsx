@@ -25,15 +25,15 @@ const CancelEditDialog: FC<CancelEditProps> = memo(({ isOpen, onCancel, onDiscar
 
   return (
     <Dialog open={isOpen} {...modalAttributes}>
-      <DialogSurface aria-describedby="dialog-description">
+      <DialogSurface aria-describedby='dialog-description'>
         <DialogBody>
           <DialogTitle>Discard draft?</DialogTitle>
-          <DialogContent id="dialog-description">Do you want to discard this draft?</DialogContent>
+          <DialogContent id='dialog-description'>Do you want to discard this draft?</DialogContent>
           <DialogActions {...navigationAttributes}>
             <Button ref={cancelButtonRef} onClick={onCancel} autoFocus>
               Keep editing
             </Button>
-            <Button ref={discardButtonRef} appearance="primary" onClick={onDiscard}>
+            <Button ref={discardButtonRef} appearance='primary' onClick={onDiscard}>
               Discard
             </Button>
           </DialogActions>

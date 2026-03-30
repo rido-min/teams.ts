@@ -10,7 +10,7 @@ import { IPlugin } from './types';
  * activity handler called when an inbound activity is received
  * @param event the received activity event
  */
-export async function $process<TPlugin extends IPlugin>(
+export async function $process<TPlugin extends IPlugin> (
   this: App<TPlugin>,
   event: IActivityEvent
 ): Promise<InvokeResponse> {
@@ -90,7 +90,7 @@ export async function $process<TPlugin extends IPlugin>(
   }
 
   let i = -1;
-  let data: any = undefined;
+  let data: any;
 
   const next = async (ctx?: IActivityContext) => {
     if (i === routes.length - 1) return data;
@@ -117,7 +117,7 @@ export async function $process<TPlugin extends IPlugin>(
     appGraph,
     appId: this.id || '',
     log: this.log,
-    userToken: userToken,
+    userToken,
     ref,
     storage: this.storage,
     isSignedIn: !!userToken,
@@ -175,7 +175,7 @@ export async function $process<TPlugin extends IPlugin>(
     this.onActivityResponse({
       ...ref,
       activity,
-      response: response,
+      response,
     });
   }
 

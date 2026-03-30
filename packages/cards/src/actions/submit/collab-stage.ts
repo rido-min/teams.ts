@@ -27,7 +27,7 @@ export class CollabStageAction extends SubmitAction implements ICollabStageActio
    */
   data: MSTeamsData<ICollabStageData>;
 
-  constructor(tab?: ITabInfo, options: SubmitActionOptions = {}) {
+  constructor (tab?: ITabInfo, options: SubmitActionOptions = {}) {
     super(options);
     Object.assign(this, options);
     this.data = {
@@ -43,16 +43,16 @@ export class CollabStageAction extends SubmitAction implements ICollabStageActio
     };
   }
 
-  static from(options: CollabStageActionOptions) {
+  static from (options: CollabStageActionOptions) {
     return new CollabStageAction(options.data.msteams.value?.tabInfo, options);
   }
 
-  withData(value: ICollabStageData) {
+  withData (value: ICollabStageData) {
     super.withData({ msteams: value });
     return this;
   }
 
-  withValue(value: ITabInfo) {
+  withValue (value: ITabInfo) {
     this.data.msteams.value = new CollabStageValueData(value);
     return this;
   }
@@ -81,7 +81,7 @@ export class CollabStageData implements ICollabStageData {
    */
   value?: ICollabStageValueData;
 
-  constructor(value?: ICollabStageValueData) {
+  constructor (value?: ICollabStageValueData) {
     this.type = 'invoke';
     this.value = value;
   }
@@ -110,7 +110,7 @@ export class CollabStageValueData implements ICollabStageValueData {
    */
   tabInfo: ITabInfo;
 
-  constructor(tab: ITabInfo) {
+  constructor (tab: ITabInfo) {
     this.type = 'tab/tabInfoAction';
     this.tabInfo = tab;
   }

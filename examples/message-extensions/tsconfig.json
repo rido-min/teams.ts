@@ -1,8 +1,22 @@
 {
-  "extends": "@microsoft/teams.config/tsconfig.node.json",
+  "extends": "@microsoft/teams.config/tsconfig.base.json",
   "compilerOptions": {
     "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": "src",
+    "composite": true
   },
-  "include": ["src/**/*.ts"]
+  "include": [
+    "src/**/*.ts"
+  ],
+  "references": [
+    {
+      "path": "../../packages/apps"
+    },
+    {
+      "path": "../../packages/cards"
+    },
+    {
+      "path": "../../packages/dev"
+    }
+  ]
 }

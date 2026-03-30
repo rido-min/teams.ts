@@ -52,7 +52,7 @@ export class OpenAIChatModel implements IChatModel<ChatCompletionCreateParams> {
   private readonly _openai: OpenAI;
   private readonly _log: ILogger;
 
-  constructor(readonly options: OpenAIChatModelOptions | AzureOpenAIChatModelOptions) {
+  constructor (readonly options: OpenAIChatModelOptions | AzureOpenAIChatModelOptions) {
     this._log =
       options.logger || new ConsoleLogger(`@microsoft/teams.openai/${this.options.model}`);
     this._openai =
@@ -81,7 +81,7 @@ export class OpenAIChatModel implements IChatModel<ChatCompletionCreateParams> {
         });
   }
 
-  async send(
+  async send (
     input: Message,
     options: ChatSendOptions<ChatCompletionCreateParams> = {}
   ): Promise<ModelMessage> {

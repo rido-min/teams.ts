@@ -17,7 +17,7 @@ const OverflowTooltip: FC<OverflowTooltipProps> = ({ content, children }) => {
   }
 
   return (
-    <Tooltip content={content} relationship="label">
+    <Tooltip content={content} relationship='label'>
       {child}
     </Tooltip>
   );

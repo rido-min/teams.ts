@@ -12,15 +12,15 @@ export const DEFAULT_API_CLIENT_SETTINGS: ApiClientSettings = {
   oauthUrl: 'https://token.botframework.com',
 };
 
-export function mergeApiClientSettings(
+export function mergeApiClientSettings (
   apiClientSettings?: Partial<ApiClientSettings>
 ): ApiClientSettings {
   const env = typeof process === 'undefined' ? undefined : process.env;
-  
+
   return {
-    oauthUrl: 
-      apiClientSettings?.oauthUrl ?? 
-      env?.OAUTH_URL ?? 
+    oauthUrl:
+      apiClientSettings?.oauthUrl ??
+      env?.OAUTH_URL ??
       DEFAULT_API_CLIENT_SETTINGS.oauthUrl,
   };
 }

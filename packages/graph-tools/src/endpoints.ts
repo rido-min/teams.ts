@@ -5,7 +5,7 @@ import npath from 'path/posix';
 import camelcase from 'camelcase';
 import handlebars from 'handlebars';
 import { OpenAPIV3 } from 'openapi-types';
-import { format  as prettier } from 'prettier';
+import { format as prettier } from 'prettier';
 import sortKeys from 'sort-keys';
 import yaml from 'yaml';
 
@@ -76,7 +76,7 @@ class Client {
   private components?: OpenAPIV3.ComponentsObject;
   private templatesPath: string;
 
-  constructor(name: string, fileSystemName: string, templatesPath: string, description?: string, components?: OpenAPIV3.ComponentsObject) {
+  constructor (name: string, fileSystemName: string, templatesPath: string, description?: string, components?: OpenAPIV3.ComponentsObject) {
     this.name = name;
     this.fileSystemName = fileSystemName;
     this.exportName = getExportName(name);
@@ -89,7 +89,7 @@ class Client {
     this.endpoints = {};
   }
 
-  set(parent: string, path: string, schema: OpenAPIV3.PathItemObject & { url: string }, fileSystemNameGenerator?: FileSystemNameGenerator ) {
+  set (parent: string, path: string, schema: OpenAPIV3.PathItemObject & { url: string }, fileSystemNameGenerator?: FileSystemNameGenerator) {
     const children = path.split('/').filter((v) => !!v);
     const params: Array<string> = [];
 
@@ -145,7 +145,7 @@ class Client {
     this.clients[name].set(name, other.join('/'), schema, fileSystemNameGenerators[name] ?? fileSystemNameGenerator);
   }
 
-  async save(apiVersion: ApiVersion, outputFolder: string, path = '') {
+  async save (apiVersion: ApiVersion, outputFolder: string, path = '') {
     const srcPath = npath.join(outputFolder, path, this.fileSystemName);
 
     this.clients = sortKeys(this.clients, { deep: true });
@@ -189,7 +189,7 @@ class Client {
     );
   }
 
-  protected addEndpoint(path: string[], schema: OpenAPIV3.PathItemObject & { url: string }) {
+  protected addEndpoint (path: string[], schema: OpenAPIV3.PathItemObject & { url: string }) {
     for (const method in methods) {
       const def = schema[method as keyof typeof methods];
       if (!def) continue;
@@ -238,12 +238,12 @@ class Client {
     }
   }
 
-  private groupChildClients() : { importedChildren: Record<string, Client>; inlineChildren: Record<string, Client> } {
+  private groupChildClients () : { importedChildren: Record<string, Client>; inlineChildren: Record<string, Client> } {
     return Object.keys(this.clients).reduce<{ importedChildren: Record<string, Client>; inlineChildren: Record<string, Client> }>((acc, key) => {
       const child = this.clients[key];
 
       // Child nodes with additional children are put into subfolders, and then simply re-exported by this client's index.ts.
-      const isReExport  = Object.keys(child.clients).length > 0;
+      const isReExport = Object.keys(child.clients).length > 0;
       // Child nodes that don't have additional children are exported as objects from this client's index.ts.
       const isInline = !isReExport && !!Object.keys(child.endpoints).length;
 
@@ -257,7 +257,7 @@ class Client {
     }, { importedChildren: {}, inlineChildren: {} });
   }
 
-  private getUniqueName(original: string) {
+  private getUniqueName (original: string) {
     let name = original;
     let i = 1;
 
@@ -272,7 +272,7 @@ class Client {
     return name;
   }
 
-  private resolveParameter(param: OpenAPIV3.ParameterObject | OpenAPIV3.ReferenceObject) {
+  private resolveParameter (param: OpenAPIV3.ParameterObject | OpenAPIV3.ReferenceObject) {
     if ('$ref' in param) {
       // Extract parameter name from "#/components/parameters/top"
       const paramName = param.$ref.split('/').pop();
@@ -299,7 +299,7 @@ class Client {
   }
 }
 
-export async function generateEndpoints(
+export async function generateEndpoints (
   version: ApiVersion,
   yamlPath: string,
   outputPath: string,
@@ -325,7 +325,7 @@ export async function generateEndpoints(
   // then the endpoints
   handlebars.registerPartial('functionDefinition', fs.readFileSync(npath.join(templatesPath, 'function-definition.ts.hbs'), 'utf8'));
   const filteredPaths = filterPathsByAllowlist(schema.paths, [], { filterInvalidUrls: true });
-  const client = new Client('',  '', templatesPath, schema.info.description, schema.components);
+  const client = new Client('', '', templatesPath, schema.info.description, schema.components);
 
   for (const [path, definition] of Object.entries(filteredPaths)) {
     client.set('', path, {

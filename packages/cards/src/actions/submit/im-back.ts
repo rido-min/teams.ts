@@ -17,22 +17,22 @@ export class IMBackAction extends SubmitAction implements IIMBackAction {
    */
   data: MSTeamsData<IIMBackData>;
 
-  constructor(value: string, options: SubmitActionOptions = {}) {
+  constructor (value: string, options: SubmitActionOptions = {}) {
     super(options);
     Object.assign(this, options);
     this.data = { msteams: new IMBackData(value) };
   }
 
-  static from(options: IMBackActionOptions) {
+  static from (options: IMBackActionOptions) {
     return new IMBackAction(options.data.msteams.value, options);
   }
 
-  withData(value: IIMBackData) {
+  withData (value: IIMBackData) {
     super.withData({ msteams: value });
     return this;
   }
 
-  withValue(value: string) {
+  withValue (value: string) {
     this.data.msteams.value = value;
     return this;
   }
@@ -55,7 +55,7 @@ export class IMBackData implements IIMBackData {
    */
   value: string;
 
-  constructor(value: string) {
+  constructor (value: string) {
     this.type = 'imBack';
     this.value = value;
   }

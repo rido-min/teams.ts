@@ -10,10 +10,8 @@
     "README.md"
   ],
   "scripts": {
-    "clean": "npx rimraf ./dist",
-    "lint": "npx eslint",
-    "lint:fix": "npx eslint --fix",
-    "build": "npx tsc",
+    "clean": "rm -rf dist",
+    "build": "tsc --build",
     "start": "node -r dotenv/config .",
     "server": "tsx watch -r dotenv/config src/server-example.ts",
     "client": "tsx watch -r dotenv/config src/client-example.ts"
@@ -23,15 +21,14 @@
     "@microsoft/teams.a2a": "*",
     "@microsoft/teams.ai": "*",
     "@microsoft/teams.apps": "*",
-    "@microsoft/teams.cards": "*",
     "@microsoft/teams.dev": "*",
     "@microsoft/teams.openai": "*"
   },
   "devDependencies": {
-    "rimraf": "^6.0.1",
     "@types/node": "^22.5.4",
     "dotenv": "^16.4.5",
     "tsx": "^4.20.6",
-    "typescript": "^5.4.5"
-  }
+    "typescript": "^5.8.0"
+  },
+  "type": "module"
 }

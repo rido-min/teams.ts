@@ -18,7 +18,7 @@ import {
 } from '@microsoft/teams.cards';
 import { DevtoolsPlugin } from '@microsoft/teams.dev';
 
-function createBasicCard() {
+function createBasicCard () {
   const card = new AdaptiveCard(
     new TextBlock('Hello world', { wrap: true, weight: 'Bolder' }),
     new ToggleInput('Notify me').withId('notify'),
@@ -33,12 +33,12 @@ function createBasicCard() {
 }
 
 // @ts-expect-error no-unused-vars
-function invalidCard() {
+function invalidCard () {
   // @ts-expect-error: "huge" is not a valid size for TextBlock
   const textBlock = new TextBlock('Valid', { size: 'huge' });
 }
 
-function createFormCard() {
+function createFormCard () {
   return new AdaptiveCard(
     new TextBlock('Please fill out the below form:', {
       wrap: true,
@@ -67,7 +67,7 @@ function createFormCard() {
   );
 }
 
-function createJsonCard() {
+function createJsonCard () {
   const rawCard: IAdaptiveCard = {
     type: 'AdaptiveCard',
     body: [
@@ -115,7 +115,7 @@ function createJsonCard() {
   return rawCard;
 }
 
-function createActionCard() {
+function createActionCard () {
   return new AdaptiveCard(
     new TextBlock('Multiple Action Types Demo', {
       size: 'Large',
@@ -135,7 +135,7 @@ function createActionCard() {
   );
 }
 
-function createActionCardMixed() {
+function createActionCardMixed () {
   return new AdaptiveCard(
     new TextBlock('Single Action Types Demo', {
       size: 'Large',
@@ -157,7 +157,7 @@ function createActionCardMixed() {
   );
 }
 
-function editProfileCard() {
+function editProfileCard () {
   const card = new AdaptiveCard(
     new TextInput({ id: 'name' }).withLabel('Name').withValue('John Doe'),
     new TextInput({ id: 'email', label: 'Email', value: 'john@contoso.com' }),
@@ -188,7 +188,7 @@ function editProfileCard() {
   return card;
 }
 
-function createProfileCardInputValidation() {
+function createProfileCardInputValidation () {
   const ageInput = new NumberInput({ id: 'age' })
     .withLabel('Age')
     .withIsRequired(true)

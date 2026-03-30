@@ -1,9 +1,9 @@
 import { ITemplate } from '../template';
 
 export class StringTemplate implements ITemplate {
-  constructor(readonly src?: string) {}
+  constructor (readonly src?: string) {}
 
-  render() {
+  render () {
     return this.src || '';
   }
 }

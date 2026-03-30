@@ -9,7 +9,7 @@ import { App } from '@microsoft/teams.apps';
 import { ActionSet, AdaptiveCard, OpenUrlAction, TextBlock } from '@microsoft/teams.cards';
 import { ConsoleLogger } from '@microsoft/teams.common/logging';
 
-async function sendProactiveMessage(app: App, conversationId: string, message: string) {
+async function sendProactiveMessage (app: App, conversationId: string, message: string) {
   console.log(`Sending proactive message to conversation: ${conversationId}`);
   console.log(`Message: ${message}`);
 
@@ -18,7 +18,7 @@ async function sendProactiveMessage(app: App, conversationId: string, message: s
   console.log(`✓ Message sent successfully! Activity ID: ${result.id}`);
 }
 
-async function sendProactiveCard(app: App, conversationId: string) {
+async function sendProactiveCard (app: App, conversationId: string) {
   const card = new AdaptiveCard(
     new TextBlock('Proactive Notification', { size: 'Large', weight: 'Bolder' }),
     new TextBlock('This message was sent proactively without a server running!', { wrap: true }),
@@ -35,7 +35,7 @@ async function sendProactiveCard(app: App, conversationId: string) {
   console.log(`✓ Card sent successfully! Activity ID: ${result.id}`);
 }
 
-async function main() {
+async function main () {
   const conversationId = process.argv[2];
 
   if (!conversationId) {

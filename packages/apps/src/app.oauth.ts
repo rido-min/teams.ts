@@ -13,7 +13,7 @@ import * as contexts from './contexts';
 import { IPlugin } from './types';
 import { PluginAdditionalContext } from './types/app-routing';
 
-export async function onTokenExchange<TPlugin extends IPlugin>(
+export async function onTokenExchange<TPlugin extends IPlugin> (
   this: App<TPlugin>,
   ctx: contexts.IActivityContext<ISignInTokenExchangeInvokeActivity, PluginAdditionalContext<TPlugin>>
 ) {
@@ -63,7 +63,7 @@ export async function onTokenExchange<TPlugin extends IPlugin>(
   }
 }
 
-export async function onVerifyState<TPlugin extends IPlugin>(
+export async function onVerifyState<TPlugin extends IPlugin> (
   this: App<TPlugin>,
   ctx: contexts.IActivityContext<ISignInVerifyStateInvokeActivity, PluginAdditionalContext<TPlugin>>
 ) {
@@ -127,7 +127,7 @@ export async function onVerifyState<TPlugin extends IPlugin>(
  * - `interactionrequired`: User interaction is required (handled via OAuth card fallback,
  *   does not typically reach the bot).
  */
-export async function onSignInFailure<TPlugin extends IPlugin>(
+export async function onSignInFailure<TPlugin extends IPlugin> (
   this: App<TPlugin>,
   ctx: contexts.IActivityContext<ISignInFailureInvokeActivity, PluginAdditionalContext<TPlugin>>
 ) {

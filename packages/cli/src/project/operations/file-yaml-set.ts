@@ -16,14 +16,14 @@ export class FileYamlSet implements IProjectAttributeOperation {
   private _key: string;
   private _value: any;
 
-  constructor(path: string, filename: string, key: string, value: any) {
+  constructor (path: string, filename: string, key: string, value: any) {
     this._path = path;
     this._filename = filename;
     this._key = key;
     this._value = value;
   }
 
-  up(_: IProject) {
+  up (_: IProject) {
     const ext = path.extname(this._filename).toLowerCase();
     const filePath = path.join(this._path, this._filename);
     const relativeFilePath = path.relative(process.cwd(), filePath);
@@ -53,7 +53,7 @@ export class FileYamlSet implements IProjectAttributeOperation {
     process.stdout.write('✔️\n');
   }
 
-  down(_: IProject) {
+  down (_: IProject) {
     const ext = path.extname(this._filename).toLowerCase();
     const filePath = path.join(this._path, this._filename);
     const relativeFilePath = path.relative(process.cwd(), filePath);
@@ -88,7 +88,7 @@ export class FileYamlSet implements IProjectAttributeOperation {
     process.stdout.write('✔️\n');
   }
 
-  private _exists(object: any, path: string) {
+  private _exists (object: any, path: string) {
     const parts = path.split('.');
     let current = object;
 
@@ -103,7 +103,7 @@ export class FileYamlSet implements IProjectAttributeOperation {
     return current !== undefined;
   }
 
-  private _set(object: any, path: string, value?: any) {
+  private _set (object: any, path: string, value?: any) {
     const parts = path.split('.');
     let current = object;
 

@@ -71,7 +71,7 @@ export class Client {
   protected seq: number = 0;
   protected interceptors: Map<number, InterceptorRegistry>;
 
-  constructor(options: ClientOptions = {}) {
+  constructor (options: ClientOptions = {}) {
     this.options = options;
     this.name = options.name || 'http';
     this.token = options.token;
@@ -128,10 +128,10 @@ export class Client {
    * Register an interceptor to use
    * as middleware for the request/response/error
    */
-  use(interceptor: Interceptor) {
+  use (interceptor: Interceptor) {
     const id = ++this.seq;
-    let requestId: number | undefined = undefined;
-    let responseId: number | undefined = undefined;
+    let requestId: number | undefined;
+    let responseId: number | undefined;
 
     if (interceptor.request) {
       requestId = this.http.interceptors.request.use(
@@ -173,7 +173,7 @@ export class Client {
   /**
    * Eject an interceptor
    */
-  eject(id: number) {
+  eject (id: number) {
     const registry = this.interceptors.get(id);
 
     if (!registry) return;
@@ -192,7 +192,7 @@ export class Client {
   /**
    * Clear (Eject) all interceptors
    */
-  clear() {
+  clear () {
     for (const id of this.interceptors.keys()) {
       this.eject(id);
     }
@@ -201,7 +201,7 @@ export class Client {
   /**
    * Create a copy of the client
    */
-  clone(options?: ClientOptions) {
+  clone (options?: ClientOptions) {
     return new Client({
       ...this.options,
       ...options,
@@ -213,7 +213,7 @@ export class Client {
     });
   }
 
-  protected async withConfig(config: RequestConfig = {}) {
+  protected async withConfig (config: RequestConfig = {}) {
     let token = config.token || this.token;
 
     if (config.token) {

@@ -35,8 +35,7 @@ export interface IMessageUpdateActivity extends IActivity<'messageUpdate'> {
 
 export class MessageUpdateActivity
   extends Activity<'messageUpdate'>
-  implements IMessageUpdateActivity
-{
+  implements IMessageUpdateActivity {
   /**
    * The text content of the message.
    */
@@ -67,7 +66,7 @@ export class MessageUpdateActivity
     eventType: 'undeleteMessage' | 'editMessage';
   };
 
-  constructor(
+  constructor (
     eventType: 'undeleteMessage' | 'editMessage',
     value: Omit<Partial<IMessageUpdateActivity>, 'type'> = {}
   ) {
@@ -92,21 +91,21 @@ export class MessageUpdateActivity
   /**
    * initialize from interface
    */
-  static from(activity: IMessageUpdateActivity) {
+  static from (activity: IMessageUpdateActivity) {
     return new MessageUpdateActivity(activity.channelData.eventType, activity);
   }
 
   /**
    * convert to interface
    */
-  toInterface(): IMessageUpdateActivity {
+  toInterface (): IMessageUpdateActivity {
     return Object.assign({}, this);
   }
 
   /**
    * copy to a new instance
    */
-  clone(options: Omit<Partial<IMessageUpdateActivity>, 'type'> = {}) {
+  clone (options: Omit<Partial<IMessageUpdateActivity>, 'type'> = {}) {
     return new MessageUpdateActivity(this.channelData.eventType, {
       ...this.toInterface(),
       ...options,
@@ -116,7 +115,7 @@ export class MessageUpdateActivity
   /**
    * The text content of the message.
    */
-  withText(value: string) {
+  withText (value: string) {
     this.text = value;
     return this;
   }
@@ -124,7 +123,7 @@ export class MessageUpdateActivity
   /**
    * The text to speak.
    */
-  withSpeak(value: string) {
+  withSpeak (value: string) {
     this.speak = value;
     return this;
   }
@@ -132,7 +131,7 @@ export class MessageUpdateActivity
   /**
    * The text to display if the channel cannot render cards.
    */
-  withSummary(value: string) {
+  withSummary (value: string) {
     this.summary = value;
     return this;
   }
@@ -141,7 +140,7 @@ export class MessageUpdateActivity
    * The time at which the activity should be considered to be "expired" and should not be
    * presented to the recipient.
    */
-  withExpiration(value: Date) {
+  withExpiration (value: Date) {
     this.expiration = value;
     return this;
   }

@@ -8,35 +8,35 @@ export type JsonWebTokenPayload = JwtPayload & {
 };
 
 export class JsonWebToken implements IToken {
-  get audience() {
+  get audience () {
     return this._payload.aud;
   }
 
-  get issuer() {
+  get issuer () {
     return this._payload.iss;
   }
 
-  get keyId(): string | undefined {
+  get keyId (): string | undefined {
     return this._payload['kid'];
   }
 
-  get appId(): string {
+  get appId (): string {
     return this._payload['appid'];
   }
 
-  get appDisplayName(): string | undefined {
+  get appDisplayName (): string | undefined {
     return this._payload['app_displayname'];
   }
 
-  get tenantId(): string | undefined {
+  get tenantId (): string | undefined {
     return this._payload['tid'];
   }
 
-  get version(): string | undefined {
+  get version (): string | undefined {
     return this._payload['version'];
   }
 
-  get serviceUrl(): string {
+  get serviceUrl (): string {
     let v: string = this._payload['serviceurl'] || 'https://smba.trafficmanager.net/teams';
 
     if (v.endsWith('/')) {
@@ -46,7 +46,7 @@ export class JsonWebToken implements IToken {
     return v;
   }
 
-  get from(): CallerType {
+  get from (): CallerType {
     if (this.appId) {
       return 'bot';
     }
@@ -54,7 +54,7 @@ export class JsonWebToken implements IToken {
     return 'azure';
   }
 
-  get fromId(): string {
+  get fromId (): string {
     if (this.from === 'bot') {
       return `${CallerIds.bot}:${this.appId}`;
     }
@@ -62,7 +62,7 @@ export class JsonWebToken implements IToken {
     return CallerIds.azure;
   }
 
-  get expiration(): number | undefined {
+  get expiration (): number | undefined {
     if (this._payload.exp) {
       return this._payload.exp * 1000;
     }
@@ -73,17 +73,17 @@ export class JsonWebToken implements IToken {
   private readonly _value: string;
   private readonly _payload: JsonWebTokenPayload;
 
-  constructor(value: string) {
+  constructor (value: string) {
     this._value = value;
     this._payload = jwtDecode(value);
   }
 
-  isExpired(bufferMs = 1000 * 60 * 5) {
+  isExpired (bufferMs = 1000 * 60 * 5) {
     if (!this.expiration) return false;
     return this.expiration < Date.now() + bufferMs;
   }
 
-  toString() {
+  toString () {
     return this._value;
   }
 }

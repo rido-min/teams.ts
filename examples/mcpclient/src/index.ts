@@ -9,7 +9,6 @@ const app = new App({
   plugins: [new DevtoolsPlugin()],
 });
 
-
 const logger = new ConsoleLogger('mcp-client', { level: 'debug' });
 const prompt = new ChatPrompt(
   {
@@ -27,7 +26,7 @@ const prompt = new ChatPrompt(
   // Here you may also pass in additional configurations such as
   // a tool-cache, which can be used to limit the tools that are used
   // or improve performance
-  [new McpClientPlugin({ logger })],
+  [new McpClientPlugin({ logger })]
 )
   // Here we are saying you can use any tool from localhost:3978/mcp
   // (that is the URL for the server we built using the mcp plugin)

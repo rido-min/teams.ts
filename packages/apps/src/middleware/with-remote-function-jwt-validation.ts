@@ -20,8 +20,8 @@ export type JwtRemoteFunctionRequest = express.Request & {
 /**
  * JWT validation middleware used to validate the entra token when remote functions are invoked.
  */
-export function withRemoteFunctionJwtValidation(
-  params: WithRemoteFunctionJwtValidationParams,
+export function withRemoteFunctionJwtValidation (
+  params: WithRemoteFunctionJwtValidationParams
 ) {
   const entraTokenValidator = params.entraTokenValidator;
   const log = params.logger;

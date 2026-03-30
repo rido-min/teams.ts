@@ -72,7 +72,7 @@ describe('JwtValidator', () => {
 
   beforeEach(() => {
     jest.useFakeTimers().setSystemTime(mockDate);
-    
+
     // Create a valid token for testing
     validToken = createTestToken();
 
@@ -80,7 +80,7 @@ describe('JwtValidator', () => {
     mockGetSigningKey.mockImplementation((_kid, callback) => {
       callback(null, {
         getPublicKey: () => publicKey,
-        publicKey: publicKey
+        publicKey
       });
     });
 
@@ -232,7 +232,7 @@ describe('JwtValidator', () => {
           ...mockTokenPayload,
           iss: 'https://invalid-issuer.com'
         });
-        
+
         const result = await validator.validateAccessToken(invalidIssuerToken);
 
         expect(result).toBeNull();
@@ -331,7 +331,7 @@ describe('JwtValidator', () => {
           ...mockTokenPayload,
           iss: undefined as any
         });
-        
+
         const result = await validator.validateAccessToken(noIssuerToken);
 
         expect(result).toBeNull();
@@ -401,7 +401,7 @@ describe('JwtValidator', () => {
           ...mockTokenPayload,
           scp: undefined as any
         });
-        
+
         const result = await validator.validateAccessToken(noScopeToken);
 
         expect(result).toBeNull();
@@ -465,7 +465,7 @@ describe('JwtValidator', () => {
           ...mockTokenPayload,
           serviceurl: undefined as any
         });
-        
+
         const result = await validator.validateAccessToken(noServiceUrlToken);
 
         expect(result).toBeNull();
@@ -580,7 +580,7 @@ describe('JwtValidator', () => {
         });
 
         const result = await validator.validateAccessToken(validToken);
-        
+
         expect(result).toEqual(expect.objectContaining(mockTokenPayload));
       });
 
@@ -593,7 +593,7 @@ describe('JwtValidator', () => {
         });
 
         const result = await validator.validateAccessToken(validToken);
-        
+
         expect(result).toEqual(expect.objectContaining(mockTokenPayload));
       });
     });
@@ -648,7 +648,6 @@ describe('JwtValidator', () => {
         expect(validator.options.audience).toBeUndefined();
       });
     });
-
   });
 
   describe('error handling and logging', () => {
@@ -680,7 +679,7 @@ describe('JwtValidator', () => {
         ...mockTokenPayload,
         scp: 'User.Read' // Token has User.Read but validator expects Admin.ReadWrite
       });
-      
+
       const result = await validator.validateAccessToken(invalidScopeToken);
 
       expect(result).toBeNull();

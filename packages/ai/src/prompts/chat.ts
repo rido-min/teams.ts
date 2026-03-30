@@ -19,31 +19,36 @@ import { ChatPromptOptions, ChatPromptPlugin, ChatPromptSendOptions, IChatPrompt
  */
 export class ChatPrompt<
   TOptions extends Record<string, any> = Record<string, any>,
-  TChatPromptPlugins extends readonly ChatPromptPlugin<string, any>[] = [],
+  TChatPromptPlugins extends readonly ChatPromptPlugin<string, any>[] = []
 > implements IChatPrompt<TOptions, TChatPromptPlugins> {
-  get name() {
+  get name () {
     return this._name;
   }
+
   protected readonly _name: string;
 
-  get description() {
+  get description () {
     return this._description;
   }
+
   protected readonly _description: string;
 
-  get messages() {
+  get messages () {
     return this._messages;
   }
+
   protected readonly _messages: IMemory;
 
-  get functions() {
+  get functions () {
     return Object.values(this._functions);
   }
+
   protected readonly _functions: Record<string, Function> = {};
 
-  get plugins() {
+  get plugins () {
     return this._plugins;
   }
+
   protected readonly _plugins: TChatPromptPlugins;
 
   protected readonly _role: 'system' | 'user';
@@ -51,7 +56,7 @@ export class ChatPrompt<
   protected readonly _model: IChatModel<TOptions>;
   protected readonly _log: ILogger;
 
-  constructor(options: ChatPromptOptions<TOptions>, plugins?: TChatPromptPlugins) {
+  constructor (options: ChatPromptOptions<TOptions>, plugins?: TChatPromptPlugins) {
     this._name = options.name || 'chat';
     this._description = options.description || 'an agent you can chat with';
     this._role = options.role || 'system';
@@ -71,9 +76,9 @@ export class ChatPrompt<
     this._log = options.logger || new ConsoleLogger(`@microsoft/teams.ai/prompts/${this._name}`);
   }
 
-  use(prompt: IChatPrompt): this;
-  use(name: string, prompt: IChatPrompt): this;
-  use(...args: any[]) {
+  use (prompt: IChatPrompt): this;
+  use (name: string, prompt: IChatPrompt): this;
+  use (...args: any[]) {
     const prompt: IChatPrompt = args.length === 1 ? args[0] : args[1];
     const name: string = args.length === 1 ? prompt.name : args[0];
     this._functions[name] = {
@@ -97,9 +102,9 @@ export class ChatPrompt<
     return this;
   }
 
-  function(name: string, description: string, handler: FunctionHandler): this;
-  function(name: string, description: string, parameters: Schema, handler: FunctionHandler): this;
-  function(...args: any[]) {
+  function (name: string, description: string, handler: FunctionHandler): this;
+  function (name: string, description: string, parameters: Schema, handler: FunctionHandler): this;
+  function (...args: any[]) {
     const name: string = args[0];
     const description: string = args[1];
     const parameters: Schema | null = args.length === 3 ? null : args[2];
@@ -145,7 +150,7 @@ export class ChatPrompt<
     return this.executeFunction(name, fn, args);
   }
 
-  async send(input: string | ContentPart[], options: ChatPromptSendOptions<TOptions> = {}) {
+  async send (input: string | ContentPart[], options: ChatPromptSendOptions<TOptions> = {}) {
     this._log.debug(`Processing plugins before send (${this.plugins.length} plugins found)`);
     for (const plugin of this.plugins) {
       if (plugin.onBeforeSend) {
@@ -165,7 +170,7 @@ export class ChatPrompt<
       : new LocalMemory({ messages: options.messages || [] });
 
     let buffer = '';
-    let system: SystemMessage | UserMessage | undefined = undefined;
+    let system: SystemMessage | UserMessage | undefined;
     let prompt = await this._template.render();
 
     for (const plugin of this.plugins) {
@@ -243,17 +248,19 @@ export class ChatPrompt<
         messages,
         request: options.request,
         functions: fnMap,
-        onChunk: onChunk ? async (chunk) => {
-          if (!chunk || !onChunk) return;
-          buffer += chunk;
+        onChunk: onChunk
+          ? async (chunk) => {
+            if (!chunk || !onChunk) return;
+            buffer += chunk;
 
-          try {
-            await onChunk(buffer);
-            buffer = '';
-          } catch (err) {
-            return;
+            try {
+              await onChunk(buffer);
+              buffer = '';
+            } catch (err) {
+
+            }
           }
-        } : undefined,
+          : undefined,
         autoFunctionCalling: options.autoFunctionCalling,
       }
     );

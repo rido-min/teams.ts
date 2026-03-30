@@ -5,7 +5,7 @@ import { IContext } from '../../context';
 import { Add } from './add';
 import { Remove } from './remove';
 
-export function Config(context: IContext): CommandModule<{}, {}> {
+export function Config (context: IContext): CommandModule<{}, {}> {
   return {
     command: 'config',
     aliases: 'c',

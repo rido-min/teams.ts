@@ -57,7 +57,7 @@ export class JwtValidator {
   private readonly logger?: ILogger;
   private readonly jwksCache: Map<string, JwksClient> = new Map();
 
-  constructor(options: IJwtValidationOptions, logger?: ILogger) {
+  constructor (options: IJwtValidationOptions, logger?: ILogger) {
     this.options = options;
     this.logger = logger?.child('jwt-validator') ?? new ConsoleLogger('jwt-validator');
   }
@@ -65,7 +65,7 @@ export class JwtValidator {
   /**
    * Validates a JWT token using the configured options
    */
-  async validateAccessToken(
+  async validateAccessToken (
     rawToken: string,
     overrideOptions?: Pick<IJwtValidationOptions, 'validateServiceUrl' | 'validateScope'>
   ): Promise<JwtPayload | null> {
@@ -120,41 +120,41 @@ export class JwtValidator {
     });
   }
 
-  private getJwksClient() {
+  private getJwksClient () {
     switch (this.options.jwksUriOptions.type) {
       case 'tenantId':
-        {
-          const cachedClient = this.jwksCache.get(`${this.options.tenantId}`);
-          if (cachedClient) {
-            this.logger?.debug(`Using cached JWKS client for tenant ID: ${this.options.tenantId}`);
-            return cachedClient;
-          }
-          this.jwksCache.set(`${this.options.tenantId}`, jwksRsa({
-            jwksUri: `https://login.microsoftonline.com/${this.options.tenantId}/discovery/v2.0/keys`,
-          }));
-
-          return this.jwksCache.get(`${this.options.tenantId}`)!;
+      {
+        const cachedClient = this.jwksCache.get(`${this.options.tenantId}`);
+        if (cachedClient) {
+          this.logger?.debug(`Using cached JWKS client for tenant ID: ${this.options.tenantId}`);
+          return cachedClient;
         }
+        this.jwksCache.set(`${this.options.tenantId}`, jwksRsa({
+          jwksUri: `https://login.microsoftonline.com/${this.options.tenantId}/discovery/v2.0/keys`,
+        }));
+
+        return this.jwksCache.get(`${this.options.tenantId}`)!;
+      }
 
       case 'uri':
-        {
-          const cachedClient = this.jwksCache.get(this.options.jwksUriOptions.uri);
-          if (cachedClient) {
-            this.logger?.debug(`Using cached JWKS client for URI: ${this.options.jwksUriOptions.uri}`);
-            return cachedClient;
-          }
-          this.jwksCache.set(this.options.jwksUriOptions.uri, jwksRsa({
-            jwksUri: this.options.jwksUriOptions.uri,
-          }));
-
-          return this.jwksCache.get(this.options.jwksUriOptions.uri)!;
+      {
+        const cachedClient = this.jwksCache.get(this.options.jwksUriOptions.uri);
+        if (cachedClient) {
+          this.logger?.debug(`Using cached JWKS client for URI: ${this.options.jwksUriOptions.uri}`);
+          return cachedClient;
         }
+        this.jwksCache.set(this.options.jwksUriOptions.uri, jwksRsa({
+          jwksUri: this.options.jwksUriOptions.uri,
+        }));
+
+        return this.jwksCache.get(this.options.jwksUriOptions.uri)!;
+      }
       default:
         assertNever(this.options.jwksUriOptions, `Unknown JWKS URI options type: ${this.options.jwksUriOptions}`);
     }
   }
 
-  private getSigningKey(header: JwtHeader, callback: SignCallback): void {
+  private getSigningKey (header: JwtHeader, callback: SignCallback): void {
     const jwksClient = this.getJwksClient();
     jwksClient?.getSigningKey(header.kid, (err: Error | null, key: SigningKey | undefined): void => {
       if (err) {
@@ -167,7 +167,7 @@ export class JwtValidator {
     });
   }
 
-  private validateIssuer(iss: string | undefined): void {
+  private validateIssuer (iss: string | undefined): void {
     const validateIssuer = this.options.validateIssuer;
     if (!validateIssuer) {
       return;
@@ -223,7 +223,7 @@ export class JwtValidator {
     }
   }
 
-  private validateScope(scp: string | undefined, overrideValidateScope?: { requiredScope: string }): void {
+  private validateScope (scp: string | undefined, overrideValidateScope?: { requiredScope: string }): void {
     const validateScope = overrideValidateScope || this.options.validateScope;
     if (validateScope) {
       const scopes = scp ?? '';
@@ -233,7 +233,7 @@ export class JwtValidator {
     }
   }
 
-  private validateServiceUrl(serviceUrl: string | undefined, overrideValidateServiceUrl?: { expectedServiceUrl: string }): void {
+  private validateServiceUrl (serviceUrl: string | undefined, overrideValidateServiceUrl?: { expectedServiceUrl: string }): void {
     const validateServiceUrl = overrideValidateServiceUrl || this.options.validateServiceUrl;
     if (validateServiceUrl) {
       if (!serviceUrl) {
@@ -249,7 +249,7 @@ export class JwtValidator {
     }
   }
 
-  private performCustomValidations(
+  private performCustomValidations (
     payload: JwtPayload,
     overrideOptions?: Pick<IJwtValidationOptions, 'validateServiceUrl' | 'validateScope'>
   ): void {
@@ -268,7 +268,7 @@ export const createEntraTokenValidator = (
     requiredScope?: string;
     applicationIdUri?: string;
     logger?: ILogger
-  },
+  }
 ) => {
   return new JwtValidator({
     clientId,
@@ -283,4 +283,3 @@ export const createEntraTokenValidator = (
     },
   }, options?.logger);
 };
-

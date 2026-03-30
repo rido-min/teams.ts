@@ -7,7 +7,7 @@ type Args = {
   value: string;
 };
 
-export function Set({ envs }: IContext): CommandModule<{}, Args> {
+export function Set ({ envs }: IContext): CommandModule<{}, Args> {
   return {
     command: 'set <key> [value]',
     describe: 'set an environment key',

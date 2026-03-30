@@ -47,16 +47,18 @@ export const USER_TOKEN_ENDPOINTS = {
 };
 
 export class UserTokenClient {
-  get http() {
+  get http () {
     return this._http;
   }
-  set http(v) {
+
+  set http (v) {
     this._http = v;
   }
+
   protected _http: Client;
   protected _apiClientSettings: Partial<ApiClientSettings>;
 
-  constructor(options?: Client | ClientOptions, apiClientSettings?: Partial<ApiClientSettings>) {
+  constructor (options?: Client | ClientOptions, apiClientSettings?: Partial<ApiClientSettings>) {
     if (!options) {
       this._http = new Client();
     } else if ('request' in options) {
@@ -68,7 +70,7 @@ export class UserTokenClient {
     this._apiClientSettings = mergeApiClientSettings(apiClientSettings);
   }
 
-  async get(params: GetUserTokenParams) {
+  async get (params: GetUserTokenParams) {
     const q = qs.stringify(params);
     const res = await this.http.get<TokenResponse>(
       `${this._apiClientSettings.oauthUrl}/${USER_TOKEN_ENDPOINTS.GET_TOKEN}?${q}`
@@ -77,7 +79,7 @@ export class UserTokenClient {
     return res.data;
   }
 
-  async getAad(params: GetUserAADTokenParams) {
+  async getAad (params: GetUserAADTokenParams) {
     const q = qs.stringify(params);
     const res = await this.http.post<Record<string, TokenResponse>>(
       `${this._apiClientSettings.oauthUrl}/${USER_TOKEN_ENDPOINTS.GET_AAD_TOKENS}?${q}`,
@@ -87,7 +89,7 @@ export class UserTokenClient {
     return res.data;
   }
 
-  async getStatus(params: GetUserTokenStatusParams) {
+  async getStatus (params: GetUserTokenStatusParams) {
     const q = qs.stringify(params);
     const res = await this.http.get<TokenStatus[]>(
       `${this._apiClientSettings.oauthUrl}/${USER_TOKEN_ENDPOINTS.GET_STATUS}?${q}`
@@ -96,7 +98,7 @@ export class UserTokenClient {
     return res.data;
   }
 
-  async signOut(params: SignOutUserParams) {
+  async signOut (params: SignOutUserParams) {
     const q = qs.stringify(params);
     const res = await this.http.delete<void>(
       `${this._apiClientSettings.oauthUrl}/${USER_TOKEN_ENDPOINTS.SIGN_OUT}?${q}`,
@@ -106,7 +108,7 @@ export class UserTokenClient {
     return res.data;
   }
 
-  async exchange(params: ExchangeUserTokenParams) {
+  async exchange (params: ExchangeUserTokenParams) {
     const q = qs.stringify({
       userId: params.userId,
       connectionName: params.connectionName,

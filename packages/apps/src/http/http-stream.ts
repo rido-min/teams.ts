@@ -50,7 +50,7 @@ export class HttpStream implements IStreamer {
   private _flushing: boolean = false;
   private readonly _totalTimeout = 30000; // 30 seconds
 
-  constructor(client: Client, ref: ConversationReference, logger?: ILogger) {
+  constructor (client: Client, ref: ConversationReference, logger?: ILogger) {
     this.client = client;
     this.ref = ref;
     this._logger = logger?.child('stream') || new ConsoleLogger('@teams/http-stream');
@@ -60,8 +60,7 @@ export class HttpStream implements IStreamer {
    * Emit a new activity or text to the stream.
    * @param activity Activity object or string message.
    */
-  emit(activity: Partial<IMessageActivity | ITypingActivity> | string) {
-
+  emit (activity: Partial<IMessageActivity | ITypingActivity> | string) {
     if (typeof activity === 'string') {
       activity = {
         type: 'message',
@@ -81,10 +80,10 @@ export class HttpStream implements IStreamer {
    * Send a typing/status update without adding to the main text.
    * @param text Status text (ex. "Thinking...")
    */
-  update(text: string) {
+  update (text: string) {
     this.emit({
       type: 'typing',
-      text: text,
+      text,
       channelData: { streamType: 'informative' }
     });
   }
@@ -93,7 +92,7 @@ export class HttpStream implements IStreamer {
    * Close the stream by sending the final message.
    * Waits for all queued activities to flush.
    */
-  async close() {
+  async close () {
     if (!this.index && !this.queue.length && !this._flushing) {
       this._logger.debug('closed with no content');
       return;
@@ -151,7 +150,7 @@ export class HttpStream implements IStreamer {
    * Flush queued activities.
    * Processes up to 10 items at a time.
    */
-  protected async flush() {
+  protected async flush () {
     // if locked or no queue, return early
     if (!this.queue.length || this._flushing) return;
 
@@ -227,7 +226,7 @@ export class HttpStream implements IStreamer {
    * Push a new chunk to the stream.
    * @param activity TypingActivity to send.
    */
-  protected async pushStreamChunk(activity: TypingActivity) {
+  protected async pushStreamChunk (activity: TypingActivity) {
     if (this.id) {
       activity.id = this.id;
     }
@@ -247,7 +246,7 @@ export class HttpStream implements IStreamer {
    * Send or update a streaming activity
    * @param activity ActivityParams to send.
    */
-  protected async send(activity: ActivityParams) {
+  protected async send (activity: ActivityParams) {
     activity = {
       ...activity,
       from: this.ref.bot,

@@ -50,7 +50,7 @@ const ActivitiesScreen: FC = () => {
         />
       </div>
       <div className={classes.activityDetailsContainer}>
-        {<ActivityDetails selected={selected} view={view} setView={setView} />}
+        <ActivityDetails selected={selected} view={view} setView={setView} />
       </div>
     </div>
   );

@@ -14,12 +14,12 @@ export class DirectoryCopy implements IProjectAttributeOperation {
   private _from: string;
   private _to: string;
 
-  constructor(from: string, to: string) {
+  constructor (from: string, to: string) {
     this._from = from;
     this._to = to;
   }
 
-  async up(project: IProject) {
+  async up (project: IProject) {
     const operations: Array<IProjectAttributeOperation> = [];
 
     if (!fs.existsSync(this._from)) {
@@ -71,7 +71,7 @@ export class DirectoryCopy implements IProjectAttributeOperation {
     }
   }
 
-  async down(project: IProject) {
+  async down (project: IProject) {
     const operations: Array<IProjectAttributeOperation> = [];
 
     if (!fs.existsSync(this._from)) {

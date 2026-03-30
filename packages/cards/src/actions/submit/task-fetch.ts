@@ -24,7 +24,7 @@ export class TaskFetchAction extends SubmitAction implements ITaskFetchAction {
    */
   data: MSTeamsData<ITaskFetchData>;
 
-  constructor(value?: TaskFetchDataValues, options: SubmitActionOptions = {}) {
+  constructor (value?: TaskFetchDataValues, options: SubmitActionOptions = {}) {
     super(options);
     Object.assign(this, options);
     this.data = {
@@ -35,16 +35,16 @@ export class TaskFetchAction extends SubmitAction implements ITaskFetchAction {
     };
   }
 
-  static from(options: TaskFetchActionOptions) {
+  static from (options: TaskFetchActionOptions) {
     return new TaskFetchAction(options.data, options);
   }
 
-  withData(value: MSTeamsData<ITaskFetchData>) {
+  withData (value: MSTeamsData<ITaskFetchData>) {
     this.data = value;
     return this;
   }
 
-  withValue(value: TaskFetchDataValues) {
+  withValue (value: TaskFetchDataValues) {
     super.withData({ ...this.data, ...value, msteams: { type: 'task/fetch' } });
     return this;
   }
@@ -59,7 +59,7 @@ export class TaskFetchData implements MSTeamsData<ITaskFetchData> {
     type: 'task/fetch' as const,
   };
 
-  constructor(data?: TaskFetchDataValues) {
+  constructor (data?: TaskFetchDataValues) {
     // omit the msteams property if it exists
     if (data) {
       const { msteams, ...rest } = data;

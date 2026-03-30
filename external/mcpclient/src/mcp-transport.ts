@@ -6,7 +6,7 @@ import { ValueOrFactory } from './mcp-client-types';
 /**
  * Creates an SSE client transport with the given URL and headers
  */
-export async function buildSSEClientTransport(
+export async function buildSSEClientTransport (
   url: string,
   headers: ValueOrFactory<Record<string, string>> | undefined
 ): Promise<SSEClientTransport> {
@@ -20,7 +20,7 @@ export async function buildSSEClientTransport(
       },
     },
     eventSourceInit: {
-      fetch(input: Request | URL | string, init?: RequestInit) {
+      fetch (input: Request | URL | string, init?: RequestInit) {
         const headers = new Headers({
           ...resolvedHeaders,
           ...init?.headers,
@@ -34,7 +34,7 @@ export async function buildSSEClientTransport(
   });
 }
 
-export async function buildStreamableHttpClientTransport(
+export async function buildStreamableHttpClientTransport (
   url: string,
   headers: ValueOrFactory<Record<string, string>> | undefined
 ): Promise<StreamableHTTPClientTransport> {

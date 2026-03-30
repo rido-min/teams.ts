@@ -18,12 +18,12 @@ export class Settings implements ISettings {
   env: string;
   language?: ProjectLanguage;
 
-  constructor(value?: ISettings) {
+  constructor (value?: ISettings) {
     this.env = value?.env || 'dev';
     this.language = value?.language;
   }
 
-  static load() {
+  static load () {
     const base = path.join(os.homedir(), 'teams.cli');
     const file = path.join(base, 'settings.json');
 
@@ -35,7 +35,7 @@ export class Settings implements ISettings {
     return new Settings(value);
   }
 
-  save() {
+  save () {
     const base = path.join(os.homedir(), 'teams.cli');
     const file = path.join(base, 'settings.json');
 

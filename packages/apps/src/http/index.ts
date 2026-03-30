@@ -1,4 +1,4 @@
 // Public API exports
-export { HttpMethod, IHttpServerAdapter, IHttpServerRequest, IHttpServerResponse, HttpRouteHandler } from './adapter';
+export type { HttpMethod, IHttpServerAdapter, IHttpServerRequest, IHttpServerResponse, HttpRouteHandler } from './adapter';
 export { ExpressAdapter } from './express-adapter';
-export { IHttpServer } from './http-server';
+export type { IHttpServer } from './http-server';

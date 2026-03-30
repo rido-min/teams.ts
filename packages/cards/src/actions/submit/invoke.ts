@@ -17,22 +17,22 @@ export class InvokeAction extends SubmitAction implements IInvokeAction {
    */
   data: MSTeamsData<IInvokeData>;
 
-  constructor(value?: any, options: SubmitActionOptions = {}) {
+  constructor (value?: any, options: SubmitActionOptions = {}) {
     super(options);
     Object.assign(this, options);
     this.data = { msteams: new InvokeData(value) };
   }
 
-  static from(options: InvokeActionOptions) {
+  static from (options: InvokeActionOptions) {
     return new InvokeAction(options.data.msteams.value, options);
   }
 
-  withData(value: IInvokeData) {
+  withData (value: IInvokeData) {
     super.withData({ msteams: value });
     return this;
   }
 
-  withValue(value: any) {
+  withValue (value: any) {
     this.data.msteams.value = value;
     return this;
   }
@@ -55,7 +55,7 @@ export class InvokeData implements IInvokeData {
    */
   value?: any;
 
-  constructor(value?: any) {
+  constructor (value?: any) {
     this.type = 'invoke';
     this.value = value;
   }

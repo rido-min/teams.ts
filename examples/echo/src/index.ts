@@ -15,7 +15,6 @@ app.on('message', async ({ reply, activity }) => {
   await reply(`you said "${activity.text}"`);
 });
 
-
 // Scheduled Queue to trigger proactiveMessage in 10s
 const notificationQueue = new MockReminderService<string>();
 

@@ -35,9 +35,12 @@ export class HttpPlugin {
   protected expressAdapter: ExpressAdapter;
   protected server: HttpServer;
 
-  constructor(server?: http.Server, options?: { skipAuth?: boolean }) {
+  constructor (server?: http.Server, options?: { skipAuth?: boolean; messagingEndpoint?: `/${string}` }) {
     this.expressAdapter = new ExpressAdapter(server);
-    this.server = new HttpServer(this.expressAdapter, options);
+    this.server = new HttpServer(this.expressAdapter, {
+      ...options,
+      messagingEndpoint: options?.messagingEndpoint ?? '/api/messages',
+    });
 
     // Expose Express methods
     this.get = this.expressAdapter.get;
@@ -53,14 +56,14 @@ export class HttpPlugin {
    * App.constructor calls this to extract the HttpServer
    * @internal
    */
-  asServer(): HttpServer {
+  asServer (): HttpServer {
     return this.server;
   }
 
   /**
    * Plugin lifecycle hook
    */
-  async onInit() {
+  async onInit () {
     // TODO: Setting cors globally and body parsing for all routes in /api
     // is actually a mistake. When HttpPlugin is officially deprecated, this
     // behavior will go away as well.
@@ -73,7 +76,7 @@ export class HttpPlugin {
    * @param path the url path to serve
    * @param dist the dist file path to serve
    */
-  static(path: string, dist: string) {
+  static (path: string, dist: string) {
     this.expressAdapter.serveStatic(path, dist);
     return this;
   }

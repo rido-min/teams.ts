@@ -21,13 +21,13 @@ const DevtoolsBanner: FC<DevtoolsBannerProps> = memo(({ connected }) => {
   }, [navigate]);
 
   return (
-    <header id="banner" data-tid="devtools" className={classes.devtoolsLandmark}>
+    <header id='banner' data-tid='devtools' className={classes.devtoolsLandmark}>
       <div className={classes.imageContainer}>
         <img
-          src="/devtools/teams.png"
+          src='/devtools/teams.png'
           className={classes.teamsImg}
-          role="presentation"
-          loading="eager"
+          role='presentation'
+          loading='eager'
           // Workaround for React v.s. TypeScript inconsistency
           {...{ fetchpriority: 'high' }}
         />
@@ -35,16 +35,16 @@ const DevtoolsBanner: FC<DevtoolsBannerProps> = memo(({ connected }) => {
           <button
             className={classes.devButton}
             onClick={handleRefresh}
-            aria-hidden="true"
+            aria-hidden='true'
             tabIndex={-1}
           />
         </DevOnly>
       </div>
-      <Text as="h1" size={500} weight="semibold">
+      <Text as='h1' size={500} weight='semibold'>
         DevTools
       </Text>
       <StatusBadge connected={connected} classes={classes} />
-      <Badge aria-label="Beta" appearance="tint" className={classes.betaBadge}>
+      <Badge aria-label='Beta' appearance='tint' className={classes.betaBadge}>
         Beta
       </Badge>
     </header>

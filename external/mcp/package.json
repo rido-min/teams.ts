@@ -3,7 +3,6 @@
   "version": "0.0.0",
   "license": "MIT",
   "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "homepage": "https://github.com/microsoft/teams.ts",
   "bugs": "https://github.com/microsoft/teams.ts/issues",
@@ -26,36 +25,27 @@
     "mcp"
   ],
   "scripts": {
-    "clean": "npx rimraf ./dist",
-    "lint": "npx eslint",
-    "lint:fix": "npx eslint --fix",
-    "build": "npx tsc",
-    "test": "npx jest"
+    "clean": "rm -rf dist",
+    "build": "tsc --build",
+    "test": "npx jest --config jest.config.cjs"
   },
   "dependencies": {
+    "@microsoft/teams.ai": "*",
+    "@microsoft/teams.common": "*",
     "json-schema-to-zod": "^2.6.0",
     "zod": "^3.24.2"
   },
   "peerDependencies": {
-    "@microsoft/teams.ai": "*",
     "@microsoft/teams.apps": "*",
-    "@microsoft/teams.common": "*",
-    "@microsoft/teams.dev": "*",
     "@modelcontextprotocol/sdk": "^1.9.0"
-  },
-  "peerDependenciesMeta": {
-    "@microsoft/teams.dev": {
-      "optional": true
-    }
   },
   "devDependencies": {
     "@microsoft/teams.config": "*",
     "@types/jest": "^29.5.12",
     "@types/node": "^22.0.2",
     "jest": "^29.7.0",
-    "rimraf": "^6.0.1",
     "ts-jest": "^29.2.5",
-    "tsup": "^8.4.0",
-    "typescript": "^5.4.5"
-  }
+    "typescript": "^5.8.0"
+  },
+  "type": "module"
 }

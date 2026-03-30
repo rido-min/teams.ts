@@ -21,7 +21,7 @@ export class OpenAIAudioModel implements IAudioModel {
   private readonly _openai: OpenAI;
   private readonly _log: ILogger;
 
-  constructor(readonly options: OpenAIAudioPluginOptions) {
+  constructor (readonly options: OpenAIAudioPluginOptions) {
     this._log =
       options.logger || new ConsoleLogger(`@microsoft/teams.openai/${this.options.model}`);
     this._openai = new OpenAI({
@@ -35,7 +35,7 @@ export class OpenAIAudioModel implements IAudioModel {
     });
   }
 
-  async audioToText(params: AudioToTextParams) {
+  async audioToText (params: AudioToTextParams) {
     try {
       const res = await this._openai.audio.transcriptions.create({
         file: await toFile(params.data, `temp.${params.type}`, { type: params.type }),
@@ -51,7 +51,7 @@ export class OpenAIAudioModel implements IAudioModel {
     }
   }
 
-  async textToAudio(params: TextToAudioParams) {
+  async textToAudio (params: TextToAudioParams) {
     try {
       const res = await this._openai.audio.speech.create({
         response_format: params.type as any,

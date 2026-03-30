@@ -15,27 +15,27 @@ export class LocalMemory implements IMemory {
   protected readonly messages: Message[];
   protected readonly options: LocalMemoryOptions;
 
-  constructor(options?: LocalMemoryOptions) {
+  constructor (options?: LocalMemoryOptions) {
     this.messages = options?.messages || [];
     this.options = options || {};
   }
 
-  get(i: number) {
+  get (i: number) {
     if (i < 0 || i > this.messages.length - 1) return;
     return this.messages[i];
   }
 
-  set(i: number, message: Message) {
+  set (i: number, message: Message) {
     if (i < 0 || i > this.messages.length - 1) return;
     this.messages[i] = message;
   }
 
-  delete(i: number) {
+  delete (i: number) {
     if (i < 0 || i > this.messages.length - 1) return;
     this.messages.splice(i, 1);
   }
 
-  async push(message: Message) {
+  async push (message: Message) {
     this.messages.push(message);
     let len = this.length();
 
@@ -59,23 +59,23 @@ export class LocalMemory implements IMemory {
     }
   }
 
-  pop() {
+  pop () {
     return this.messages.shift();
   }
 
-  values() {
+  values () {
     return this.messages.slice();
   }
 
-  length() {
+  length () {
     return this.messages.length;
   }
 
-  where(predicate: (value: Message, index: number) => boolean) {
+  where (predicate: (value: Message, index: number) => boolean) {
     return this.messages.filter(predicate);
   }
 
-  async collapse() {
+  async collapse () {
     if (!this.options.collapse) return;
 
     const start = 0;

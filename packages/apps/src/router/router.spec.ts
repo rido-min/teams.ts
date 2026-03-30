@@ -4,25 +4,25 @@ import { Router } from './router';
 
 describe('Router', () => {
   it('should select when bot is mentioned', () => {
-      const router = new Router();
-      const handler = jest.fn();
-      const bot: Account = {
-        id: '1',
-        role: 'bot',
-        name: 'bot',
-      };
+    const router = new Router();
+    const handler = jest.fn();
+    const bot: Account = {
+      id: '1',
+      role: 'bot',
+      name: 'bot',
+    };
 
-      const user: Account = {
-        id: '2',
-        role: 'user',
-        name: 'user',
-      };
+    const user: Account = {
+      id: '2',
+      role: 'user',
+      name: 'user',
+    };
 
-      router.on('mention', handler);
+    router.on('mention', handler);
 
-      expect(router.select(new MessageActivity())).toHaveLength(0);
-      expect(router.select(new MessageActivity().withRecipient(bot).addMention(user))).toHaveLength(0);
-      expect(router.select(new MessageActivity().withRecipient(bot).addMention(bot))).toHaveLength(1);
+    expect(router.select(new MessageActivity())).toHaveLength(0);
+    expect(router.select(new MessageActivity().withRecipient(bot).addMention(user))).toHaveLength(0);
+    expect(router.select(new MessageActivity().withRecipient(bot).addMention(bot))).toHaveLength(1);
   });
 
   it('should remove system route on register of user route', () => {

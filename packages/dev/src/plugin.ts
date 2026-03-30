@@ -1,5 +1,6 @@
 import http from 'http';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
 import express from 'express';
 
@@ -67,7 +68,8 @@ export class DevtoolsPlugin {
   protected pending: Record<string, ResolveRejctPromise> = {};
   protected pages: Array<Page> = [];
 
-  constructor(readonly options: DevtoolsPluginOptions = {}) {
+  constructor (readonly options: DevtoolsPluginOptions = {}) {
+    const __dirname = path.dirname(fileURLToPath(import.meta.url));
     const dist = path.join(__dirname, 'devtools-web');
     this.express = express();
     this.http = http.createServer(this.express);
@@ -85,12 +87,12 @@ export class DevtoolsPlugin {
    * add a custom page to the devtools
    * @param page the page to add
    */
-  addPage(page: Page) {
+  addPage (page: Page) {
     this.pages.push(page);
     return this;
   }
 
-  onInit() {
+  onInit () {
     this.log.warn(
       new String()
         .bold(
@@ -102,7 +104,7 @@ export class DevtoolsPlugin {
     );
   }
 
-  onStart({ port }: IPluginStartEvent) {
+  onStart ({ port }: IPluginStartEvent) {
     const numericPort = this.options.customPort ?? (
       typeof port === 'string' ? parseInt(port, 10) + 1 : port + 1);
 
@@ -139,7 +141,7 @@ export class DevtoolsPlugin {
     });
   }
 
-  onActivity({ activity, conversation }: IPluginActivityEvent) {
+  onActivity ({ activity, conversation }: IPluginActivityEvent) {
     this.emitActivityToSockets({
       id: uuid.v4(),
       type: 'activity.received',
@@ -149,7 +151,7 @@ export class DevtoolsPlugin {
     });
   }
 
-  onActivitySent({ activity, conversation }: IPluginActivitySentEvent) {
+  onActivitySent ({ activity, conversation }: IPluginActivitySentEvent) {
     this.emitActivityToSockets({
       id: uuid.v4(),
       type: 'activity.sent',
@@ -159,7 +161,7 @@ export class DevtoolsPlugin {
     });
   }
 
-  onActivityResponse({ activity, response }: IPluginActivityResponseEvent) {
+  onActivityResponse ({ activity, response }: IPluginActivityResponseEvent) {
     const promise = this.pending[activity.id];
 
     if (!promise) return;
@@ -168,7 +170,7 @@ export class DevtoolsPlugin {
     delete this.pending[activity.id];
   }
 
-  protected onSocketConnection(socket: WebSocket) {
+  protected onSocketConnection (socket: WebSocket) {
     const id = uuid.v4();
     this.sockets.set(id, socket);
 
@@ -189,13 +191,13 @@ export class DevtoolsPlugin {
     });
   }
 
-  protected emitToSockets(event: IEvent) {
+  protected emitToSockets (event: IEvent) {
     for (const socket of this.sockets.values()) {
       socket.send(JSON.stringify(event));
     }
   }
 
-  protected emitActivityToSockets(event: ActivityEvent) {
+  protected emitActivityToSockets (event: ActivityEvent) {
     for (const socket of this.sockets.values()) {
       socket.send(JSON.stringify(event));
     }

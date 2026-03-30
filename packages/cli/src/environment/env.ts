@@ -27,11 +27,11 @@ export class Env implements IEnv {
 
   protected items: Map<string, string> = new Map();
 
-  constructor(name: string) {
+  constructor (name: string) {
     this.name = name;
   }
 
-  static load(name: string) {
+  static load (name: string) {
     const env = new Env(name);
     const base = path.join(os.homedir(), 'teams.cli', 'environments');
     const file = path.join(base, `${name}.env`);
@@ -56,37 +56,37 @@ export class Env implements IEnv {
     return env;
   }
 
-  get(key: string) {
+  get (key: string) {
     return this.items.get(key);
   }
 
-  set(key: string, value: string) {
+  set (key: string, value: string) {
     this.items.set(key, value);
   }
 
-  del(key: string) {
+  del (key: string) {
     this.items.delete(key);
   }
 
-  list(where?: (item: KeyValue, i: number) => boolean) {
+  list (where?: (item: KeyValue, i: number) => boolean) {
     return Array.from(this.items.entries())
       .map(([key, value]) => ({ key, value }))
       .filter((item, i) => (where ? where(item, i) : true));
   }
 
-  activate() {
+  activate () {
     for (const { key, value } of this.list()) {
       process.env[key] = value;
     }
   }
 
-  deactivate() {
+  deactivate () {
     for (const { key } of this.list()) {
       delete process.env[key];
     }
   }
 
-  save() {
+  save () {
     const base = path.join(os.homedir(), 'teams.cli', 'environments');
 
     if (!fs.existsSync(base)) {
@@ -97,7 +97,7 @@ export class Env implements IEnv {
     fs.writeFileSync(file, this.toString(), 'utf8');
   }
 
-  delete() {
+  delete () {
     const base = path.join(os.homedir(), 'teams.cli', 'environments');
     const file = path.join(base, `${this.name}.env`);
 

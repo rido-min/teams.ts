@@ -159,9 +159,7 @@ const ContentEditableAreaBase: ForwardRefRenderFunction<
         areaRef.current.textContent = defaultValue;
       }
       isFirstMount.current = false;
-    }
-    // Handle value changes after first mount
-    else if (areaRef.current.innerText !== value) {
+    } else if (areaRef.current.innerText !== value) { // Handle value changes after first mount
       areaRef.current.innerText = value || '';
     }
     // Always update empty state
@@ -256,9 +254,9 @@ const ContentEditableAreaBase: ForwardRefRenderFunction<
       <div className={container}>
         <div className={contentWrapper}>
           <div
-            id="content-editable-area"
+            id='content-editable-area'
             ref={areaRef}
-            role="textbox"
+            role='textbox'
             aria-multiline
             className={contentEditable}
             contentEditable={!disabled}
@@ -266,10 +264,10 @@ const ContentEditableAreaBase: ForwardRefRenderFunction<
             onKeyDown={onKeyDown}
             onPaste={handlePaste}
             data-placeholder={placeholder}
-            suppressContentEditableWarning={true}
+            suppressContentEditableWarning
             {...rest}
             title={title}
-          ></div>
+          />
           {children && <div contentEditable={false}>{children}</div>}
         </div>
         <div className={toolbarWrapper}>{toolbar}</div>

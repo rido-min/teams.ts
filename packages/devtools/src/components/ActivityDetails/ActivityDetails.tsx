@@ -36,7 +36,7 @@ const ActivityDetails: FC<ActivityDetailsProps> = memo(({ selected, view, setVie
       // Show toast notification
       dispatchToast(
         <Toast>
-          <ToastTitle role="status" aria-live="polite">
+          <ToastTitle role='status' aria-live='polite'>
             Content copied to clipboard
           </ToastTitle>
         </Toast>,
@@ -47,7 +47,7 @@ const ActivityDetails: FC<ActivityDetailsProps> = memo(({ selected, view, setVie
       // Show error toast
       dispatchToast(
         <Toast>
-          <ToastTitle role="alert" aria-live="assertive">
+          <ToastTitle role='alert' aria-live='assertive'>
             Failed to copy content
           </ToastTitle>
         </Toast>,
@@ -60,9 +60,9 @@ const ActivityDetails: FC<ActivityDetailsProps> = memo(({ selected, view, setVie
     <div className={classes.detailsContainer}>
       <Title1>Activity details</Title1>
       <div className={classes.tools}>
-        <Tooltip content="Copy to clipboard" relationship="label">
+        <Tooltip content='Copy to clipboard' relationship='label'>
           <Button
-            aria-label="Copy to clipboard"
+            aria-label='Copy to clipboard'
             icon={<CopyRegular />}
             onClick={handleCopy}
             disabled={!selected}
@@ -87,21 +87,23 @@ const ActivityDetails: FC<ActivityDetailsProps> = memo(({ selected, view, setVie
               setView(event.target.checked ? 'json' : 'preview');
             }}
             label={view === 'json' ? 'JSON' : 'Preview'}
-            aria-label="Toggle between Preview and JSON"
+            aria-label='Toggle between Preview and JSON'
             disabled={!selected}
           />
         </InfoLabel>
       </div>
 
       <div className={classes.jsonContainer}>
-        {selected ? (
-          <Json
-            value={selected.type === 'activity.error' ? selected.error : selected.body}
-            stringify={view === 'json'}
-          />
-        ) : (
-          <div>Select an activity from the activities list to view payload details.</div>
-        )}
+        {selected
+          ? (
+            <Json
+              value={selected.type === 'activity.error' ? selected.error : selected.body}
+              stringify={view === 'json'}
+            />
+            )
+          : (
+            <div>Select an activity from the activities list to view payload details.</div>
+            )}
       </div>
     </div>
   );

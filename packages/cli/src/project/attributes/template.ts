@@ -11,12 +11,12 @@ export class TemplateAttribute implements IProjectAttribute {
   readonly alias = 't';
   readonly description = 'the app template to use';
 
-  constructor(name: string) {
+  constructor (name: string) {
     this.id = `template[${name}]`;
     this.name = name;
   }
 
-  typescript(targetDir: string) {
+  typescript (targetDir: string) {
     fs.mkdirSync(targetDir, { recursive: true });
 
     return new Copy(
@@ -31,7 +31,7 @@ export class TemplateAttribute implements IProjectAttribute {
     );
   }
 
-  csharp(targetDir: string) {
+  csharp (targetDir: string) {
     fs.mkdirSync(targetDir, { recursive: true });
 
     return new Copy(
@@ -46,7 +46,7 @@ export class TemplateAttribute implements IProjectAttribute {
     );
   }
 
-  python(targetDir: string) {
+  python (targetDir: string) {
     fs.mkdirSync(targetDir, { recursive: true });
 
     return new Copy(

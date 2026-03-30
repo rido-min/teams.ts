@@ -7,16 +7,18 @@ import { ApiClientSettings, mergeApiClientSettings } from './api-client-settings
 export class TeamClient {
   readonly serviceUrl: string;
 
-  get http() {
+  get http () {
     return this._http;
   }
-  set http(v) {
+
+  set http (v) {
     this._http = v;
   }
+
   protected _http: Client;
   protected _apiClientSettings: Partial<ApiClientSettings>;
 
-  constructor(serviceUrl: string, options?: Client | ClientOptions, apiClientSettings?: Partial<ApiClientSettings>) {
+  constructor (serviceUrl: string, options?: Client | ClientOptions, apiClientSettings?: Partial<ApiClientSettings>) {
     this.serviceUrl = serviceUrl;
 
     if (!options) {
@@ -30,12 +32,12 @@ export class TeamClient {
     this._apiClientSettings = mergeApiClientSettings(apiClientSettings);
   }
 
-  async getById(id: string) {
+  async getById (id: string) {
     const res = await this.http.get<TeamDetails>(`${this.serviceUrl}/v3/teams/${id}`);
     return res.data;
   }
 
-  async getConversations(id: string) {
+  async getConversations (id: string) {
     const res = await this.http.get<ChannelInfo[]>(
       `${this.serviceUrl}/v3/teams/${id}/conversations`
     );

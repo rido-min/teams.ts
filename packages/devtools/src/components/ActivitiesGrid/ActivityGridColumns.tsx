@@ -56,7 +56,7 @@ const useActivityGridColumns = ({
           return (
             <Menu>
               <MenuTrigger>
-                <MenuButton id="button" appearance="transparent">
+                <MenuButton id='button' appearance='transparent'>
                   Type
                   <FilterIcon className={hasFilters ? classes.filterOn : ''} />
                 </MenuButton>
@@ -64,11 +64,11 @@ const useActivityGridColumns = ({
               <MenuPopover>
                 <MenuList>
                   {params.has('body.id') && (
-                    <Tooltip content={`ID: ${params.get('body.id')}`} relationship="label">
+                    <Tooltip content={`ID: ${params.get('body.id')}`} relationship='label'>
                       <MenuItem
                         onClick={() => handleTypeFilter('')}
                         icon={<CheckmarkFilled />}
-                        key="id-filter"
+                        key='id-filter'
                       >
                         Activity Id
                       </MenuItem>
@@ -96,15 +96,17 @@ const useActivityGridColumns = ({
           case 'type':
             return (
               <div className={classes.typeContainer}>
-                {item.type === 'activity.received' ? (
-                  <ArrowDownFilled className={classes.directionIcon} role="presentation" />
-                ) : (
-                  <ArrowUpFilled className={classes.directionIcon} role="presentation" />
-                )}
+                {item.type === 'activity.received'
+                  ? (
+                    <ArrowDownFilled className={classes.directionIcon} role='presentation' />
+                    )
+                  : (
+                    <ArrowUpFilled className={classes.directionIcon} role='presentation' />
+                    )}
                 <OverflowCell
                   content={path || ''}
                   className={classes.cell}
-                  subtractSelector=".directionIcon"
+                  subtractSelector='.directionIcon'
                 />
               </div>
             );
@@ -116,9 +118,11 @@ const useActivityGridColumns = ({
               />
             );
           case 'from':
-            return item.body.from ? (
-              <OverflowCell content={item.body.from.name} className={classes.cell} />
-            ) : null;
+            return item.body.from
+              ? (
+                <OverflowCell content={item.body.from.name} className={classes.cell} />
+                )
+              : null;
           case 'timestamp':
             return (
               <OverflowCell

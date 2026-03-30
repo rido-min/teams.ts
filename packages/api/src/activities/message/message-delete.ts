@@ -9,13 +9,12 @@ export interface IMessageDeleteActivity extends IActivity<'messageDelete'> {
 
 export class MessageDeleteActivity
   extends Activity<'messageDelete'>
-  implements IMessageDeleteActivity
-{
+  implements IMessageDeleteActivity {
   declare channelData: ChannelData & {
     eventType: 'softDeleteMessage';
   };
 
-  constructor(value: Omit<Partial<IMessageDeleteActivity>, 'type'> = {}) {
+  constructor (value: Omit<Partial<IMessageDeleteActivity>, 'type'> = {}) {
     super({
       ...value,
       type: 'messageDelete',
@@ -37,21 +36,21 @@ export class MessageDeleteActivity
   /**
    * initialize from interface
    */
-  static from(activity: IMessageDeleteActivity) {
+  static from (activity: IMessageDeleteActivity) {
     return new MessageDeleteActivity(activity);
   }
 
   /**
    * convert to interface
    */
-  toInterface(): IMessageDeleteActivity {
+  toInterface (): IMessageDeleteActivity {
     return Object.assign({}, this);
   }
 
   /**
    * copy to a new instance
    */
-  clone(options: Omit<Partial<IMessageDeleteActivity>, 'type'> = {}) {
+  clone (options: Omit<Partial<IMessageDeleteActivity>, 'type'> = {}) {
     return new MessageDeleteActivity({
       ...this.toInterface(),
       ...options,

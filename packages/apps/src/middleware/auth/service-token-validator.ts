@@ -11,7 +11,7 @@ export class ServiceTokenValidator {
   private jwtValidator: JwtValidator;
   private credentials?: Credentials;
 
-  constructor(
+  constructor (
     appId: string,
     tenantId?: string,
     serviceUrl?: string,
@@ -31,7 +31,7 @@ export class ServiceTokenValidator {
     this.credentials = { clientId: appId, tenantId };
   }
 
-  async check(authHeader: string, body: any): Promise<IToken> {
+  async check (authHeader: string, body: any): Promise<IToken> {
     // Extract token from "Bearer <token>" format
     const token = authHeader.startsWith('Bearer ')
       ? authHeader.substring(7)

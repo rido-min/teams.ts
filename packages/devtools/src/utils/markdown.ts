@@ -2,7 +2,7 @@ import { fromMarkdown } from 'mdast-util-from-markdown';
 import { gfmFromMarkdown } from 'mdast-util-gfm';
 import { gfm } from 'micromark-extension-gfm';
 
-export function hasMarkdownContent(content: string): boolean {
+export function hasMarkdownContent (content: string): boolean {
   // Parse the content to check for markdown syntax
   const tree = fromMarkdown(content, {
     extensions: [gfm()],

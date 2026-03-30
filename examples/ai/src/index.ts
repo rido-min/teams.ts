@@ -69,7 +69,7 @@ app.on('message', async ({ send, activity, next, log }) => {
         text: activity.text.slice(5),
       },
       send,
-      log,
+      log
     );
     return;
   }
@@ -99,7 +99,7 @@ app.on('message', async ({ send, activity, next, log }) => {
         text: query,
       },
       send,
-      log,
+      log
     );
   }
 });

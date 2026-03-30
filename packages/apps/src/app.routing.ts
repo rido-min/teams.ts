@@ -15,7 +15,7 @@ export type AppRoutingHandler<Name extends keyof IRoutes, TApp extends App<any>>
  * @param name event to subscribe to
  * @param cb callback to invoke
  */
-export function on<TPlugin extends IPlugin, Name extends keyof IRoutes,>(
+export function on<TPlugin extends IPlugin, Name extends keyof IRoutes> (
   this: App<TPlugin>,
   name: Name,
   cb: Exclude<IRoutes<PluginAdditionalContext<TPlugin>>[Name], undefined>
@@ -29,7 +29,7 @@ export function on<TPlugin extends IPlugin, Name extends keyof IRoutes,>(
  * @param pattern pattern to match against message text
  * @param cb callback to invoke
  */
-export function message<TPlugin extends IPlugin>(
+export function message<TPlugin extends IPlugin> (
   this: App<TPlugin>,
   pattern: string | RegExp,
   cb: Exclude<IRoutes<PluginAdditionalContext<TPlugin>>['message'], undefined>
@@ -53,7 +53,7 @@ export function message<TPlugin extends IPlugin>(
  * register a middleware
  * @param cb callback to invoke
  */
-export function use<TPlugin extends IPlugin>(
+export function use<TPlugin extends IPlugin> (
   this: App<TPlugin>,
   cb: RouteHandler<IActivityContext<Activity, PluginAdditionalContext<TPlugin>>, void | InvokeResponse>
 ) {

@@ -32,7 +32,7 @@ describe('withRemoteFunctionJwtValidation Middleware', () => {
 
     mockRequest = {
       headers: {
-        'authorization': 'Bearer valid-token',
+        authorization: 'Bearer valid-token',
         'x-teams-app-session-id': 'test-app-session-id',
         'x-teams-page-id': 'test-page-id',
         'x-teams-channel-id': 'test-channel-id',
@@ -84,7 +84,7 @@ describe('withRemoteFunctionJwtValidation Middleware', () => {
     await handleRequest(mockRequest, mockResponse, mockNext);
 
     expect(mockValidatorCheck).toHaveBeenCalledWith({
-      'authorization': 'Bearer valid-token',
+      authorization: 'Bearer valid-token',
       'x-teams-app-session-id': 'test-app-session-id',
       'x-teams-page-id': 'test-page-id',
       'x-teams-channel-id': 'test-channel-id',
@@ -101,7 +101,7 @@ describe('withRemoteFunctionJwtValidation Middleware', () => {
 
   it('should convert Express headers to lowercase', async () => {
     mockRequest.headers = {
-      'Authorization': 'Bearer valid-token',
+      Authorization: 'Bearer valid-token',
       'X-Teams-App-Session-Id': 'test-app-session-id',
       'X-Teams-Page-Id': 'test-page-id',
     };
@@ -119,7 +119,7 @@ describe('withRemoteFunctionJwtValidation Middleware', () => {
     await handleRequest(mockRequest, mockResponse, mockNext);
 
     expect(mockValidatorCheck).toHaveBeenCalledWith({
-      'authorization': 'Bearer valid-token',
+      authorization: 'Bearer valid-token',
       'x-teams-app-session-id': 'test-app-session-id',
       'x-teams-page-id': 'test-page-id',
     });
@@ -127,7 +127,7 @@ describe('withRemoteFunctionJwtValidation Middleware', () => {
 
   it('should skip non-string header values', async () => {
     mockRequest.headers = {
-      'authorization': 'Bearer valid-token',
+      authorization: 'Bearer valid-token',
       'x-teams-app-session-id': 'test-app-session-id',
       'x-teams-page-id': 'test-page-id',
       'x-forwarded-for': ['1.2.3.4', '5.6.7.8'], // array value - should be skipped
@@ -146,7 +146,7 @@ describe('withRemoteFunctionJwtValidation Middleware', () => {
     await handleRequest(mockRequest, mockResponse, mockNext);
 
     expect(mockValidatorCheck).toHaveBeenCalledWith({
-      'authorization': 'Bearer valid-token',
+      authorization: 'Bearer valid-token',
       'x-teams-app-session-id': 'test-app-session-id',
       'x-teams-page-id': 'test-page-id',
       // x-forwarded-for should not be included

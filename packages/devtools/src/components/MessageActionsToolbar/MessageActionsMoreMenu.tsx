@@ -59,10 +59,10 @@ const MessageActionsMoreMenu: FC<MessageActionsMoreMenuProps> = memo(
     return (
       <Menu>
         <MenuTrigger>
-          <Tooltip content="More options" relationship="label">
+          <Tooltip content='More options' relationship='label'>
             <ToolbarButton
-              aria-label="More options"
-              key="more-options"
+              aria-label='More options'
+              key='more-options'
               icon={<MoreHorizontalIcon />}
               className={classes.toolbarButton}
             />

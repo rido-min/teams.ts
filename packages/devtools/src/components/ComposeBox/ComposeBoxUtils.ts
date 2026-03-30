@@ -3,7 +3,7 @@ import { Attachment } from '@microsoft/teams.api';
 /**
  * Processes HTML content from ContentEditableArea to plain text
  */
-export function processMessageContent(htmlContent: string): string {
+export function processMessageContent (htmlContent: string): string {
   // Convert <br> and <div> to newlines for markdown
   const content = htmlContent
     .replace(/<br\s*\/?>/gi, '\n')
@@ -20,7 +20,7 @@ export function processMessageContent(htmlContent: string): string {
 /**
  * Converts API attachments to UI attachment types
  */
-export function convertAttachmentsForUI(attachments: Attachment[]) {
+export function convertAttachmentsForUI (attachments: Attachment[]) {
   return attachments.map((attachment) => {
     if (attachment.contentType?.startsWith('application/vnd.microsoft.card.')) {
       return {
@@ -47,7 +47,7 @@ export function convertAttachmentsForUI(attachments: Attachment[]) {
 /**
  * Processes a card and adds it to attachments if it doesn't already exist
  */
-export function processCard(
+export function processCard (
   card: any,
   attachments: Attachment[],
   processedCards: Set<string>,

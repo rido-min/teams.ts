@@ -12,12 +12,12 @@ export class Copy implements IProjectAttributeOperation {
   private _from: string;
   private _to: string;
 
-  constructor(from: string, to: string) {
+  constructor (from: string, to: string) {
     this._from = from;
     this._to = to;
   }
 
-  up(project: IProject) {
+  up (project: IProject) {
     if (!fs.existsSync(this._from)) {
       throw new Error(`"${this._from}" does not exist`);
     }
@@ -31,7 +31,7 @@ export class Copy implements IProjectAttributeOperation {
     return new FileCopy(this._from, this._to).up(project);
   }
 
-  down(project: IProject) {
+  down (project: IProject) {
     if (!fs.existsSync(this._to)) {
       return;
     }

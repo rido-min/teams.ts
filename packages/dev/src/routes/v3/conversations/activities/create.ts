@@ -10,7 +10,7 @@ type CreateActivityParams = {
   readonly conversationId: string;
 };
 
-export function create({ port, log, process }: RouteContext) {
+export function create ({ port, log, process }: RouteContext) {
   return async (
     req: express.Request<CreateActivityParams, any, Activity>,
     res: express.Response

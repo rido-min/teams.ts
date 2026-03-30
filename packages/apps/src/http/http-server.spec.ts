@@ -6,25 +6,27 @@ class MockAdapter implements IHttpServerAdapter {
   started = false;
   stopped = false;
 
-  registerRoute(method: HttpMethod, path: string, handler: HttpRouteHandler): void {
+  registerRoute (method: HttpMethod, path: string, handler: HttpRouteHandler): void {
     this.routes.push({ method, path, handler });
   }
 
-  async start(_port: number): Promise<void> {
+  async start (_port: number | string): Promise<void> {
     this.started = true;
   }
 
-  async stop(): Promise<void> {
+  async stop (): Promise<void> {
     this.stopped = true;
   }
 
   /** Simulate a request to a registered route */
-  async simulateRequest(path: string, body: unknown, headers: Record<string, string | string[]> = {}) {
+  async simulateRequest (path: string, body: unknown, headers: Record<string, string | string[]> = {}) {
     const route = this.routes.find(r => r.path === path);
     if (!route) throw new Error(`No route registered for ${path}`);
     return route.handler({ body, headers });
   }
 }
+
+const defaultOptions = { skipAuth: true, messagingEndpoint: '/api/messages' };
 
 describe('HttpServer', () => {
   let adapter: MockAdapter;
@@ -32,7 +34,7 @@ describe('HttpServer', () => {
 
   beforeEach(() => {
     adapter = new MockAdapter();
-    server = new HttpServer(adapter, { skipAuth: true });
+    server = new HttpServer(adapter, defaultOptions);
   });
 
   describe('initialize', () => {
@@ -42,6 +44,15 @@ describe('HttpServer', () => {
       expect(adapter.routes).toHaveLength(1);
       expect(adapter.routes[0].method).toBe('POST');
       expect(adapter.routes[0].path).toBe('/api/messages');
+    });
+
+    it('should register route with custom messaging endpoint', async () => {
+      const customServer = new HttpServer(adapter, { skipAuth: true, messagingEndpoint: '/bot/incoming' });
+      await customServer.initialize({ credentials: undefined });
+
+      expect(adapter.routes).toHaveLength(1);
+      expect(adapter.routes[0].path).toBe('/bot/incoming');
+      expect(customServer.messagingEndpoint).toBe('/bot/incoming');
     });
 
     it('should only initialize once', async () => {
@@ -119,7 +130,7 @@ describe('HttpServer', () => {
     let authServer: HttpServer;
 
     beforeEach(async () => {
-      authServer = new HttpServer(adapter, { skipAuth: false });
+      authServer = new HttpServer(adapter, { ...defaultOptions, skipAuth: false });
       await authServer.initialize({
         credentials: { clientId: 'test-app', tenantId: 'test-tenant' } as any,
       });
@@ -140,17 +151,25 @@ describe('HttpServer', () => {
       expect(adapter.started).toBe(true);
     });
 
-    it('should parse string port to number', async () => {
+    it('should pass string port through to adapter', async () => {
       const startSpy = jest.spyOn(adapter, 'start');
 
       await server.start('4000');
 
-      expect(startSpy).toHaveBeenCalledWith(4000);
+      expect(startSpy).toHaveBeenCalledWith('4000');
+    });
+
+    it('should pass named pipe path through to adapter', async () => {
+      const startSpy = jest.spyOn(adapter, 'start');
+
+      await server.start('\\\\.\\pipe\\507cb72a-6765-4f1e-a9f0-1234abcd5678');
+
+      expect(startSpy).toHaveBeenCalledWith('\\\\.\\pipe\\507cb72a-6765-4f1e-a9f0-1234abcd5678');
     });
 
     it('should throw when adapter does not implement start', async () => {
       const noStartAdapter = { registerRoute: jest.fn() } as any;
-      const noStartServer = new HttpServer(noStartAdapter);
+      const noStartServer = new HttpServer(noStartAdapter, defaultOptions);
 
       await expect(noStartServer.start(3000)).rejects.toThrow('Adapter does not implement start()');
     });
@@ -165,7 +184,7 @@ describe('HttpServer', () => {
 
     it('should warn and skip when adapter does not implement stop', async () => {
       const noStopAdapter = { registerRoute: jest.fn() } as any;
-      const noStopServer = new HttpServer(noStopAdapter);
+      const noStopServer = new HttpServer(noStopAdapter, defaultOptions);
 
       // Should not throw
       await noStopServer.stop();
@@ -196,7 +215,7 @@ describe('HttpServer', () => {
 
     it('should no-op when adapter does not support serveStatic', () => {
       const minimalAdapter = { registerRoute: jest.fn() } as any;
-      const minimalServer = new HttpServer(minimalAdapter);
+      const minimalServer = new HttpServer(minimalAdapter, defaultOptions);
 
       // Should not throw
       minimalServer.serveStatic('/static', '/dist');

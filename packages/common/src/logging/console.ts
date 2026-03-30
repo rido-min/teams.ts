@@ -24,7 +24,7 @@ export class ConsoleLogger implements ILogger {
     trace: ANSI.BackgroundBlue
   };
 
-  constructor(name: string, options?: ILoggerOptions) {
+  constructor (name: string, options?: ILoggerOptions) {
     this.name = name;
 
     const env = typeof process === 'undefined' ? undefined : process.env;
@@ -37,27 +37,27 @@ export class ConsoleLogger implements ILogger {
     };
   }
 
-  error(...msg: any[]) {
+  error (...msg: any[]) {
     this.log('error', ...msg);
   }
 
-  warn(...msg: any[]) {
+  warn (...msg: any[]) {
     this.log('warn', ...msg);
   }
 
-  info(...msg: any[]) {
+  info (...msg: any[]) {
     this.log('info', ...msg);
   }
 
-  debug(...msg: any[]) {
+  debug (...msg: any[]) {
     this.log('debug', ...msg);
   }
 
-  trace(...msg: any[]) {
+  trace (...msg: any[]) {
     this.log('trace', ...msg);
   }
 
-  log(level: LogLevel, ...msg: any[]) {
+  log (level: LogLevel, ...msg: any[]) {
     if (!this._enabled) {
       return;
     }
@@ -70,7 +70,7 @@ export class ConsoleLogger implements ILogger {
     const name = [this.name, ANSI.ForegroundReset, ANSI.BoldReset];
 
     for (const m of msg) {
-      let text = new String(m);
+      let text = String(m);
 
       if (typeof m === 'object') {
         text = JSON.stringify(m, null, 2);
@@ -82,7 +82,7 @@ export class ConsoleLogger implements ILogger {
     }
   }
 
-  child(name: string, overrideOptions?: ILoggerOptions) {
+  child (name: string, overrideOptions?: ILoggerOptions) {
     const mergedPattern = mergePatterns(
       this.loggerOptions.pattern,
       overrideOptions?.pattern
@@ -96,7 +96,7 @@ export class ConsoleLogger implements ILogger {
   }
 }
 
-function parsePatternString(pattern: string): { inclusions: string[]; exclusions: string[] } {
+function parsePatternString (pattern: string): { inclusions: string[]; exclusions: string[] } {
   const patterns = pattern.split(',').map(p => p.trim());
   const inclusions: string[] = [];
   const exclusions: string[] = [];
@@ -112,7 +112,7 @@ function parsePatternString(pattern: string): { inclusions: string[]; exclusions
   return { inclusions, exclusions };
 }
 
-function parseMagicExpr(pattern: string) {
+function parseMagicExpr (pattern: string) {
   const { inclusions: inclusionPatterns, exclusions: exclusionPatterns } = parsePatternString(pattern);
 
   const inclusions: RegExp[] = inclusionPatterns.map(p => patternToRegex(p));
@@ -138,7 +138,7 @@ function parseMagicExpr(pattern: string) {
   };
 }
 
-function patternToRegex(pattern: string): RegExp {
+function patternToRegex (pattern: string): RegExp {
   let res = '';
   const parts = pattern.split('*');
 
@@ -153,7 +153,7 @@ function patternToRegex(pattern: string): RegExp {
   return new RegExp(res);
 }
 
-function mergePatterns(parentPattern?: string, childPattern?: string): string {
+function mergePatterns (parentPattern?: string, childPattern?: string): string {
   if (!parentPattern && !childPattern) {
     return '*';
   }
@@ -191,7 +191,7 @@ function mergePatterns(parentPattern?: string, childPattern?: string): string {
   return allPatterns.join(',');
 }
 
-function parseLogLevel(level?: string): LogLevel | undefined {
+function parseLogLevel (level?: string): LogLevel | undefined {
   const value = level?.toLowerCase();
   switch (value) {
     case 'error':

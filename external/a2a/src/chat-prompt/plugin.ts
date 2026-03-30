@@ -38,7 +38,7 @@ const pascalCase = (str: string) => {
 };
 
 export class A2AClientPlugin
-  implements ChatPromptPlugin<'a2a', A2APluginUseParams> {
+implements ChatPromptPlugin<'a2a', A2APluginUseParams> {
   readonly name = 'a2a';
 
   public readonly log: ILogger;
@@ -50,7 +50,7 @@ export class A2AClientPlugin
   protected buildMessageForAgent?: BuildMessageForAgent;
   protected buildMessageFromAgentResponse?: BuildMessageFromAgentResponse;
 
-  constructor(options: A2AClientPluginOptions = {}) {
+  constructor (options: A2AClientPluginOptions = {}) {
     this.buildFunctionMetadata = options.buildFunctionMetadata;
     this.buildPrompt = options.buildPrompt;
     this.buildMessageForAgent = options.buildMessageForAgent;
@@ -58,7 +58,7 @@ export class A2AClientPlugin
     this.log = options.logger ?? new ConsoleLogger('a2a:client');
   }
 
-  onUsePlugin(args: A2APluginUseParams) {
+  onUsePlugin (args: A2APluginUseParams) {
     // Just store the config, defer client creation to onBuildFunctions
     this._agentConfigs.set(args.key, {
       key: args.key,
@@ -69,7 +69,7 @@ export class A2AClientPlugin
     });
   }
 
-  async onBuildFunctions(functions: ChatFunction[]): Promise<ChatFunction[]> {
+  async onBuildFunctions (functions: ChatFunction[]): Promise<ChatFunction[]> {
     const allFunctions: ChatFunction[] = [];
 
     for (const [key, config] of this._agentConfigs) {
@@ -100,7 +100,7 @@ export class A2AClientPlugin
             },
             required: ['message'],
           },
-          handler: (async (args: { message: string }) => {
+          handler: async (args: { message: string }) => {
             try {
               const agentMessage = args.message;
 
@@ -146,7 +146,7 @@ export class A2AClientPlugin
               console.error(e);
               throw e;
             }
-          }).bind(this),
+          },
         });
         this.log.debug(`Added function in ChatPrompt to call ${agentCard.name}`);
       } catch (error) {
@@ -158,7 +158,7 @@ export class A2AClientPlugin
     return functions.concat(allFunctions);
   }
 
-  async onBuildPrompt(
+  async onBuildPrompt (
     systemPrompt: string | undefined
   ): Promise<string | undefined> {
     // Collect agent details for prompt building
@@ -218,7 +218,7 @@ export class A2AClientPlugin
     return prompt;
   }
 
-  private _defaultFunctionMetadata(
+  private _defaultFunctionMetadata (
     card: AgentCard
   ): { name: string; description: string } {
     const name = `message${pascalCase(card.name)}`;
@@ -226,7 +226,7 @@ export class A2AClientPlugin
     return { name, description };
   }
 
-  private _defaultBuildMessage(
+  private _defaultBuildMessage (
     card: AgentCard,
     input: string,
     metadata?: Record<string, any>
@@ -234,7 +234,7 @@ export class A2AClientPlugin
     return this._createMessage(input, card, metadata);
   }
 
-  private _createMessage(
+  private _createMessage (
     text: string,
     _card?: AgentCard,
     metadata?: Record<string, any>
@@ -249,7 +249,7 @@ export class A2AClientPlugin
     };
   }
 
-  private _defaultBuildMessageFromAgentResponse(
+  private _defaultBuildMessageFromAgentResponse (
     _card: AgentCard,
     response: Message | Task,
     _originalInput: string
@@ -265,7 +265,7 @@ export class A2AClientPlugin
     }
   }
 
-  private async _getAgentCard(key: string, config: IAgentConfig): Promise<AgentCard | null> {
+  private async _getAgentCard (key: string, config: IAgentConfig): Promise<AgentCard | null> {
     // Return cached client info if it exists
     let clientInfo = this._clients.get(key);
     if (clientInfo) {

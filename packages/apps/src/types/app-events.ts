@@ -12,8 +12,8 @@ export type PluginEvents<T> = T extends IPlugin<any, infer Events>
 
 type MergePluginEventMaps<TPlugins> = UnionToIntersection<
   TPlugins extends readonly unknown[]
-  ? PluginEvents<TPlugins[number]>
-  : PluginEvents<TPlugins>
+    ? PluginEvents<TPlugins[number]>
+    : PluginEvents<TPlugins>
 >;
 
 /**
@@ -33,8 +33,8 @@ export type AppEvents<TPlugins> = {
   [K in
   | keyof IEvents
   | keyof MergePluginEventMaps<TPlugins>]: K extends keyof IEvents
-  ? IEvents[K]
-  : K extends keyof MergePluginEventMaps<TPlugins>
-  ? MergePluginEventMaps<TPlugins>[K]
-  : never;
+    ? IEvents[K]
+    : K extends keyof MergePluginEventMaps<TPlugins>
+      ? MergePluginEventMaps<TPlugins>[K]
+      : never;
 };

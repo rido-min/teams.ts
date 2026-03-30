@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 
 import openapits, { astToString } from 'openapi-typescript';
-import { format  as prettier } from 'prettier';
+import { format as prettier } from 'prettier';
 import * as ts from 'typescript';
 
 import prettierConfig from './prettier.config.js';
@@ -10,7 +10,7 @@ import prettierConfig from './prettier.config.js';
 type ApiVersion = 'v1.0' | 'beta';
 
 // Helper to get property name from AST node
-function getPropertyName(name: ts.PropertyName | undefined): string | null {
+function getPropertyName (name: ts.PropertyName | undefined): string | null {
   if (!name) return null;
   if (ts.isStringLiteral(name)) return name.text;
   if (ts.isIdentifier(name)) return name.text;
@@ -19,7 +19,7 @@ function getPropertyName(name: ts.PropertyName | undefined): string | null {
 }
 
 // Apply allowlist filtering by removing non-matching path members
-function applyAllowList(pathsInterface: ts.InterfaceDeclaration, allowlist: RegExp[]): void {
+function applyAllowList (pathsInterface: ts.InterfaceDeclaration, allowlist: RegExp[]): void {
   const membersToKeep: ts.TypeElement[] = [];
 
   for (const member of pathsInterface.members) {
@@ -39,7 +39,7 @@ function applyAllowList(pathsInterface: ts.InterfaceDeclaration, allowlist: RegE
 }
 
 // Remove 'never' typed operations from paths to reduce bloat
-function removeUnsupportedVerbsFromPaths(pathsInterface: ts.InterfaceDeclaration): void {
+function removeUnsupportedVerbsFromPaths (pathsInterface: ts.InterfaceDeclaration): void {
   for (const pathMember of pathsInterface.members) {
     if (
       ts.isPropertySignature(pathMember) &&
@@ -121,7 +121,7 @@ function removeUnsupportedVerbsFromPaths(pathsInterface: ts.InterfaceDeclaration
 }
 
 // Filter out error responses (4XX, 5XX, default) from responses objects
-function simplifyResponses(operationsInterface: ts.InterfaceDeclaration): void {
+function simplifyResponses (operationsInterface: ts.InterfaceDeclaration): void {
   for (const member of operationsInterface.members) {
     if (ts.isPropertySignature(member) && member.name && ts.isStringLiteral(member.name)) {
       if (member.type && ts.isTypeLiteralNode(member.type)) {
@@ -166,7 +166,7 @@ function simplifyResponses(operationsInterface: ts.InterfaceDeclaration): void {
 }
 
 // Helper function to extract status code from various node types
-function getStatusCodeFromNode(nameNode: ts.PropertyName): string {
+function getStatusCodeFromNode (nameNode: ts.PropertyName): string {
   if (ts.isStringLiteral(nameNode)) {
     return nameNode.text;
   } else if (ts.isNumericLiteral(nameNode)) {
@@ -192,7 +192,7 @@ function getStatusCodeFromNode(nameNode: ts.PropertyName): string {
 }
 
 // Remove parameters property from all paths since they're redundant
-function removeParametersFromPaths(pathsInterface: ts.InterfaceDeclaration): void {
+function removeParametersFromPaths (pathsInterface: ts.InterfaceDeclaration): void {
   for (const pathMember of pathsInterface.members) {
     if (
       ts.isPropertySignature(pathMember) &&
@@ -228,7 +228,7 @@ function removeParametersFromPaths(pathsInterface: ts.InterfaceDeclaration): voi
 }
 
 // Extract operation references from AST nodes
-function extractOperationReferences(node: ts.Node, refs: Set<string>): void {
+function extractOperationReferences (node: ts.Node, refs: Set<string>): void {
   // Look for operations["key"] pattern in TypeReference nodes
   if (ts.isTypeReferenceNode(node)) {
     const typeName = getTypeReferenceName(node.typeName);
@@ -258,7 +258,7 @@ function extractOperationReferences(node: ts.Node, refs: Set<string>): void {
   ts.forEachChild(node, (child) => extractOperationReferences(child, refs));
 }
 
-function getTypeReferenceName(typeName: ts.EntityName): string {
+function getTypeReferenceName (typeName: ts.EntityName): string {
   if (ts.isIdentifier(typeName)) return typeName.text;
   if (ts.isQualifiedName(typeName)) {
     return `${getTypeReferenceName(typeName.left)}.${typeName.right.text}`;
@@ -267,14 +267,14 @@ function getTypeReferenceName(typeName: ts.EntityName): string {
 }
 
 // Collect operation references from filtered paths
-function collectReferencedOperations(pathsInterface: ts.InterfaceDeclaration): Set<string> {
+function collectReferencedOperations (pathsInterface: ts.InterfaceDeclaration): Set<string> {
   const referencedOps = new Set<string>();
   extractOperationReferences(pathsInterface, referencedOps);
   return referencedOps;
 }
 
 // Filter operations to keep only referenced ones
-function filterOperations(
+function filterOperations (
   operationsInterface: ts.InterfaceDeclaration,
   referencedOps: Set<string>
 ): void {
@@ -294,7 +294,7 @@ function filterOperations(
 }
 
 // Extract schema references from AST nodes
-function extractSchemaReferences(
+function extractSchemaReferences (
   node: ts.Node,
   refs: Set<string>,
   visited: Set<ts.Node> = new Set()
@@ -352,7 +352,7 @@ function extractSchemaReferences(
 }
 
 // Check if we should also scan paths, webhooks, and other parts for schema references
-function analyzeAllReferenceSources(
+function analyzeAllReferenceSources (
   paths: ts.InterfaceDeclaration,
   others: ts.Declaration[],
   components: ts.InterfaceDeclaration,
@@ -386,7 +386,7 @@ function analyzeAllReferenceSources(
 }
 
 // Filter schemas to keep only referenced ones
-function filterSchemas(
+function filterSchemas (
   componentsInterface: ts.InterfaceDeclaration,
   referencedSchemas: Set<string>
 ): void {
@@ -440,7 +440,7 @@ function filterSchemas(
 }
 
 // Extract required interfaces from openapi-typescript result by name (order-independent)
-function extractInterfaces(res: any[]): {
+function extractInterfaces (res: any[]): {
   paths: ts.InterfaceDeclaration;
   components: ts.InterfaceDeclaration;
   operations: ts.InterfaceDeclaration;
@@ -484,7 +484,7 @@ function extractInterfaces(res: any[]): {
   return { paths, components, operations, others };
 }
 
-export async function generateTypes(
+export async function generateTypes (
   version: ApiVersion,
   yamlPath: string,
   outputPath: string

@@ -10,7 +10,7 @@ import { MessageActivity } from '../message';
  *
  * Transforms supported send types into a valid `ActivityParams` object
  */
-export function toActivityParams(activity: ActivityLike): ActivityParams {
+export function toActivityParams (activity: ActivityLike): ActivityParams {
   if (typeof activity === 'string') {
     activity = {
       type: 'message',

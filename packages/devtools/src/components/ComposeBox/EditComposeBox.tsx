@@ -251,7 +251,7 @@ const EditComposeBox: FC<EditComposeBoxProps> = memo(
 
     return (
       <ContentEditableArea
-        title="Edit message"
+        title='Edit message'
         ref={contentEditableRef}
         defaultValue={value}
         value={message}
@@ -259,7 +259,7 @@ const EditComposeBox: FC<EditComposeBoxProps> = memo(
         onKeyDown={handleKeyDown}
         toolbar={memoizedToolbar}
         disabled={disabled}
-        appearance="outline"
+        appearance='outline'
       >
         {attachments && (
           <AttachmentsContainer

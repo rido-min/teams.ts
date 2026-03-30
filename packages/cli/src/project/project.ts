@@ -13,24 +13,27 @@ export interface IProject {
 }
 
 export class Project implements IProject {
-  get path() {
+  get path () {
     return this._path;
   }
+
   private _path: string;
 
-  get name() {
+  get name () {
     return this._name;
   }
+
   private _name: string;
 
-  get language() {
+  get language () {
     return this._language;
   }
+
   private _language: ProjectLanguage;
 
   private readonly _attributes: Array<IProjectAttribute> = [];
 
-  constructor(
+  constructor (
     path: string,
     name: string,
     language: ProjectLanguage,
@@ -42,7 +45,7 @@ export class Project implements IProject {
     this._attributes = attributes;
   }
 
-  static detectLanguage(): ProjectLanguage | undefined {
+  static detectLanguage (): ProjectLanguage | undefined {
     if (fs.existsSync(path.join(process.cwd(), 'package.json'))) {
       return 'typescript';
     }
@@ -57,11 +60,11 @@ export class Project implements IProject {
     return undefined;
   }
 
-  static builder() {
+  static builder () {
     return new ProjectBuilder();
   }
 
-  static load() {
+  static load () {
     const language = this.detectLanguage();
 
     if (!language) {
@@ -74,7 +77,7 @@ export class Project implements IProject {
       .withLanguage(language);
   }
 
-  async up() {
+  async up () {
     for (const attribute of this._attributes) {
       const op = await attribute[this._language](this._path);
       await op.up({
@@ -85,7 +88,7 @@ export class Project implements IProject {
     }
   }
 
-  async down() {
+  async down () {
     for (const attribute of this._attributes.toReversed()) {
       const op = await attribute[this._language](this._path);
       await op.down({

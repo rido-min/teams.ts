@@ -16,16 +16,16 @@ const RESERVED_KEYWORDS = new Set([
   'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof', 'new',
   'null', 'return', 'super', 'switch', 'this', 'throw', 'true', 'try',
   'typeof', 'var', 'void', 'while', 'with', 'yield',
-  
+
   // Strict mode reserved words
   'let', 'static', 'implements', 'interface', 'package', 'private',
   'protected', 'public',
-  
+
   // Future reserved words
   'arguments', 'eval'
 ]);
 
-export function isAllowListed(path: string, allowList: RegExp[], options = { filterInvalidUrls: false }): boolean {
+export function isAllowListed (path: string, allowList: RegExp[], options = { filterInvalidUrls: false }): boolean {
   if (options.filterInvalidUrls && patterns.invalidUrl.test(path)) {
     return false;
   }
@@ -40,7 +40,7 @@ export function isAllowListed(path: string, allowList: RegExp[], options = { fil
   return allowList.length === 0;
 }
 
-export function filterPathsByAllowlist(
+export function filterPathsByAllowlist (
   paths: Record<string, any>,
   allowList: RegExp[],
   options = { filterInvalidUrls: false }
@@ -78,7 +78,7 @@ export const getExportName = (name: string): string => {
 
 export const isReservedKeyword = (name: string) => RESERVED_KEYWORDS.has(name);
 
-function getEntitlementManagementFileSystemName(parent: string, clientName: string) {
+function getEntitlementManagementFileSystemName (parent: string, clientName: string) {
   // Some paths under identityGovernance/entitlementManagement are so long that consumers can easily run
   // into MAX_PATH limitations. To help avoid that, this abbreviates the file system name with some targeted replacements.
   // With this, we can go from
@@ -92,7 +92,7 @@ function getEntitlementManagementFileSystemName(parent: string, clientName: stri
   fileSystemName = fileSystemName.startsWith('accessPackage')
     ? 'ap' + fileSystemName.substring('accessPackage'.length)
     : fileSystemName;
-  
+
   return camelcase(fileSystemName);
 }
 

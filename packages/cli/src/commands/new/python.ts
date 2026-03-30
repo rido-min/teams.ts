@@ -22,7 +22,7 @@ const ArgsSchema = z.object({
 /**
  * Prints next steps to start the app.
  */
-function printNextSteps(name: string): void {
+function printNextSteps (name: string): void {
   console.log(new String().bold('Next steps to start the app:').toString());
   console.log(new String().cyan(`  cd ${name}`).toString());
   console.log(new String().cyan('  python -m venv .venv').toString());
@@ -31,8 +31,8 @@ function printNextSteps(name: string): void {
   console.log(new String().cyan('  python src/main.py').toString());
 }
 
-export function Python(_: IContext): CommandModule<{}, z.infer<typeof ArgsSchema>> {
-  const isPython = Settings.load().language == 'python';
+export function Python (_: IContext): CommandModule<{}, z.infer<typeof ArgsSchema>> {
+  const isPython = Settings.load().language === 'python';
   const atkPath = path.resolve(url.fileURLToPath(import.meta.url), '../..', 'configs', 'atk');
 
   return {

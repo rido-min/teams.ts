@@ -18,7 +18,7 @@ import useActivitiesGridClasses from './ActivitiesGrid.styles';
 import useActivityGridColumns from './ActivityGridColumns';
 import { getActivityPath } from './getActivityPath';
 
-function filterActivities(event: ActivityEvent, params: URLSearchParams): boolean {
+function filterActivities (event: ActivityEvent, params: URLSearchParams): boolean {
   for (const [key, filter] of params.entries()) {
     const value = getPath(
       {
@@ -28,7 +28,7 @@ function filterActivities(event: ActivityEvent, params: URLSearchParams): boolea
       key
     );
 
-    if (value != filter) {
+    if (value !== filter) {
       return false;
     }
   }
@@ -75,9 +75,9 @@ const ActivitiesGrid: FC<ActivitiesGridProps> = memo(
           items={filteredActivities}
           columns={columns}
           className={classes.grid}
-          selectionMode="single"
+          selectionMode='single'
           getRowId={(item) => item.id as TableRowId}
-          focusMode="composite"
+          focusMode='composite'
           selectedItems={selected ? [selected.id] : []}
           onSelectionChange={(_e, data) => {
             const selectedId = Array.from(data.selectedItems)[0] as string;
@@ -86,7 +86,7 @@ const ActivitiesGrid: FC<ActivitiesGridProps> = memo(
               handleRowSelect(selectedItem);
             }
           }}
-          aria-label="Activities list"
+          aria-label='Activities list'
         >
           <DataGridHeader className={classes.header}>
             <DataGridRow
@@ -98,54 +98,58 @@ const ActivitiesGrid: FC<ActivitiesGridProps> = memo(
               }}
             >
               {({ renderHeaderCell, columnId }) => {
-                return columnId === 'type' ? (
-                  <DataGridHeaderCell tabIndex={-1} className={classes.cell}>
-                    {renderHeaderCell()}
-                  </DataGridHeaderCell>
-                ) : (
-                  <DataGridHeaderCell
-                    className={
+                return columnId === 'type'
+                  ? (
+                    <DataGridHeaderCell tabIndex={-1} className={classes.cell}>
+                      {renderHeaderCell()}
+                    </DataGridHeaderCell>
+                    )
+                  : (
+                    <DataGridHeaderCell
+                      className={
                       columnId !== 'timestamp'
                         ? classes.cell
                         : mergeClasses(classes.cell, classes.timestamp)
                     }
-                  >
-                    {renderHeaderCell()}
-                  </DataGridHeaderCell>
-                );
+                    >
+                      {renderHeaderCell()}
+                    </DataGridHeaderCell>
+                    );
               }}
             </DataGridRow>
           </DataGridHeader>
-          {filteredActivities.length > 0 ? (
-            <DataGridBody<ActivityEvent>>
-              {({ item }) => (
-                <DataGridRow
-                  className={mergeClasses(
-                    classes.row,
-                    filteredActivities.indexOf(item) % 2 === 0 ? classes.evenRow : classes.oddRow,
-                    selected?.id === item.id && classes.selectedRow,
-                    item.type === 'activity.error' && classes.errorRow
-                  )}
-                  aria-selected={selected?.id === item.id}
-                  selectionCell={{ radioIndicator: { 'aria-label': 'Select row' } }}
-                >
-                  {({ renderCell, columnId }) => (
-                    <DataGridCell
-                      className={
+          {filteredActivities.length > 0
+            ? (
+              <DataGridBody<ActivityEvent>>
+                {({ item }) => (
+                  <DataGridRow
+                    className={mergeClasses(
+                      classes.row,
+                      filteredActivities.indexOf(item) % 2 === 0 ? classes.evenRow : classes.oddRow,
+                      selected?.id === item.id && classes.selectedRow,
+                      item.type === 'activity.error' && classes.errorRow
+                    )}
+                    aria-selected={selected?.id === item.id}
+                    selectionCell={{ radioIndicator: { 'aria-label': 'Select row' } }}
+                  >
+                    {({ renderCell, columnId }) => (
+                      <DataGridCell
+                        className={
                         columnId !== 'timestamp'
                           ? classes.cell
                           : mergeClasses(classes.cell, classes.timestamp)
                       }
-                    >
-                      {renderCell(item)}
-                    </DataGridCell>
-                  )}
-                </DataGridRow>
+                      >
+                        {renderCell(item)}
+                      </DataGridCell>
+                    )}
+                  </DataGridRow>
+                )}
+              </DataGridBody>
+              )
+            : (
+              <div className={classes.empty}>No activities to display.</div>
               )}
-            </DataGridBody>
-          ) : (
-            <div className={classes.empty}>No activities to display.</div>
-          )}
         </DataGrid>
       </div>
     );

@@ -13,7 +13,7 @@ export class Router<TExtraCtx extends Record<string, any> = Record<string, any>>
    * select routes that match the inbound activity
    * @param activity the inbound activity
    */
-  select(activity: Activity) {
+  select (activity: Activity) {
     return this.routes
       .filter((r) => r.select(activity))
       .map((r) => r.callback as RouteHandler<IActivityContext, any>);
@@ -42,7 +42,7 @@ export class Router<TExtraCtx extends Record<string, any> = Record<string, any>>
    * register a middleware
    * @param callback the callback to invoke
    */
-  use(callback: RouteHandler<IActivityContext<Activity, TExtraCtx>, void | InvokeResponse>, type?: RouteType) {
+  use (callback: RouteHandler<IActivityContext<Activity, TExtraCtx>, void | InvokeResponse>, type?: RouteType) {
     this.register({
       type: type || 'user',
       select: () => true,

@@ -114,6 +114,11 @@ extends:
           target:
             container: host
 
+        - script: npm run build:endpoints
+          displayName: 'npm build:endpoints'
+          target:
+            container: host
+
         - script: npm test
           displayName: 'npm test'
           continueOnError: false

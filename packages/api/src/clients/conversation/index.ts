@@ -38,18 +38,20 @@ export type GetConversationsResponse = {
 export class ConversationClient {
   readonly serviceUrl: string;
 
-  get http() {
+  get http () {
     return this._http;
   }
-  set http(v) {
+
+  set http (v) {
     this._http = v;
   }
+
   protected _http: Client;
   protected _activities: ConversationActivityClient;
   protected _members: ConversationMemberClient;
   protected _apiClientSettings: Partial<ApiClientSettings>;
 
-  constructor(serviceUrl: string, options?: Client | ClientOptions, apiClientSettings?: Partial<ApiClientSettings>) {
+  constructor (serviceUrl: string, options?: Client | ClientOptions, apiClientSettings?: Partial<ApiClientSettings>) {
     this.serviceUrl = serviceUrl;
 
     if (!options) {
@@ -59,13 +61,13 @@ export class ConversationClient {
     } else {
       this._http = new Client(options);
     }
-  
+
     this._apiClientSettings = mergeApiClientSettings(apiClientSettings);
     this._activities = new ConversationActivityClient(serviceUrl, this.http, this._apiClientSettings);
     this._members = new ConversationMemberClient(serviceUrl, this.http, this._apiClientSettings);
   }
 
-  activities(conversationId: string) {
+  activities (conversationId: string) {
     return {
       create: (params: ActivityParams) => this._activities.create(conversationId, params),
       update: (id: string, params: ActivityParams) =>
@@ -81,7 +83,7 @@ export class ConversationClient {
     };
   }
 
-  members(conversationId: string) {
+  members (conversationId: string) {
     return {
       get: () => this._members.get(conversationId),
       getById: (id: string) => this._members.getById(conversationId, id),
@@ -89,7 +91,7 @@ export class ConversationClient {
     };
   }
 
-  async get(params: GetConversationsParams) {
+  async get (params: GetConversationsParams) {
     const q = qs.stringify(params, { addQueryPrefix: true });
     const res = await this.http.get<GetConversationsResponse>(
       `${this.serviceUrl}/v3/conversations${q}`
@@ -97,7 +99,7 @@ export class ConversationClient {
     return res.data;
   }
 
-  async create(params: CreateConversationParams) {
+  async create (params: CreateConversationParams) {
     const res = await this.http.post<ConversationResource>(
       `${this.serviceUrl}/v3/conversations`,
       params

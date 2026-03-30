@@ -13,16 +13,18 @@ import { ApiClientSettings, mergeApiClientSettings } from '../api-client-setting
 export class ReactionClient {
   readonly serviceUrl: string;
 
-  get http() {
+  get http () {
     return this._http;
   }
-  set http(v) {
+
+  set http (v) {
     this._http = v;
   }
+
   protected _http: Client;
   protected _apiClientSettings: Partial<ApiClientSettings>;
 
-  constructor(serviceUrl: string, options?: Client | ClientOptions, apiClientSettings?: Partial<ApiClientSettings>) {
+  constructor (serviceUrl: string, options?: Client | ClientOptions, apiClientSettings?: Partial<ApiClientSettings>) {
     this.serviceUrl = serviceUrl;
 
     if (!options) {
@@ -42,7 +44,7 @@ export class ReactionClient {
    * @experimental This API is in preview and may change in the future.
    * Diagnostic: ExperimentalTeamsReactions
    */
-  async add(conversationId: string, activityId: string, reactionType: MessageReactionType) {
+  async add (conversationId: string, activityId: string, reactionType: MessageReactionType) {
     const res = await this.http.put<void>(
       `${this.serviceUrl}/v3/conversations/${encodeURIComponent(conversationId)}/activities/${encodeURIComponent(activityId)}/reactions/${encodeURIComponent(reactionType)}`
     );
@@ -55,7 +57,7 @@ export class ReactionClient {
    * @experimental This API is in preview and may change in the future.
    * Diagnostic: ExperimentalTeamsReactions
    */
-  async remove(conversationId: string, activityId: string, reactionType: MessageReactionType) {
+  async remove (conversationId: string, activityId: string, reactionType: MessageReactionType) {
     const res = await this.http.delete<void>(
       `${this.serviceUrl}/v3/conversations/${encodeURIComponent(conversationId)}/activities/${encodeURIComponent(activityId)}/reactions/${encodeURIComponent(reactionType)}`
     );

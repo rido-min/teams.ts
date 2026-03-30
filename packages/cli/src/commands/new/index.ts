@@ -8,7 +8,7 @@ import { CSharp } from './csharp';
 import { Python } from './python';
 import { Typescript } from './typescript';
 
-export function New(context: IContext): CommandModule<{}, {}> {
+export function New (context: IContext): CommandModule<{}, {}> {
   const language = Settings.load().language ?? '';
 
   return {

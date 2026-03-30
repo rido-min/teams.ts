@@ -44,3 +44,5 @@ yarn-error.log*
 
 # Cursor
 .specstory
+
+tsconfig.tsbuildinfo

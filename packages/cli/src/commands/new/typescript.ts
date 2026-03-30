@@ -21,8 +21,8 @@ const ArgsSchema = z.object({
   clientSecret: z.string().optional(),
 });
 
-export function Typescript(_: IContext): CommandModule<{}, z.infer<typeof ArgsSchema>> {
-  const isTypescript = Settings.load().language == 'typescript';
+export function Typescript (_: IContext): CommandModule<{}, z.infer<typeof ArgsSchema>> {
+  const isTypescript = Settings.load().language === 'typescript';
   const atkPath = path.resolve(url.fileURLToPath(import.meta.url), '../..', 'configs', 'atk');
 
   return {
@@ -65,8 +65,8 @@ export function Typescript(_: IContext): CommandModule<{}, z.infer<typeof ArgsSc
           type: 'string',
           describe: 'include M365 Agents Toolkit configuration',
           choices: fs.readdirSync(atkPath)
-          .filter((type) => fs.existsSync(path.join(atkPath, type, 'typescript')))
-          .flat()
+            .filter((type) => fs.existsSync(path.join(atkPath, type, 'typescript')))
+            .flat()
         })
         .option('client-id', {
           type: 'string',

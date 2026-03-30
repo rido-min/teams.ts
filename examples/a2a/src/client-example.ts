@@ -1,4 +1,3 @@
-
 import { A2AClientPlugin } from '@microsoft/teams.a2a';
 import { ChatPrompt } from '@microsoft/teams.ai';
 import { App } from '@microsoft/teams.apps';

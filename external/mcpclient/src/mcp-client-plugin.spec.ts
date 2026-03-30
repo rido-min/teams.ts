@@ -11,12 +11,12 @@ import {
 } from './mcp-client-types';
 
 class MockTransport implements Transport {
-  async connect(): Promise<void> { }
-  async disconnect(): Promise<void> { }
-  async send(): Promise<void> { }
-  onMessage(): void { }
-  async start(): Promise<void> { }
-  async close(): Promise<void> { }
+  async connect (): Promise<void> { }
+  async disconnect (): Promise<void> { }
+  async send (): Promise<void> { }
+  onMessage (): void { }
+  async start (): Promise<void> { }
+  async close (): Promise<void> { }
 }
 
 describe('McpClientPlugin', () => {

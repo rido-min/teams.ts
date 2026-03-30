@@ -35,8 +35,8 @@ export const useActivityStore = create<ActivityStore>()(
         byId[event.id] = event;
 
         return {
-          list: list,
-          byId: byId,
+          list,
+          byId,
         };
       }),
     findByMessageId: (messageId: string) => {

@@ -6,7 +6,7 @@ import { HonoAdapter } from './hono-adapter';
 
 const port = parseInt(process.env.PORT || '3978', 10);
 
-async function main() {
+async function main () {
   console.log('Starting Hono server with Teams bot integration...\n');
 
   // 1. Create your Hono app with your own routes
@@ -65,11 +65,11 @@ async function main() {
   });
 
   console.log(`✓ Server ready on http://localhost:${port}`);
-  console.log(`\nYour Hono routes:`);
-  console.log(`  GET  /              - Homepage`);
-  console.log(`  GET  /health        - Health check`);
-  console.log(`  GET  /api/users     - Users API`);
-  console.log(`  POST /api/messages  - Teams bot endpoint (added by teams.ts)`);
+  console.log('\nYour Hono routes:');
+  console.log('  GET  /              - Homepage');
+  console.log('  GET  /health        - Health check');
+  console.log('  GET  /api/users     - Users API');
+  console.log('  POST /api/messages  - Teams bot endpoint (added by teams.ts)');
   console.log(`\nOpen http://localhost:${port} in your browser!`);
 }
 

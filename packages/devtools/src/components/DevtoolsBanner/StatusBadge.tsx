@@ -7,13 +7,13 @@ interface StatusBadgeProps {
 }
 
 const StatusBadge = memo(({ connected, classes }: StatusBadgeProps) => (
-  <Tooltip content={connected ? 'Connected' : 'Disconnected'} relationship="description">
+  <Tooltip content={connected ? 'Connected' : 'Disconnected'} relationship='description'>
     <Badge
-      data-tid="status badge"
-      role="status"
+      data-tid='status badge'
+      role='status'
       aria-label={connected ? 'Connected' : 'Disconnected'}
       color={connected ? 'success' : 'danger'}
-      size="extra-small"
+      size='extra-small'
       className={classes.badge}
     >
       <div className={connected ? classes.pingAnimation : ''} />

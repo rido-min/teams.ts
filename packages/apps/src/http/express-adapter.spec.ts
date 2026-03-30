@@ -98,7 +98,6 @@ describe('ExpressAdapter', () => {
 
       expect(response.headers['content-type']).toMatch(/application\/json/);
     });
-
   });
 
   describe('static file serving', () => {

@@ -6,7 +6,7 @@ type Args = {
   key: string;
 };
 
-export function Del({ envs }: IContext): CommandModule<{}, Args> {
+export function Del ({ envs }: IContext): CommandModule<{}, Args> {
   return {
     command: 'del <key>',
     describe: 'delete an environment key',
@@ -23,7 +23,6 @@ export function Del({ envs }: IContext): CommandModule<{}, Args> {
         const toDelete = envs.active.name;
         envs.select('dev');
         envs.remove(toDelete);
-        return;
       }
     },
   };

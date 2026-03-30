@@ -98,7 +98,7 @@ const useContentEditableAreaClasses = makeStyles({
     backgroundColor: tokens.colorTransparentBackground,
     border: `var(--ce-area-border) solid ${tokens.colorNeutralStrokeDisabled}`,
     '@media (forced-colors: active)': {
-      border: `var(--ce-area-border) solid Gray`,
+      border: 'var(--ce-area-border) solid Gray',
     },
   },
 

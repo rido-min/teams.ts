@@ -8,9 +8,9 @@ const orderImports = {
     },
     fixable: 'code',
   },
-  create(context) {
+  create (context) {
     return {
-      Program(node) {
+      Program (node) {
         const sourceCode = context.getSourceCode();
         const imports = node.body.filter((node) => node.type === 'ImportDeclaration');
 
@@ -189,7 +189,7 @@ const orderImports = {
             context.report({
               node: firstImport,
               message: 'Import order needs to be fixed.',
-              fix(fixer) {
+              fix (fixer) {
                 return fixer.replaceTextRange([firstImport.range[0], nextStart], expectedText);
               },
             });
@@ -200,7 +200,7 @@ const orderImports = {
             context.report({
               node: firstImport,
               message: 'Import order needs to be fixed.',
-              fix(fixer) {
+              fix (fixer) {
                 return fixer.replaceTextRange([firstImport.range[0], importEnd], desiredImportText);
               },
             });

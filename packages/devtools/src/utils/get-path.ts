@@ -1,4 +1,4 @@
-export function getPath(value: any, path: string, defaultValue?: any) {
+export function getPath (value: any, path: string, defaultValue?: any) {
   const parts = path.split('.');
 
   for (const part of parts) {

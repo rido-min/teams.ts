@@ -43,7 +43,7 @@ const PageNavButton: FC<PageNavButtonProps> = ({ to, iconType, label }) => {
     <NavLink to={to} className={classes.pageNavButton}>
       {({ isActive }) => (
         <div
-          role="presentation"
+          role='presentation'
           className={mergeClasses(isActive ? classes.activeRoute : '', classes.linkWithIcon)}
         >
           {icons && (isActive ? icons.active : icons.default)}

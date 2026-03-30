@@ -33,7 +33,7 @@ describe('RemoteFunctionValidator', () => {
       mockEntraValidator.validateAccessToken.mockResolvedValue(mockPayload);
 
       const headers = {
-        'authorization': 'Bearer valid-token',
+        authorization: 'Bearer valid-token',
         'x-teams-app-session-id': 'session-123',
         'x-teams-page-id': 'page-123',
         'x-teams-channel-id': 'channel-123',
@@ -69,7 +69,7 @@ describe('RemoteFunctionValidator', () => {
       const validator = new RemoteFunctionValidator(mockEntraValidator, mockLogger);
 
       const headers = {
-        'authorization': 'Bearer valid-token',
+        authorization: 'Bearer valid-token',
         'x-teams-app-session-id': 'session-123'
         // x-teams-page-id missing
       };
@@ -84,7 +84,7 @@ describe('RemoteFunctionValidator', () => {
       const validator = new RemoteFunctionValidator(mockEntraValidator, mockLogger);
 
       const headers = {
-        'authorization': 'Bearer valid-token',
+        authorization: 'Bearer valid-token',
         'x-teams-page-id': 'page-123'
         // x-teams-app-session-id missing
       };
@@ -114,7 +114,7 @@ describe('RemoteFunctionValidator', () => {
       mockEntraValidator.validateAccessToken.mockResolvedValue(null);
 
       const headers = {
-        'authorization': 'Bearer invalid-token',
+        authorization: 'Bearer invalid-token',
         'x-teams-app-session-id': 'session-123',
         'x-teams-page-id': 'page-123'
       };
@@ -137,7 +137,7 @@ describe('RemoteFunctionValidator', () => {
       mockEntraValidator.validateAccessToken.mockResolvedValue(mockPayload);
 
       const headers = {
-        'authorization': 'Bearer test-token',
+        authorization: 'Bearer test-token',
         'x-teams-app-session-id': 'session-123',
         'x-teams-page-id': 'page-123'
       };
@@ -160,7 +160,7 @@ describe('RemoteFunctionValidator', () => {
       mockEntraValidator.validateAccessToken.mockResolvedValue(mockPayload);
 
       const headers = {
-        'authorization': 'BEARER test-token',
+        authorization: 'BEARER test-token',
         'x-teams-app-session-id': 'session-123',
         'x-teams-page-id': 'page-123'
       };
@@ -183,7 +183,7 @@ describe('RemoteFunctionValidator', () => {
       mockEntraValidator.validateAccessToken.mockResolvedValue(mockPayload);
 
       const headers = {
-        'authorization': 'Bearer valid-token',
+        authorization: 'Bearer valid-token',
         'x-teams-app-session-id': 'session-123',
         'x-teams-page-id': 'page-123'
         // All optional headers missing

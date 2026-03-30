@@ -12,7 +12,7 @@ import { functionContext } from './utils';
  * @param name The unique function name
  * @param cb The callback to handle the function
  */
-export function func<TPlugin extends IPlugin, TData>(
+export function func<TPlugin extends IPlugin, TData> (
   this: App<TPlugin>,
   name: string,
   cb: (context: IFunctionContext<TData>) => any | Promise<any>
@@ -75,7 +75,7 @@ export function func<TPlugin extends IPlugin, TData>(
  * @param name A unique identifier for the entity which the tab displays.
  * @param path The path to the web `dist` folder.
  */
-export function tab<TPlugin extends IPlugin>(
+export function tab<TPlugin extends IPlugin> (
   this: App<TPlugin>,
   name: string,
   path: string,
@@ -109,7 +109,7 @@ export function tab<TPlugin extends IPlugin>(
  * @remark scopes defaults to `team`
  * @param url The url to use when configuring the tab.
  */
-export function configTab<TPlugin extends IPlugin>(
+export function configTab<TPlugin extends IPlugin> (
   this: App<TPlugin>,
   url: string,
   options?: Partial<Omit<manifest.ConfigurableTab, 'configurationUrl'>>

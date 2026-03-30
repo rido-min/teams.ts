@@ -234,20 +234,20 @@ const ComposeBox: FC<ComposeBoxProps> = memo(
     return (
       <div className={classes.composeBoxContainer}>
         <ContentEditableArea
-          title="Compose message"
+          title='Compose message'
           ref={contentEditableRef}
           className={classes.composeInput}
           value={message}
           onInputChange={handleInputChange}
           onKeyDown={handleKeyDown}
-          placeholder="Type a message..."
+          placeholder='Type a message...'
           toolbar={memoizedToolbar}
         >
           {attachments.length > 0 && (
             <AttachmentsContainer
               attachments={uiAttachments}
               onRemoveAttachment={handleRemoveAttachment}
-              showRemoveButtons={true}
+              showRemoveButtons
             />
           )}
         </ContentEditableArea>

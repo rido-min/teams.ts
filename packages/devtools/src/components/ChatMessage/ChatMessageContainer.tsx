@@ -42,24 +42,26 @@ const ChatMessageContainer: FC<MessageProps> = memo(({ value, isConnected = fals
                 isSent && classes.messageGroupSent
               )}
             >
-              {value.createdDateTime ? (
-                <Tooltip
-                  content={formatMessageTooltipTime(value.createdDateTime)}
-                  relationship="label"
-                >
-                  <time
-                    aria-label={ariaLabel}
-                    dateTime={formatMessageDateTime(value.createdDateTime)}
-                    id={value.id}
-                    className={mergeClasses(
-                      classes.timestamp,
-                      sendDirection === 'sent' && classes.sentTime
-                    )}
+              {value.createdDateTime
+                ? (
+                  <Tooltip
+                    content={formatMessageTooltipTime(value.createdDateTime)}
+                    relationship='label'
                   >
-                    {formatMessageTime(value.createdDateTime)}
-                  </time>
-                </Tooltip>
-              ) : null}
+                    <time
+                      aria-label={ariaLabel}
+                      dateTime={formatMessageDateTime(value.createdDateTime)}
+                      id={value.id}
+                      className={mergeClasses(
+                        classes.timestamp,
+                        sendDirection === 'sent' && classes.sentTime
+                      )}
+                    >
+                      {formatMessageTime(value.createdDateTime)}
+                    </time>
+                  </Tooltip>
+                  )
+                : null}
               {value.lastModifiedDateTime && (
                 <Text
                   id={`edited-${value.id}-${value.lastModifiedDateTime}`}

@@ -104,12 +104,12 @@ const ComposeBoxToolbar: FC<ComposeBoxToolbarProps> = memo(
     }, [onSendMessage, hasContent]);
 
     return (
-      <Toolbar aria-label="Message actions" {...props} className={classes.toolbar}>
+      <Toolbar aria-label='Message actions' {...props} className={classes.toolbar}>
         <Menu open={menuOpen} onOpenChange={(_e, data) => setMenuOpen(data.open)}>
           <MenuTrigger disableButtonEnhancement>
-            <Tooltip content="Attach file" relationship="label">
+            <Tooltip content='Attach file' relationship='label'>
               <ToolbarButton
-                aria-label="Attach file"
+                aria-label='Attach file'
                 icon={<AttachRegular />}
                 className={classes.toolbarButton}
                 disabled={disabled}
@@ -140,40 +140,42 @@ const ComposeBoxToolbar: FC<ComposeBoxToolbarProps> = memo(
           disabled={disabled}
         />
         <ToolbarDivider />
-        {editMode ? (
-          <>
-            <Tooltip content="Cancel" relationship="label">
+        {editMode
+          ? (
+            <>
+              <Tooltip content='Cancel' relationship='label'>
+                <ToolbarButton
+                  data-tid='cancel-button'
+                  aria-label='Cancel'
+                  className={classes.toolbarButton}
+                  onClick={handleCancelDialogOpen}
+                  icon={<Dismiss tabIndex={-1} />}
+                  disabled={disabled}
+                />
+              </Tooltip>
+              <Tooltip content={`Done (${isMac ? '⌘' : 'Ctrl'} Enter)`} relationship='label'>
+                <ToolbarButton
+                  data-tid='done-button'
+                  className={classes.toolbarButton}
+                  onClick={onEditComplete}
+                  icon={<Checkmark tabIndex={-1} />}
+                  disabled={disabled || !hasContent}
+                />
+              </Tooltip>
+            </>
+            )
+          : (
+            <Tooltip content='Send message' relationship='label'>
               <ToolbarButton
-                data-tid="cancel-button"
-                aria-label="Cancel"
+                data-tid='send-button'
+                aria-label='Send message'
                 className={classes.toolbarButton}
-                onClick={handleCancelDialogOpen}
-                icon={<Dismiss tabIndex={-1} />}
-                disabled={disabled}
-              />
-            </Tooltip>
-            <Tooltip content={`Done (${isMac ? '⌘' : 'Ctrl'} Enter)`} relationship="label">
-              <ToolbarButton
-                data-tid="done-button"
-                className={classes.toolbarButton}
-                onClick={onEditComplete}
-                icon={<Checkmark tabIndex={-1} />}
+                onClick={handleSend}
+                icon={<Send tabIndex={-1} />}
                 disabled={disabled || !hasContent}
               />
             </Tooltip>
-          </>
-        ) : (
-          <Tooltip content="Send message" relationship="label">
-            <ToolbarButton
-              data-tid="send-button"
-              aria-label="Send message"
-              className={classes.toolbarButton}
-              onClick={handleSend}
-              icon={<Send tabIndex={-1} />}
-              disabled={disabled || !hasContent}
-            />
-          </Tooltip>
-        )}
+            )}
         <CancelEditDialog
           isOpen={isConfirmCancelOpen}
           onCancel={handleCancelDialogClose}

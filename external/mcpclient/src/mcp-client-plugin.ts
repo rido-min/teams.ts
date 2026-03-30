@@ -21,41 +21,47 @@ export class McpClientPlugin implements ChatPromptPlugin<'mcpClient', McpClientP
 
   // This collides with the name of the plugin, so we use a different
   // variable name
-  get mcpClientName() {
+  get mcpClientName () {
     return this._name;
   }
+
   protected readonly _name: string;
 
-  get version() {
+  get version () {
     return this._version;
   }
+
   protected readonly _version: string;
 
-  get clientOptions() {
+  get clientOptions () {
     return this._clientOptions;
   }
+
   protected _clientOptions: ClientOptions;
 
-  get cache() {
+  get cache () {
     return this._cache;
   }
+
   protected _cache: Record<string, McpClientPluginCachedValue & { lastFetched?: number }>;
 
-  get log() {
+  get log () {
     return this._log;
   }
+
   protected readonly _log: ILogger;
 
-  get refetchTimeoutMs() {
+  get refetchTimeoutMs () {
     return this._refetchTimeoutMs;
   }
+
   protected _refetchTimeoutMs: number;
 
   private readonly _mcpServerUrlsByParams: Record<string, McpClientPluginParams | undefined> = {};
 
   private createTransport: CreateTransport | null;
 
-  constructor(options?: McpClientPluginOptions) {
+  constructor (options?: McpClientPluginOptions) {
     const {
       name: mcpClientName,
       version,
@@ -84,7 +90,7 @@ export class McpClientPlugin implements ChatPromptPlugin<'mcpClient', McpClientP
     this._refetchTimeoutMs = refetchTimeoutMs || 24 * 60 * 60 * 1000; // 1 day
   }
 
-  onUsePlugin(args: { url: string; params?: McpClientPluginParams }) {
+  onUsePlugin (args: { url: string; params?: McpClientPluginParams }) {
     this._mcpServerUrlsByParams[args.url] = args.params;
     if (args.params?.availableTools && args.params.availableTools.length > 0) {
       this._cache[args.url] = {
@@ -97,7 +103,7 @@ export class McpClientPlugin implements ChatPromptPlugin<'mcpClient', McpClientP
     }
   }
 
-  async onBuildFunctions(incomingFunctions: Function[]): Promise<Function[]> {
+  async onBuildFunctions (incomingFunctions: Function[]): Promise<Function[]> {
     await this.fetchToolsIfNeeded();
 
     // Now create all functions
@@ -139,7 +145,7 @@ export class McpClientPlugin implements ChatPromptPlugin<'mcpClient', McpClientP
     return incomingFunctions.concat(allFunctions);
   }
 
-  private async fetchToolsIfNeeded() {
+  private async fetchToolsIfNeeded () {
     // First, handle all fetching needs
     const fetchNeededObjects = Object.entries(this._mcpServerUrlsByParams)
       .map(([url, params]) => {
@@ -186,7 +192,7 @@ export class McpClientPlugin implements ChatPromptPlugin<'mcpClient', McpClientP
     }
   }
 
-  private async getTools(
+  private async getTools (
     params: ({ url: string } & Pick<McpClientPluginParams, 'headers' | 'skipIfUnavailable' | 'transport'>)[]
   ): Promise<Record<string, McpClientToolDetails[] | 'unavailable'>> {
     const toolCallResult = await Promise.all(
@@ -199,7 +205,7 @@ export class McpClientPlugin implements ChatPromptPlugin<'mcpClient', McpClientP
     return Object.fromEntries(toolCallResult);
   }
 
-  private async fetchTools(
+  private async fetchTools (
     url: string,
     headers: ValueOrFactory<Record<string, string>> | undefined,
     transportType: McpClientTransportType | undefined,
@@ -227,10 +233,10 @@ export class McpClientPlugin implements ChatPromptPlugin<'mcpClient', McpClientP
     }
   }
 
-  private async makeMcpClient(
+  private async makeMcpClient (
     serverUrl: string,
     headers: ValueOrFactory<Record<string, string>> | undefined,
-    transportType: McpClientTransportType | undefined,
+    transportType: McpClientTransportType | undefined
   ) {
     const buildTransport = () => {
       if (this.createTransport) {

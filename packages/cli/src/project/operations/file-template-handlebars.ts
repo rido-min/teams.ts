@@ -14,12 +14,12 @@ export class FileTemplateHandlebars implements IProjectAttributeOperation {
   private _from: string;
   private _to: string;
 
-  constructor(from: string, to: string) {
+  constructor (from: string, to: string) {
     this._from = from;
     this._to = to;
   }
 
-  async up(project: IProject) {
+  async up (project: IProject) {
     const relativeTo = path.relative(process.cwd(), this._to);
 
     if (!fs.existsSync(this._from)) {
@@ -40,7 +40,7 @@ export class FileTemplateHandlebars implements IProjectAttributeOperation {
     process.stdout.write('✔️\n');
   }
 
-  down(_: IProject) {
+  down (_: IProject) {
     const relativeTo = path.relative(process.cwd(), this._to);
 
     if (!fs.existsSync(this._to)) {
