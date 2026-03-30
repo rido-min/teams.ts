@@ -31,7 +31,7 @@
     "version:stamp": "node scripts/version.js",
     "version:get": "nbgv get-version -v NpmPackageVersion",
     "clean": "npx turbo clean",
-    "build": "npx turbo build",
+    "build": "npx turbo build --concurrency=100%",
     "build:packages": "npx turbo build --filter=./packages/*",
     "build:essential": "npx turbo build --filter='./packages/*' --filter='!./packages/graph' --filter='!./packages/graph-endpoints' --filter='!./packages/graph-endpoints-beta' --filter='!./packages/graph-tools' --filter='!./external/*'",
     "build:examples": "npx turbo build --filter=./examples/*",
